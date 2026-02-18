@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Landing from './pages/Landing.jsx';
 import JoinClassroom from './pages/JoinClassroom.jsx';
@@ -13,8 +14,17 @@ import ProblemAssign from './pages/teacher/ProblemAssign.jsx';
 import LiveDashboard from './pages/teacher/LiveDashboard.jsx';
 import AIReports from './pages/teacher/AIReports.jsx';
 import ApproachAnalysis from './pages/teacher/ApproachAnalysis.jsx';
+import useAuthStore from './stores/authStore.js';
 
 export default function App() {
+  const restoreUser = useAuthStore((s) => s.restoreUser);
+  const token = useAuthStore((s) => s.token);
+
+  // 새로고침 시 토큰으로 user 상태 복원
+  useEffect(() => {
+    if (token) restoreUser();
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={<Landing />} />

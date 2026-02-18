@@ -19,6 +19,16 @@ export default function JoinClassroom() {
       toast.error('참여 코드를 입력하세요');
       return;
     }
+    if (!studentNumber.trim()) {
+      toast.error('출석번호와 이름을 입력하세요 (예: 23 홍길동)');
+      return;
+    }
+    // "23 홍길동" 형식 검증: 숫자 + 공백 + 이름
+    const parts = studentNumber.trim().split(' ');
+    if (parts.length < 2 || !/^\d+$/.test(parts[0]) || !parts[1]) {
+      toast.error('형식이 맞지 않습니다. 예: 23 홍길동');
+      return;
+    }
     setLoading(true);
     try {
       const result = await joinClassroom(joinCode.trim(), studentNumber.trim());
@@ -38,7 +48,7 @@ export default function JoinClassroom() {
           <div className="text-4xl mb-3">🏫</div>
           <h2 className="text-xl font-bold text-slate-800">교실 참여</h2>
           <p className="text-sm text-slate-500 mt-1">
-            {user.name}님, 교사가 알려준 참여 코드를 입력하세요
+            교사가 알려준 참여 코드를 입력하세요
           </p>
         </div>
 
@@ -59,14 +69,18 @@ export default function JoinClassroom() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">출석번호 (선택)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              출석번호와 이름 <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
-              placeholder="예: 15"
+              placeholder="예: 23 홍길동"
               value={studentNumber}
               onChange={e => setStudentNumber(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleJoin()}
               className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <p className="text-xs text-slate-400 mt-1">출석번호 + 공백 + 이름 순서로 입력하세요</p>
           </div>
 
           <button

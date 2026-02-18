@@ -24,7 +24,7 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
-  // 데모 로그인 (개발용)
+  // 데모 로그인 (체험용)
   loginDemo: async (name, role) => {
     set({ loading: true });
     try {
@@ -39,6 +39,40 @@ const useAuthStore = create((set, get) => ({
       set({ loading: false });
       throw err;
     }
+  },
+
+  // 새로고침 시 user 상태 복원
+  restoreUser: async () => {
+    const token = get().token;
+    if (!token) return;
+    try {
+      const user = await apiFetch('/auth/me');
+      set({ user });
+    } catch {
+      // 토큰 만료 시 로그아웃
+      localStorage.removeItem('token');
+      localStorage.removeItem('classroom');
+      set({ user: null, token: null, classroom: null });
+    }
+  },
+
+  // 프로필 수정 (이름 변경)
+  updateProfile: async (name) => {
+    const user = await apiFetch('/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify({ name }),
+    });
+    set({ user });
+    return user;
+  },
+
+  // 학번 수정
+  updateStudentNumber: async (classroomId, studentNumber) => {
+    const { user } = get();
+    await apiFetch(`/classrooms/${classroomId}/members/${user.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ studentNumber }),
+    });
   },
 
   // 교실 참여
@@ -64,6 +98,12 @@ const useAuthStore = create((set, get) => ({
     return classroom;
   },
 
+  // 교실 나가기 (다른 교실 입장 전)
+  leaveClassroom: () => {
+    localStorage.removeItem('classroom');
+    set({ classroom: null });
+  },
+
   // 로그아웃
   logout: () => {
     localStorage.removeItem('token');
@@ -71,7 +111,6 @@ const useAuthStore = create((set, get) => ({
     set({ user: null, token: null, classroom: null });
   },
 
-  // 유저 정보 복원 (앱 시작 시)
   isLoggedIn: () => !!get().token,
 }));
 

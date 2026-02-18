@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client.js';
-import { Plus, Copy, Users, Check, School, Hash, Key, CheckCircle, AlertCircle } from 'lucide-react';
+import { Plus, Copy, Users, Check, School, Hash, Key, CheckCircle, AlertCircle, Trash2, Pencil } from 'lucide-react';
 
 export default function ClassroomSetup() {
   const [classrooms, setClassrooms] = useState([]);
@@ -12,13 +12,16 @@ export default function ClassroomSetup() {
   const [students, setStudents] = useState([]);
   const [studentsLoading, setStudentsLoading] = useState(false);
 
+  // 학번 인라인 편집
+  const [editingStudentId, setEditingStudentId] = useState(null);
+  const [editingNumber, setEditingNumber] = useState('');
+
   // API 키 관련 상태
   const [apiKeyStatus, setApiKeyStatus] = useState({ configured: false, masked: '' });
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [showKeyInput, setShowKeyInput] = useState(false);
   const [savingKey, setSavingKey] = useState(false);
 
-  // 교실 목록 불러오기
   const fetchClassrooms = async () => {
     try {
       const data = await apiFetch('/classrooms/my');
@@ -30,7 +33,6 @@ export default function ClassroomSetup() {
     }
   };
 
-  // API 키 상태 확인
   const fetchApiKeyStatus = async () => {
     try {
       const data = await apiFetch('/ai/status');
@@ -60,6 +62,21 @@ export default function ClassroomSetup() {
       alert('교실 생성 실패: ' + err.message);
     } finally {
       setCreating(false);
+    }
+  };
+
+  // 교실 삭제
+  const handleDeleteClassroom = async (classroom) => {
+    if (!confirm(`"${classroom.name}" 교실을 삭제하시겠습니까?\n학생 데이터도 모두 삭제됩니다.`)) return;
+    try {
+      await apiFetch(`/classrooms/${classroom.id}`, { method: 'DELETE' });
+      if (selectedClassroom?.id === classroom.id) {
+        setSelectedClassroom(null);
+        setStudents([]);
+      }
+      await fetchClassrooms();
+    } catch (err) {
+      alert('교실 삭제 실패: ' + err.message);
     }
   };
 
@@ -120,6 +137,42 @@ export default function ClassroomSetup() {
     }
   };
 
+  // 학번 수정 시작
+  const handleEditNumber = (student) => {
+    setEditingStudentId(student.id);
+    setEditingNumber(student.student_number || '');
+  };
+
+  // 학번 수정 저장
+  const handleSaveNumber = async (student) => {
+    try {
+      await apiFetch(`/classrooms/${selectedClassroom.id}/members/${student.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ studentNumber: editingNumber }),
+      });
+      setStudents((prev) =>
+        prev.map((s) => s.id === student.id ? { ...s, student_number: editingNumber } : s)
+      );
+      setEditingStudentId(null);
+    } catch (err) {
+      alert('학번 수정 실패: ' + err.message);
+    }
+  };
+
+  // 학생 내보내기
+  const handleRemoveStudent = async (student) => {
+    if (!confirm(`${student.name} 학생을 교실에서 내보내시겠습니까?`)) return;
+    try {
+      await apiFetch(`/classrooms/${selectedClassroom.id}/members/${student.id}`, {
+        method: 'DELETE',
+      });
+      setStudents((prev) => prev.filter((s) => s.id !== student.id));
+      await fetchClassrooms();
+    } catch (err) {
+      alert('학생 내보내기 실패: ' + err.message);
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-6 flex items-center justify-center min-h-[400px]">
@@ -138,7 +191,6 @@ export default function ClassroomSetup() {
           <Key size={20} />
           AI 코치 설정
         </h2>
-
         <div className="flex items-center gap-3 mb-3">
           <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
             apiKeyStatus.configured
@@ -146,15 +198,9 @@ export default function ClassroomSetup() {
               : 'bg-amber-50 text-amber-700 border border-amber-200'
           }`}>
             {apiKeyStatus.configured ? (
-              <>
-                <CheckCircle size={16} />
-                <span>API 키 설정됨: <code className="font-mono text-xs bg-white px-1 py-0.5 rounded">{apiKeyStatus.masked}</code></span>
-              </>
+              <><CheckCircle size={16} /><span>API 키 설정됨: <code className="font-mono text-xs bg-white px-1 py-0.5 rounded">{apiKeyStatus.masked}</code></span></>
             ) : (
-              <>
-                <AlertCircle size={16} />
-                <span>API 키가 설정되지 않았습니다</span>
-              </>
+              <><AlertCircle size={16} /><span>API 키가 설정되지 않았습니다</span></>
             )}
           </div>
           <button
@@ -164,19 +210,16 @@ export default function ClassroomSetup() {
             {showKeyInput ? '닫기' : (apiKeyStatus.configured ? '변경' : '설정하기')}
           </button>
         </div>
-
         {showKeyInput && (
           <div className="flex gap-3 mt-3">
-            <div className="flex-1 relative">
-              <input
-                type="password"
-                value={apiKeyInput}
-                onChange={(e) => setApiKeyInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSaveApiKey()}
-                placeholder="sk-ant-api03-..."
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm pr-10"
-              />
-            </div>
+            <input
+              type="password"
+              value={apiKeyInput}
+              onChange={(e) => setApiKeyInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSaveApiKey()}
+              placeholder="sk-ant-api03-..."
+              className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+            />
             <button
               onClick={handleSaveApiKey}
               disabled={savingKey || !apiKeyInput.trim()}
@@ -186,9 +229,8 @@ export default function ClassroomSetup() {
             </button>
           </div>
         )}
-
         <p className="text-xs text-slate-400 mt-2">
-          Anthropic Claude API 키가 필요합니다. AI 코치, 문제 생성, 대화 요약 등에 사용됩니다.
+          Anthropic Claude API 키가 필요합니다.
         </p>
       </div>
 
@@ -205,18 +247,14 @@ export default function ClassroomSetup() {
             onChange={(e) => setNewName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
             placeholder="교실 이름 (예: 1학년 3반 정보)"
-            className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handleCreate}
             disabled={creating || !newName.trim()}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
           >
-            {creating ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-            ) : (
-              <Plus size={18} />
-            )}
+            {creating ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" /> : <Plus size={18} />}
             생성
           </button>
         </div>
@@ -245,7 +283,7 @@ export default function ClassroomSetup() {
                       생성일: {new Date(classroom.created_at).toLocaleDateString('ko-KR')}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     {/* 참여 코드 */}
                     <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">
                       <Hash size={16} className="text-slate-400" />
@@ -277,14 +315,25 @@ export default function ClassroomSetup() {
                       <Users size={16} />
                       <span className="font-medium">{classroom.student_count || 0}명</span>
                     </button>
+
+                    {/* 교실 삭제 */}
+                    <button
+                      onClick={() => handleDeleteClassroom(classroom)}
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      title="교실 삭제"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </div>
                 </div>
               </div>
 
-              {/* 학생 목록 (선택 시 펼침) */}
+              {/* 학생 목록 (펼침) */}
               {selectedClassroom?.id === classroom.id && (
                 <div className="border-t border-slate-200 bg-slate-50 p-5">
-                  <h4 className="text-sm font-semibold text-slate-600 mb-3">학생 목록</h4>
+                  <h4 className="text-sm font-semibold text-slate-600 mb-3">
+                    학생 목록 <span className="font-normal text-slate-400">(번호 hover → 연필 아이콘으로 수정)</span>
+                  </h4>
                   {studentsLoading ? (
                     <div className="flex items-center justify-center py-4">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600" />
@@ -296,26 +345,69 @@ export default function ClassroomSetup() {
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="text-left text-slate-500 border-b border-slate-200">
-                            <th className="pb-2 pr-4">번호</th>
+                            <th className="pb-2 pr-4 w-28">번호</th>
                             <th className="pb-2 pr-4">이름</th>
                             <th className="pb-2 pr-4">이메일</th>
-                            <th className="pb-2">참여일</th>
+                            <th className="pb-2 pr-4">참여일</th>
+                            <th className="pb-2 w-12"></th>
                           </tr>
                         </thead>
                         <tbody>
                           {students.map((student) => (
                             <tr key={student.id} className="border-b border-slate-100 last:border-0">
-                              <td className="py-2 pr-4 text-slate-600">
-                                {student.student_number || '-'}
+                              <td className="py-2 pr-4">
+                                {editingStudentId === student.id ? (
+                                  <div className="flex items-center gap-1">
+                                    <input
+                                      type="text"
+                                      value={editingNumber}
+                                      onChange={(e) => setEditingNumber(e.target.value)}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter') handleSaveNumber(student);
+                                        if (e.key === 'Escape') setEditingStudentId(null);
+                                      }}
+                                      className="w-14 px-2 py-1 border border-blue-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
+                                      autoFocus
+                                    />
+                                    <button
+                                      onClick={() => handleSaveNumber(student)}
+                                      className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+                                    >
+                                      저장
+                                    </button>
+                                    <button
+                                      onClick={() => setEditingStudentId(null)}
+                                      className="text-slate-400 hover:text-slate-600 text-xs"
+                                    >
+                                      취소
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-1 group">
+                                    <span className="text-slate-600">{student.student_number || '-'}</span>
+                                    <button
+                                      onClick={() => handleEditNumber(student)}
+                                      className="opacity-0 group-hover:opacity-100 p-0.5 text-slate-400 hover:text-blue-500 transition-opacity"
+                                      title="학번 수정"
+                                    >
+                                      <Pencil size={12} />
+                                    </button>
+                                  </div>
+                                )}
                               </td>
-                              <td className="py-2 pr-4 font-medium text-slate-800">
-                                {student.name}
-                              </td>
+                              <td className="py-2 pr-4 font-medium text-slate-800">{student.name}</td>
+                              <td className="py-2 pr-4 text-slate-500">{student.email}</td>
                               <td className="py-2 pr-4 text-slate-500">
-                                {student.email}
-                              </td>
-                              <td className="py-2 text-slate-500">
                                 {new Date(student.joined_at).toLocaleDateString('ko-KR')}
+                              </td>
+                              <td className="py-2">
+                                <button
+                                  onClick={() => handleRemoveStudent(student)}
+                                  className="p-1 text-slate-300 hover:text-red-500 transition-colors"
+                                  title="내보내기"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
                               </td>
                             </tr>
                           ))}
