@@ -1,0 +1,23 @@
+{
+  "id": "lv1-18-positive",
+  "title": "양수, 음수, 0",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### if/elif/else로 세 가지 조건 처리\n\n세 가지 경우를 나눌 때는 `if / elif / else`를 사용해요.\n\n```python\nn = int(input())\nif n > 0:\n    print(\"양수\")\nelif n < 0:\n    print(\"음수\")\nelse:\n    print(\"0\")\n```\n\n---\n\n### 문제\n\n정수를 입력받아 양수이면 `양수`, 음수이면 `음수`, 0이면 `0`을 출력하세요.\n\n### 예시\n\n**입력:** `5` → **출력:** `양수`  \n**입력:** `-3` → **출력:** `음수`  \n**입력:** `0` → **출력:** `0`",
+  "starter_code": "n = int(input())\n\n# 양수, 음수, 0을 판별하세요\n",
+  "test_cases": [
+    { "input": "5", "expected_output": "양수", "description": "양수" },
+    { "input": "-3", "expected_output": "음수", "description": "음수" },
+    { "input": "0", "expected_output": "0", "description": "0" },
+    { "input": "100", "expected_output": "양수", "description": "큰 양수" },
+    { "input": "-1", "expected_output": "음수", "description": "-1" }
+  ],
+  "hints": [
+    "0보다 크면 양수, 0보다 작으면 음수, 같으면 0이에요.",
+    "if n > 0: / elif n < 0: / else: 세 가지로 나누세요."
+  ],
+  "expected_approaches": [
+    { "tag": "if/elif/else", "description": "n > 0, n < 0, else 세 가지 경우로 분기" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nn = int(input())\nif n > 0:\n    print(\"양수\")\nelif n < 0:\n    print(\"음수\")\nelse:\n    print(\"0\")\n```\n\n세 가지 경우는 if/elif/else로 처리해요!"
+}

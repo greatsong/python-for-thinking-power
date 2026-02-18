@@ -1,0 +1,23 @@
+{
+  "id": "lv1-15-discount",
+  "title": "할인가 계산",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 할인 가격 계산하기\n\n10% 할인이면 90%만 내면 돼요.\n\n```\n할인가 = 원가 × (100 - 할인율) / 100\n```\n\n파이썬에서 정수로 결과를 내려면 `//` (정수 나눗셈)를 사용해요.\n\n```python\nprice = int(input())\ndiscount = int(input())\nresult = price * (100 - discount) // 100\nprint(result)\n```\n\n---\n\n### 문제\n\n원가와 할인율(%)을 입력받아 할인된 가격을 정수로 출력하세요.\n\n### 예시\n\n**입력:** `10000 / 10` → **출력:** `9000`",
+  "starter_code": "price = int(input())\ndiscount = int(input())\n\n# 할인가를 계산해서 출력하세요\n",
+  "test_cases": [
+    { "input": "10000\n10", "expected_output": "9000", "description": "10000원 10% 할인" },
+    { "input": "5000\n20", "expected_output": "4000", "description": "5000원 20% 할인" },
+    { "input": "3000\n30", "expected_output": "2100", "description": "3000원 30% 할인" },
+    { "input": "1000\n0", "expected_output": "1000", "description": "할인 없음" }
+  ],
+  "hints": [
+    "할인가 = 원가 × (100 - 할인율) / 100",
+    "정수로 출력하려면 // 연산자를 사용하세요.",
+    "price * (100 - discount) // 100 을 계산해보세요."
+  ],
+  "expected_approaches": [
+    { "tag": "정수 나눗셈", "description": "price * (100 - discount) // 100으로 계산" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nprice = int(input())\ndiscount = int(input())\nresult = price * (100 - discount) // 100\nprint(result)\n```\n\n`//`를 사용하면 나눗셈 결과를 정수로 내림 처리해요!"
+}

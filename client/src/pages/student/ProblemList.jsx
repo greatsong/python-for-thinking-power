@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, ChevronDown, Code2, Loader2, CheckCircle2, Circle, Trophy, Lock } from 'lucide-react';
+import { BookOpen, ChevronRight, ChevronDown, Code2, Loader2, CheckCircle2, Circle, Trophy, Lock, ArrowUp } from 'lucide-react';
+import toast from 'react-hot-toast';
 import useProblemStore from '../../stores/problemStore.js';
 import useAuthStore from '../../stores/authStore.js';
 import CrestBadge from '../../components/CrestBadge.jsx';
@@ -19,10 +20,27 @@ const CATEGORY_EMOJI = {
 export default function ProblemList() {
   const navigate = useNavigate();
   const { problemSets, setsLoading, fetchProblemSets, fetchSetProgress, currentSetProgress, clearSetProgress } = useProblemStore();
-  const { user } = useAuthStore();
+  const { user, levelUp } = useAuthStore();
   const [openSetId, setOpenSetId] = useState(null);
   const [progressLoading, setProgressLoading] = useState(false);
   const [allProgress, setAllProgress] = useState({});
+  const [levelingUp, setLevelingUp] = useState(false);
+
+  const userLevel = user?.currentLevel || 1;
+
+  const handleLevelUp = async () => {
+    setLevelingUp(true);
+    try {
+      const result = await levelUp();
+      toast.success(result.message);
+      // 문제집 목록 새로고침
+      await fetchProblemSets();
+    } catch (err) {
+      toast.error(err.message || '레벨업에 실패했습니다');
+    } finally {
+      setLevelingUp(false);
+    }
+  };
 
   useEffect(() => {
     fetchProblemSets().then(async (sets) => {
@@ -39,7 +57,11 @@ export default function ProblemList() {
     });
   }, []);
 
-  const handleSetClick = async (setId) => {
+  const handleSetClick = async (setId, isLocked) => {
+    if (isLocked) {
+      toast.error('이전 레벨을 먼저 완료해야 합니다!');
+      return;
+    }
     if (openSetId === setId) {
       setOpenSetId(null);
       clearSetProgress();
@@ -119,22 +141,31 @@ export default function ProblemList() {
             const total = progress?.total ?? cachedProg?.total ?? pSet.problem_count;
             const isCompleted = progress?.completed ?? cachedProg?.completed ?? false;
             const pct = total > 0 ? Math.round((solved / total) * 100) : 0;
+            // 서버에서 받은 locked 값 사용 (없으면 setLevel 기반 계산)
+            const isSetLocked = pSet.locked ?? (userLevel < (pSet.set_level ?? pSet.sort_order + 1));
+            // 현재 레벨 문제집 (레벨업 가능 여부 확인용)
+            const isCurrentLevelSet = (pSet.set_level ?? pSet.sort_order + 1) === userLevel;
+            const canLevelUp = isCurrentLevelSet && isCompleted && userLevel < 5;
 
             return (
               <div
                 key={pSet.id}
-                className="bg-white rounded-xl border border-slate-200 overflow-hidden animate-fadeIn"
+                className={`bg-white rounded-xl border overflow-hidden animate-fadeIn ${
+                  isSetLocked ? 'border-slate-100 opacity-60' : 'border-slate-200'
+                }`}
                 style={{ animationDelay: `${index * 60}ms` }}
               >
                 {/* Set Header (클릭 가능) */}
                 <button
-                  onClick={() => handleSetClick(pSet.id)}
-                  className="w-full px-5 py-4 flex items-center gap-4 hover:bg-slate-50/80 transition-colors text-left"
+                  onClick={() => handleSetClick(pSet.id, isSetLocked)}
+                  className={`w-full px-5 py-4 flex items-center gap-4 transition-colors text-left ${
+                    isSetLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50/80'
+                  }`}
                 >
                   {/* Crest Badge */}
                   <CrestBadge
                     setId={pSet.id}
-                    solved={solved}
+                    solved={isSetLocked ? 0 : solved}
                     total={total}
                     size="sm"
                   />
@@ -142,38 +173,43 @@ export default function ProblemList() {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-slate-800 text-[15px]">
+                      <h3 className={`font-bold text-[15px] ${isSetLocked ? 'text-slate-400' : 'text-slate-800'}`}>
                         {pSet.title}
                       </h3>
-                      {isCompleted && (
+                      {isSetLocked && <Lock size={13} className="text-slate-400 shrink-0" />}
+                      {isCompleted && !isSetLocked && (
                         <Trophy size={16} className="text-amber-500 shrink-0" />
                       )}
                     </div>
                     <p className="text-sm text-slate-400 mt-0.5 truncate">
-                      {pSet.description}
+                      {isSetLocked ? `Lv.${pSet.set_level ?? pSet.sort_order + 1} 달성 시 해금` : pSet.description}
                     </p>
 
                     {/* Progress bar */}
-                    <div className="flex items-center gap-3 mt-2">
-                      <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{
-                            width: `${pct}%`,
-                            backgroundColor: isCompleted ? '#f59e0b' : pSet.color,
-                          }}
-                        />
+                    {!isSetLocked && (
+                      <div className="flex items-center gap-3 mt-2">
+                        <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{
+                              width: `${pct}%`,
+                              backgroundColor: isCompleted ? '#f59e0b' : pSet.color,
+                            }}
+                          />
+                        </div>
+                        <span className="text-xs font-semibold text-slate-500 shrink-0 w-16 text-right">
+                          {progress ? `${solved}/${total}` : `${total}문제`}
+                        </span>
                       </div>
-                      <span className="text-xs font-semibold text-slate-500 shrink-0 w-16 text-right">
-                        {progress ? `${solved}/${total}` : `${total}문제`}
-                      </span>
-                    </div>
+                    )}
                   </div>
 
                   {/* Arrow */}
-                  <div className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
-                    <ChevronDown size={18} className="text-slate-400" />
-                  </div>
+                  {!isSetLocked && (
+                    <div className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                      <ChevronDown size={18} className="text-slate-400" />
+                    </div>
+                  )}
                 </button>
 
                 {/* Expanded: Problem List */}
@@ -262,11 +298,23 @@ export default function ProblemList() {
 
                     {/* Completion Banner */}
                     {isCompleted && (
-                      <div className="px-5 py-3 bg-amber-50 border-t border-amber-100 flex items-center gap-2">
-                        <Trophy size={16} className="text-amber-500" />
-                        <span className="text-sm font-semibold text-amber-700">
-                          문제집 정복 완료!
-                        </span>
+                      <div className="px-5 py-3 bg-amber-50 border-t border-amber-100 flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <Trophy size={16} className="text-amber-500" />
+                          <span className="text-sm font-semibold text-amber-700">
+                            문제집 정복 완료!
+                          </span>
+                        </div>
+                        {canLevelUp && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleLevelUp(); }}
+                            disabled={levelingUp}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-semibold hover:bg-amber-600 disabled:opacity-50 transition-colors"
+                          >
+                            <ArrowUp size={13} />
+                            {levelingUp ? '레벨업 중...' : '레벨업!'}
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>

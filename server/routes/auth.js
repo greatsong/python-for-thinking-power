@@ -59,6 +59,7 @@ router.post('/google', asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
       avatarUrl: user.avatar_url,
+      currentLevel: user.current_level || 1,
     },
   });
 }));
@@ -75,6 +76,7 @@ router.get('/me', requireAuth, asyncHandler(async (req, res) => {
     email: user.email,
     role: user.role,
     avatarUrl: user.avatar_url,
+    currentLevel: user.current_level || 1,
   });
 }));
 
@@ -92,7 +94,53 @@ router.put('/profile', requireAuth, asyncHandler(async (req, res) => {
     email: user.email,
     role: user.role,
     avatarUrl: user.avatar_url,
+    currentLevel: user.current_level || 1,
   });
+}));
+
+// 레벨업 (학생이 현재 레벨을 모두 완료했을 때)
+router.post('/level-up', requireAuth, asyncHandler(async (req, res) => {
+  const user = queryOne('SELECT * FROM users WHERE id = ?', [req.user.id]);
+  if (!user) return res.status(404).json({ message: '사용자를 찾을 수 없습니다' });
+
+  const currentLevel = user.current_level || 1;
+  const MAX_LEVEL = 5;
+
+  if (currentLevel >= MAX_LEVEL) {
+    return res.status(400).json({ message: '이미 최고 레벨입니다!' });
+  }
+
+  // 현재 레벨의 문제집을 모두 풀었는지 확인
+  const currentSet = queryOne(
+    'SELECT * FROM problem_sets WHERE sort_order = ?',
+    [currentLevel - 1]
+  );
+
+  if (currentSet) {
+    const totalProblems = queryOne(
+      `SELECT COUNT(*) as cnt FROM problem_set_items psi
+       JOIN problems p ON p.id = psi.problem_id
+       WHERE psi.set_id = ? AND p.status = 'approved'`,
+      [currentSet.id]
+    );
+    const solvedProblems = queryOne(
+      `SELECT COUNT(DISTINCT s.problem_id) as cnt
+       FROM submissions s
+       JOIN problem_set_items psi ON psi.problem_id = s.problem_id
+       WHERE psi.set_id = ? AND s.user_id = ? AND s.passed = 1`,
+      [currentSet.id, req.user.id]
+    );
+    if (solvedProblems.cnt < totalProblems.cnt) {
+      return res.status(400).json({
+        message: `현재 레벨 문제를 모두 풀어야 레벨업할 수 있어요! (${solvedProblems.cnt}/${totalProblems.cnt})`,
+      });
+    }
+  }
+
+  const newLevel = currentLevel + 1;
+  execute('UPDATE users SET current_level = ? WHERE id = ?', [newLevel, req.user.id]);
+
+  res.json({ currentLevel: newLevel, message: `레벨 ${newLevel}로 올라갔어요! 🎉` });
 }));
 
 // 데모 로그인 (체험용)
@@ -125,6 +173,7 @@ router.post('/demo', asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
       avatarUrl: user.avatar_url,
+      currentLevel: user.current_level || 1,
     },
   });
 }));

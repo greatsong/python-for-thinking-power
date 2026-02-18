@@ -1,0 +1,22 @@
+{
+  "id": "lv1-12-celsius",
+  "title": "섭씨→화씨 변환",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 온도 변환 공식\n\n섭씨(°C)를 화씨(°F)로 바꾸는 공식이에요.\n\n$$°F = °C \\times \\frac{9}{5} + 32$$\n\n파이썬 코드:\n```python\nc = float(input())     # 소수점도 받을 수 있게 float\nf = c * 9 / 5 + 32\nprint(f\"{f:.1f}\")     # 소수점 1자리\n```\n\n---\n\n### 문제\n\n섭씨 온도를 입력받아 화씨 온도로 변환하여 소수점 첫째 자리까지 출력하세요.\n\n### 예시\n\n**입력:** `0` → **출력:** `32.0`  \n**입력:** `100` → **출력:** `212.0`  \n**입력:** `37` → **출력:** `98.6`",
+  "starter_code": "c = float(input())\n\n# 화씨로 변환해서 출력하세요\n# 공식: f = c * 9 / 5 + 32\n",
+  "test_cases": [
+    { "input": "0", "expected_output": "32.0", "description": "0°C = 32°F" },
+    { "input": "100", "expected_output": "212.0", "description": "100°C = 212°F" },
+    { "input": "37", "expected_output": "98.6", "description": "체온 37°C = 98.6°F" },
+    { "input": "-40", "expected_output": "-40.0", "description": "-40°C = -40°F" }
+  ],
+  "hints": [
+    "공식: f = c * 9 / 5 + 32",
+    "print(f\"{f:.1f}\")로 소수점 1자리로 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "변환 공식 적용", "description": "f = c * 9 / 5 + 32 계산 후 :.1f로 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nc = float(input())\nf = c * 9 / 5 + 32\nprint(f\"{f:.1f}\")\n```\n\n공식 `c * 9 / 5 + 32`를 계산하고 `:.1f`로 소수점 1자리 출력!"
+}

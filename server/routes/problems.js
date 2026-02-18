@@ -1,19 +1,25 @@
 import { Router } from 'express';
 import { queryAll, queryOne, execute, generateId } from '../db/database.js';
-import { requireAuth, requireTeacher } from '../middleware/auth.js';
+import { requireAuth, requireTeacher, optionalAuth } from '../middleware/auth.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { generateProblems, reviseProblem } from '../services/problemGenerator.js';
 
 const router = Router();
 
-// 문제집 목록 (학생용 - 진행률 포함)
-router.get('/sets', asyncHandler(async (req, res) => {
+// 문제집 목록 (학생용 - 레벨 잠금 포함)
+router.get('/sets', optionalAuth, asyncHandler(async (req, res) => {
   const sets = queryAll(
     `SELECT * FROM problem_sets ORDER BY sort_order ASC`
   );
 
+  // 로그인한 사용자의 현재 레벨 조회
+  let userLevel = 1;
+  if (req.user) {
+    const user = queryOne('SELECT current_level FROM users WHERE id = ?', [req.user.id]);
+    userLevel = user?.current_level || 1;
+  }
+
   const result = sets.map(s => {
-    // 문제집에 포함된 문제 수
     const items = queryAll(
       `SELECT psi.problem_id, p.title, p.difficulty, p.category
        FROM problem_set_items psi
@@ -23,9 +29,15 @@ router.get('/sets', asyncHandler(async (req, res) => {
       [s.id]
     );
 
+    // sort_order 0 = Lv1, sort_order 1 = Lv2, ...
+    const setLevel = s.sort_order + 1;
+    const isLocked = userLevel < setLevel;
+
     return {
       ...s,
       problem_count: items.length,
+      set_level: setLevel,
+      locked: isLocked,
       problems: items.map(i => ({
         id: i.problem_id,
         title: i.title,

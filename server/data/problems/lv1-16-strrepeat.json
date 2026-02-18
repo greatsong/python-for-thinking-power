@@ -1,0 +1,22 @@
+{
+  "id": "lv1-16-strrepeat",
+  "title": "문자열 반복",
+  "difficulty": 1,
+  "category": "string",
+  "description": "### 문자열 * 연산자\n\n파이썬에서 문자열에 `*` 연산자를 사용하면 반복할 수 있어요!\n\n```python\nprint(\"야\" * 3)   # 야야야\nprint(\"하하\" * 2)  # 하하하하\nprint(\"A\" * 5)    # AAAAA\n```\n\n---\n\n### 문제\n\n단어와 반복 횟수를 각각 입력받아 단어를 n번 반복해서 출력하세요.\n\n### 예시\n\n**입력:** `야 / 3` → **출력:** `야야야`  \n**입력:** `안녕 / 2` → **출력:** `안녕안녕`",
+  "starter_code": "word = input()\nn = int(input())\n\n# 단어를 n번 반복해서 출력하세요\n",
+  "test_cases": [
+    { "input": "야\n3", "expected_output": "야야야", "description": "야 × 3" },
+    { "input": "안녕\n2", "expected_output": "안녕안녕", "description": "안녕 × 2" },
+    { "input": "A\n5", "expected_output": "AAAAA", "description": "A × 5" },
+    { "input": "파이썬\n1", "expected_output": "파이썬", "description": "1번 반복" }
+  ],
+  "hints": [
+    "문자열 * 숫자 를 사용하면 문자열이 반복돼요.",
+    "print(word * n) 처럼 쓸 수 있어요!"
+  ],
+  "expected_approaches": [
+    { "tag": "문자열 * 연산", "description": "print(word * n)으로 반복 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nword = input()\nn = int(input())\nprint(word * n)\n```\n\n`\"야\" * 3` → `\"야야야\"` ! 문자열에 `*`을 쓰면 그 수만큼 반복돼요."
+}

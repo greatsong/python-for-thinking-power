@@ -1,0 +1,22 @@
+{
+  "id": "lv1-07-fullname",
+  "title": "이름 합치기",
+  "difficulty": 1,
+  "category": "output",
+  "description": "### 문자열 이어붙이기 (+)\n\n파이썬에서 문자열을 `+` 연산자로 이어붙일 수 있어요.\n\n```python\nfirst = \"김\"\nlast = \"철수\"\nprint(first + last)  # 김철수 출력\n```\n\n`input()`으로 입력을 받을 때는 문자열로 받아집니다.\n\n---\n\n### 문제\n\n성(姓)과 이름을 각각 한 줄씩 입력받아 붙여서 출력하세요.\n\n### 예시\n\n**입력:**\n```\n김\n철수\n```\n\n**출력:**\n```\n김철수\n```",
+  "starter_code": "성 = input()\n이름 = input()\n\n# 성과 이름을 합쳐서 출력하세요\n",
+  "test_cases": [
+    { "input": "김\n철수", "expected_output": "김철수", "description": "성+이름 합치기" },
+    { "input": "이\n영희", "expected_output": "이영희", "description": "다른 이름" },
+    { "input": "박\n지훈", "expected_output": "박지훈", "description": "세 번째 테스트" }
+  ],
+  "hints": [
+    "+ 연산자로 문자열을 이어붙일 수 있어요.",
+    "print(성 + 이름) 처럼 쓰면 됩니다!"
+  ],
+  "expected_approaches": [
+    { "tag": "문자열 + 연산", "description": "print(성 + 이름)으로 직접 이어붙이기" },
+    { "tag": "f-string", "description": "print(f\"{성}{이름}\")으로 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\n성 = input()\n이름 = input()\nprint(성 + 이름)\n```\n\n`+` 연산자는 문자열을 이어붙여요. `\"김\" + \"철수\"` → `\"김철수\"`"
+}

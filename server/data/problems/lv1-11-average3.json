@@ -1,0 +1,22 @@
+{
+  "id": "lv1-11-average3",
+  "title": "세 수의 평균",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 평균 구하기\n\n평균 = (모든 수의 합) ÷ (수의 개수)\n\n파이썬에서 나눗셈은 `/` 기호예요.\n소수점 한 자리로 출력하려면 f-string의 `:.1f`를 사용해요.\n\n```python\na = int(input())\nb = int(input())\nc = int(input())\navg = (a + b + c) / 3\nprint(f\"{avg:.1f}\")  # 소수점 1자리로 출력\n```\n\n---\n\n### 문제\n\n정수 세 개를 각각 한 줄씩 입력받아 평균을 소수점 첫째 자리까지 출력하세요.\n\n### 예시\n\n**입력:** `3 / 6 / 9` → **출력:** `6.0`  \n**입력:** `1 / 2 / 3` → **출력:** `2.0`",
+  "starter_code": "a = int(input())\nb = int(input())\nc = int(input())\n\n# 평균을 소수점 1자리로 출력하세요\n",
+  "test_cases": [
+    { "input": "3\n6\n9", "expected_output": "6.0", "description": "평균 6.0" },
+    { "input": "1\n2\n3", "expected_output": "2.0", "description": "평균 2.0" },
+    { "input": "10\n20\n30", "expected_output": "20.0", "description": "평균 20.0" },
+    { "input": "1\n2\n4", "expected_output": "2.3", "description": "소수점 있는 평균" }
+  ],
+  "hints": [
+    "평균은 (a + b + c) / 3 이에요.",
+    "print(f\"{avg:.1f}\") 처럼 :.1f를 사용하면 소수점 1자리로 출력돼요."
+  ],
+  "expected_approaches": [
+    { "tag": "f-string :.1f", "description": "print(f\"{(a+b+c)/3:.1f}\")로 소수점 1자리 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\na = int(input())\nb = int(input())\nc = int(input())\nprint(f\"{(a+b+c)/3:.1f}\")\n```\n\n`:.1f`는 소수점 첫째 자리까지 출력하는 형식이에요. 평균이 정수여도 `.0`이 붙어요!"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "lv1-06-multiprint",
+  "title": "여러 줄 출력",
+  "difficulty": 1,
+  "category": "output",
+  "description": "### 여러 줄 출력하기\n\n`print()` 함수를 여러 번 사용하면 여러 줄을 출력할 수 있어요.\n`print()`는 출력 후 자동으로 줄 바꿈을 해줍니다.\n\n```python\nprint(\"첫째 줄\")\nprint(\"둘째 줄\")\nprint(\"셋째 줄\")\n```\n\n---\n\n### 문제\n\n아래 내용을 정확히 3줄로 출력하세요.\n\n```\n파이썬\n재미있다\n최고야\n```",
+  "starter_code": "# 세 줄을 출력하세요\n",
+  "test_cases": [
+    { "input": "", "expected_output": "파이썬\n재미있다\n최고야", "description": "3줄 정확히 출력" }
+  ],
+  "hints": [
+    "print()를 세 번 사용하세요.",
+    "print(\"파이썬\"), print(\"재미있다\"), print(\"최고야\") 순서로 작성하면 됩니다!"
+  ],
+  "expected_approaches": [
+    { "tag": "print 3번", "description": "print()를 3번 사용해 각 줄 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nprint(\"파이썬\")\nprint(\"재미있다\")\nprint(\"최고야\")\n```\n\n`print()`는 한 줄씩 출력하고 자동으로 줄 바꿈을 해줘요!"
+}

@@ -40,6 +40,7 @@ export async function initDatabase() {
   // 마이그레이션: 새 컬럼 추가 (기존 DB 호환)
   try { db.run('ALTER TABLE submissions ADD COLUMN reflection TEXT'); } catch {}
   try { db.run('ALTER TABLE problems ADD COLUMN explanation TEXT'); } catch {}
+  try { db.run('ALTER TABLE users ADD COLUMN current_level INT DEFAULT 1'); } catch {}
 
   // 성능 최적화
   db.run('PRAGMA foreign_keys=ON');

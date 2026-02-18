@@ -1,0 +1,21 @@
+{
+  "id": "lv1-17-fstring",
+  "title": "이름과 나이",
+  "difficulty": 1,
+  "category": "string",
+  "description": "### f-string으로 서식 출력\n\nf-string을 사용하면 변수를 문자열 안에 깔끔하게 넣을 수 있어요.\n\n```python\nname = \"홍길동\"\nage = 15\nprint(f\"저는 {name}이고, {age}살입니다.\")\n# 출력: 저는 홍길동이고, 15살입니다.\n```\n\n문자열 앞에 `f`를 붙이고 중괄호 `{}` 안에 변수를 넣으면 돼요!\n\n---\n\n### 문제\n\n이름과 나이를 입력받아 아래 형식으로 출력하세요.\n\n`저는 [이름]이고, [나이]살입니다.`",
+  "starter_code": "name = input()\nage = int(input())\n\n# f-string을 사용해서 출력하세요\n",
+  "test_cases": [
+    { "input": "홍길동\n15", "expected_output": "저는 홍길동이고, 15살입니다.", "description": "홍길동 15살" },
+    { "input": "김영희\n12", "expected_output": "저는 김영희이고, 12살입니다.", "description": "김영희 12살" },
+    { "input": "이순신\n30", "expected_output": "저는 이순신이고, 30살입니다.", "description": "이순신 30살" }
+  ],
+  "hints": [
+    "f-string 형식: print(f\"저는 {name}이고, {age}살입니다.\")",
+    "문자열 앞에 f를 붙이고, 변수는 {} 안에 넣으세요."
+  ],
+  "expected_approaches": [
+    { "tag": "f-string", "description": "f\"저는 {name}이고, {age}살입니다.\"로 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nname = input()\nage = int(input())\nprint(f\"저는 {name}이고, {age}살입니다.\")\n```\n\nf-string은 문자열 안에 변수를 직접 넣을 수 있는 강력한 기능이에요!"
+}

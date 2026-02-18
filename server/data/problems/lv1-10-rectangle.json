@@ -1,0 +1,22 @@
+{
+  "id": "lv1-10-rectangle",
+  "title": "직사각형 넓이",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 곱셈으로 넓이 구하기\n\n직사각형의 넓이 = 가로 × 세로\n\n파이썬에서 곱셈은 `*` 기호를 사용해요.\n\n```python\nwidth = int(input())\nheight = int(input())\narea = width * height\nprint(area)\n```\n\n---\n\n### 문제\n\n직사각형의 가로와 세로를 각각 한 줄씩 입력받아 넓이를 출력하세요.\n\n### 예시\n\n**입력:**\n```\n4\n5\n```\n**출력:** `20`",
+  "starter_code": "width = int(input())\nheight = int(input())\n\n# 넓이를 계산해서 출력하세요\n",
+  "test_cases": [
+    { "input": "4\n5", "expected_output": "20", "description": "4×5=20" },
+    { "input": "7\n3", "expected_output": "21", "description": "7×3=21" },
+    { "input": "10\n10", "expected_output": "100", "description": "10×10=100" },
+    { "input": "1\n8", "expected_output": "8", "description": "1×8=8" }
+  ],
+  "hints": [
+    "넓이 = 가로 × 세로 공식을 사용하세요.",
+    "파이썬에서 곱셈은 * 기호예요. print(width * height)로 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "곱셈 연산", "description": "print(width * height)로 넓이 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nwidth = int(input())\nheight = int(input())\nprint(width * height)\n```\n\n가로와 세로를 곱하면 직사각형의 넓이를 구할 수 있어요!"
+}

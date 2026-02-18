@@ -58,19 +58,12 @@ async function seed() {
 }
 
 function seedProblemSets() {
-  // 이미 있으면 스킵
-  const existing = queryOne("SELECT id FROM problem_sets WHERE id = 'set-lv1-beginner'");
-  if (existing) {
-    console.log('[Seed] 문제집 이미 존재 — 스킵');
-    return;
-  }
-
   const sets = [
     {
       id: 'set-lv1-beginner',
-      title: 'Lv.1 입문자',
-      description: '파이썬 첫걸음! print, input, 기초 연산을 배워요.',
-      emoji: '🌱',
+      title: 'Lv.1 병아리반 🐣',
+      description: '파이썬 첫걸음! print, input, 변수, 기초 연산을 배워요.',
+      emoji: '🐣',
       color: '#22c55e',
       sort_order: 0,
       problemIds: [
@@ -79,6 +72,21 @@ function seedProblemSets() {
         'beginner-03-calculator',
         'beginner-04-circle',
         'beginner-05-evenodd',
+        'lv1-06-multiprint',
+        'lv1-07-fullname',
+        'lv1-08-age',
+        'lv1-09-twosum',
+        'lv1-10-rectangle',
+        'lv1-11-average3',
+        'lv1-12-celsius',
+        'lv1-13-minutes',
+        'lv1-14-triangle',
+        'lv1-15-discount',
+        'lv1-16-strrepeat',
+        'lv1-17-fstring',
+        'lv1-18-positive',
+        'lv1-19-bigger',
+        'lv1-20-leap',
       ],
     },
     {
@@ -148,15 +156,30 @@ function seedProblemSets() {
     },
   ];
 
-  for (const s of sets) {
-    execute(
-      `INSERT INTO problem_sets (id, title, description, emoji, color, sort_order)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [s.id, s.title, s.description, s.emoji, s.color, s.sort_order]
-    );
+  let createdCount = 0;
+  let updatedCount = 0;
 
+  for (const s of sets) {
+    const existing = queryOne('SELECT id FROM problem_sets WHERE id = ?', [s.id]);
+    if (!existing) {
+      execute(
+        `INSERT INTO problem_sets (id, title, description, emoji, color, sort_order)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [s.id, s.title, s.description, s.emoji, s.color, s.sort_order]
+      );
+      createdCount++;
+    } else {
+      // 제목/설명 업데이트 (병아리반 등 이름 변경 반영)
+      execute(
+        `UPDATE problem_sets SET title = ?, description = ?, emoji = ?, color = ?
+         WHERE id = ?`,
+        [s.title, s.description, s.emoji, s.color, s.id]
+      );
+      updatedCount++;
+    }
+
+    // 문제 아이템 추가 (이미 있는 건 IGNORE)
     for (let i = 0; i < s.problemIds.length; i++) {
-      // 문제가 실제로 존재하는지 확인
       const prob = queryOne('SELECT id FROM problems WHERE id = ?', [s.problemIds[i]]);
       if (prob) {
         execute(
@@ -168,7 +191,7 @@ function seedProblemSets() {
     }
   }
 
-  console.log(`[Seed] 문제집 ${sets.length}개 생성`);
+  console.log(`[Seed] 문제집 ${createdCount}개 생성, ${updatedCount}개 업데이트`);
 }
 
 async function seedDemoData() {

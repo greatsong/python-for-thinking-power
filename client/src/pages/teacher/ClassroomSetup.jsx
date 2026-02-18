@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client.js';
-import { Plus, Copy, Users, Check, School, Hash, Key, CheckCircle, AlertCircle, Trash2, Pencil } from 'lucide-react';
+import { Plus, Copy, Users, Check, School, Hash, Key, CheckCircle, AlertCircle, Trash2, Pencil, ChevronUp, ChevronDown as ChevronDownIcon } from 'lucide-react';
 
 export default function ClassroomSetup() {
   const [classrooms, setClassrooms] = useState([]);
@@ -170,6 +170,24 @@ export default function ClassroomSetup() {
       await fetchClassrooms();
     } catch (err) {
       alert('학생 내보내기 실패: ' + err.message);
+    }
+  };
+
+  // 학생 레벨 조정
+  const handleSetLevel = async (student, delta) => {
+    const currentLevel = student.current_level || 1;
+    const newLevel = Math.max(1, Math.min(5, currentLevel + delta));
+    if (newLevel === currentLevel) return;
+    try {
+      await apiFetch(`/classrooms/${selectedClassroom.id}/members/${student.id}/level`, {
+        method: 'PUT',
+        body: JSON.stringify({ level: newLevel }),
+      });
+      setStudents((prev) =>
+        prev.map((s) => s.id === student.id ? { ...s, current_level: newLevel } : s)
+      );
+    } catch (err) {
+      alert('레벨 변경 실패: ' + err.message);
     }
   };
 
@@ -348,6 +366,7 @@ export default function ClassroomSetup() {
                             <th className="pb-2 pr-4 w-28">번호</th>
                             <th className="pb-2 pr-4">이름</th>
                             <th className="pb-2 pr-4">이메일</th>
+                            <th className="pb-2 pr-3 w-24">레벨</th>
                             <th className="pb-2 pr-4">참여일</th>
                             <th className="pb-2 w-12"></th>
                           </tr>
@@ -396,8 +415,40 @@ export default function ClassroomSetup() {
                                 )}
                               </td>
                               <td className="py-2 pr-4 font-medium text-slate-800">{student.name}</td>
-                              <td className="py-2 pr-4 text-slate-500">{student.email}</td>
-                              <td className="py-2 pr-4 text-slate-500">
+                              <td className="py-2 pr-4 text-slate-500 text-xs">{student.email}</td>
+                              {/* 레벨 조정 */}
+                              <td className="py-2 pr-3">
+                                <div className="flex items-center gap-1">
+                                  <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${
+                                    (student.current_level || 1) === 1 ? 'bg-green-100 text-green-700' :
+                                    (student.current_level || 1) === 2 ? 'bg-blue-100 text-blue-700' :
+                                    (student.current_level || 1) === 3 ? 'bg-yellow-100 text-yellow-700' :
+                                    (student.current_level || 1) === 4 ? 'bg-orange-100 text-orange-700' :
+                                    'bg-red-100 text-red-700'
+                                  }`}>
+                                    Lv.{student.current_level || 1}
+                                  </span>
+                                  <div className="flex flex-col">
+                                    <button
+                                      onClick={() => handleSetLevel(student, 1)}
+                                      disabled={(student.current_level || 1) >= 5}
+                                      className="p-0.5 text-slate-400 hover:text-blue-500 disabled:opacity-30 transition-colors"
+                                      title="레벨 올리기"
+                                    >
+                                      <ChevronUp size={10} />
+                                    </button>
+                                    <button
+                                      onClick={() => handleSetLevel(student, -1)}
+                                      disabled={(student.current_level || 1) <= 1}
+                                      className="p-0.5 text-slate-400 hover:text-orange-500 disabled:opacity-30 transition-colors"
+                                      title="레벨 내리기"
+                                    >
+                                      <ChevronDownIcon size={10} />
+                                    </button>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="py-2 pr-4 text-slate-500 text-xs">
                                 {new Date(student.joined_at).toLocaleDateString('ko-KR')}
                               </td>
                               <td className="py-2">

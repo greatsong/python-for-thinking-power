@@ -147,7 +147,9 @@ router.delete('/:id', requireAuth, requireTeacher, asyncHandler(async (req, res)
 // 교실 학생 목록 (교사 전용)
 router.get('/:id/students', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   const students = queryAll(
-    `SELECT u.id, u.name, u.email, u.avatar_url, cm.student_number, cm.joined_at
+    `SELECT u.id, u.name, u.email, u.avatar_url,
+            COALESCE(u.current_level, 1) as current_level,
+            cm.student_number, cm.joined_at
      FROM classroom_members cm
      JOIN users u ON u.id = cm.user_id
      WHERE cm.classroom_id = ?
@@ -155,6 +157,36 @@ router.get('/:id/students', requireAuth, requireTeacher, asyncHandler(async (req
     [req.params.id]
   );
   res.json(students);
+}));
+
+// 학생 레벨 조정 (교사 전용)
+router.put('/:id/members/:userId/level', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
+  const { level } = req.body;
+  const newLevel = parseInt(level, 10);
+
+  if (!newLevel || newLevel < 1 || newLevel > 5) {
+    return res.status(400).json({ message: '레벨은 1~5 사이여야 합니다' });
+  }
+
+  // 교사가 이 교실의 담당자인지 확인
+  const classroom = queryOne(
+    'SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?',
+    [req.params.id, req.user.id]
+  );
+  if (!classroom) {
+    return res.status(403).json({ message: '권한이 없습니다' });
+  }
+
+  const member = queryOne(
+    'SELECT * FROM classroom_members WHERE classroom_id = ? AND user_id = ?',
+    [req.params.id, req.params.userId]
+  );
+  if (!member) {
+    return res.status(404).json({ message: '학생을 찾을 수 없습니다' });
+  }
+
+  execute('UPDATE users SET current_level = ? WHERE id = ?', [newLevel, req.params.userId]);
+  res.json({ message: `레벨이 ${newLevel}로 변경되었습니다` });
 }));
 
 // 학번 수정 (교사 또는 본인)

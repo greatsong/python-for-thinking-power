@@ -1,0 +1,22 @@
+{
+  "id": "lv1-14-triangle",
+  "title": "삼각형 넓이",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 삼각형 넓이 공식\n\n삼각형 넓이 = 밑변 × 높이 ÷ 2\n\n```python\nbase = int(input())\nheight = int(input())\narea = base * height / 2\nprint(f\"{area:.1f}\")\n```\n\n---\n\n### 문제\n\n밑변과 높이를 각각 입력받아 삼각형의 넓이를 소수점 첫째 자리까지 출력하세요.\n\n### 예시\n\n**입력:** `4 / 6` → **출력:** `12.0`  \n**입력:** `3 / 5` → **출력:** `7.5`",
+  "starter_code": "base = int(input())\nheight = int(input())\n\n# 삼각형 넓이를 계산해서 출력하세요\n",
+  "test_cases": [
+    { "input": "4\n6", "expected_output": "12.0", "description": "4×6÷2=12" },
+    { "input": "3\n5", "expected_output": "7.5", "description": "3×5÷2=7.5" },
+    { "input": "10\n4", "expected_output": "20.0", "description": "10×4÷2=20" },
+    { "input": "7\n3", "expected_output": "10.5", "description": "7×3÷2=10.5" }
+  ],
+  "hints": [
+    "삼각형 넓이 = 밑변 × 높이 / 2",
+    "print(f\"{area:.1f}\")로 소수점 1자리로 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "넓이 공식", "description": "base * height / 2 계산 후 :.1f로 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nbase = int(input())\nheight = int(input())\narea = base * height / 2\nprint(f\"{area:.1f}\")\n```\n\n삼각형 넓이 공식을 직접 적용하면 돼요!"
+}

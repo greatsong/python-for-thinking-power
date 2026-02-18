@@ -1,0 +1,25 @@
+{
+  "id": "lv1-20-leap",
+  "title": "윤년 판별",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 윤년 규칙\n\n윤년은 다음 규칙을 따라요.\n\n1. **4의 배수** 이면서\n2. **100의 배수가 아닌** 해 (또는)\n3. **400의 배수** 인 해\n\n```python\nyear = int(input())\nif (year % 4 == 0 and year % 100 != 0) or year % 400 == 0:\n    print(\"윤년\")\nelse:\n    print(\"평년\")\n```\n\n---\n\n### 문제\n\n연도를 입력받아 윤년이면 `윤년`, 아니면 `평년`을 출력하세요.\n\n### 예시\n\n- 2024: 4의 배수, 100의 배수 아님 → **윤년**  \n- 1900: 4의 배수, 100의 배수, 400의 배수 아님 → **평년**  \n- 2000: 400의 배수 → **윤년**",
+  "starter_code": "year = int(input())\n\n# 윤년인지 평년인지 판별하세요\n",
+  "test_cases": [
+    { "input": "2024", "expected_output": "윤년", "description": "2024 윤년" },
+    { "input": "2023", "expected_output": "평년", "description": "2023 평년" },
+    { "input": "2000", "expected_output": "윤년", "description": "2000 윤년 (400의 배수)" },
+    { "input": "1900", "expected_output": "평년", "description": "1900 평년 (100의 배수이지만 400은 아님)" },
+    { "input": "2100", "expected_output": "평년", "description": "2100 평년" }
+  ],
+  "hints": [
+    "4의 배수인지: year % 4 == 0",
+    "100의 배수가 아닌지: year % 100 != 0",
+    "400의 배수인지: year % 400 == 0",
+    "규칙: (4의 배수 and 100의 배수 아님) or 400의 배수"
+  ],
+  "expected_approaches": [
+    { "tag": "복합 조건", "description": "(year % 4 == 0 and year % 100 != 0) or year % 400 == 0" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nyear = int(input())\nif (year % 4 == 0 and year % 100 != 0) or year % 400 == 0:\n    print(\"윤년\")\nelse:\n    print(\"평년\")\n```\n\n윤년 규칙 세 가지를 `and`, `or`, `!=`로 표현했어요!"
+}

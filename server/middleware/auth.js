@@ -32,3 +32,17 @@ export function requireTeacher(req, res, next) {
   }
   next();
 }
+
+// 로그인 선택 (토큰 있으면 req.user 설정, 없어도 통과)
+export function optionalAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return next();
+  }
+  try {
+    const token = authHeader.slice(7);
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+  } catch { /* 토큰 오류는 무시 */ }
+  next();
+}

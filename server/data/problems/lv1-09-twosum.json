@@ -1,0 +1,22 @@
+{
+  "id": "lv1-09-twosum",
+  "title": "두 수의 합",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 두 수 더하기\n\n두 정수를 입력받아 더하는 방법이에요.\n\n```python\na = int(input())  # 첫 번째 수\nb = int(input())  # 두 번째 수\nprint(a + b)      # 합계 출력\n```\n\n두 수를 따로따로 입력받는다는 점에 주의하세요!\n\n---\n\n### 문제\n\n정수 두 개를 각각 한 줄씩 입력받아 합을 출력하세요.\n\n### 예시\n\n**입력:**\n```\n3\n5\n```\n**출력:** `8`",
+  "starter_code": "a = int(input())\nb = int(input())\n\n# 두 수의 합을 출력하세요\n",
+  "test_cases": [
+    { "input": "3\n5", "expected_output": "8", "description": "양수 두 개 합" },
+    { "input": "10\n-3", "expected_output": "7", "description": "양수와 음수 합" },
+    { "input": "0\n0", "expected_output": "0", "description": "0+0" },
+    { "input": "100\n200", "expected_output": "300", "description": "큰 수 합" }
+  ],
+  "hints": [
+    "int(input())으로 정수를 입력받을 수 있어요.",
+    "print(a + b)로 두 수의 합을 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "덧셈 연산", "description": "print(a + b)로 합 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\na = int(input())\nb = int(input())\nprint(a + b)\n```\n\n두 수를 따로 입력받아 `+`로 더한 후 출력해요!"
+}

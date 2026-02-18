@@ -1,0 +1,22 @@
+{
+  "id": "lv1-08-age",
+  "title": "나이 계산",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### int()로 숫자 변환하기\n\n`input()`으로 입력받은 값은 문자열이라서 계산하려면 `int()`로 정수로 바꿔야 해요.\n\n```python\nyear = int(input())  # 문자열 → 정수로 변환\nage = 2025 - year   # 뺄셈 계산\nprint(age)          # 결과 출력\n```\n\n---\n\n### 문제\n\n태어난 연도를 입력받아 2025년 기준 나이를 출력하세요.\n\n### 예시\n\n**입력:** `2010`  \n**출력:** `15`\n\n**입력:** `2000`  \n**출력:** `25`",
+  "starter_code": "year = int(input())\n\n# 2025 - year를 계산해서 출력하세요\n",
+  "test_cases": [
+    { "input": "2010", "expected_output": "15", "description": "2010년생 나이" },
+    { "input": "2000", "expected_output": "25", "description": "2000년생 나이" },
+    { "input": "2015", "expected_output": "10", "description": "2015년생 나이" },
+    { "input": "1990", "expected_output": "35", "description": "1990년생 나이" }
+  ],
+  "hints": [
+    "input()으로 받은 값은 문자열이에요. int()로 정수로 바꿔야 계산할 수 있어요.",
+    "2025 - year 를 계산해서 print()로 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "뺄셈 계산", "description": "print(2025 - year)로 나이 계산 후 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nyear = int(input())\nprint(2025 - year)\n```\n\n`int(input())`으로 연도를 정수로 받고, `2025 - year`로 나이를 계산해요!"
+}

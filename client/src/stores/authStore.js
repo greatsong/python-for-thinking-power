@@ -98,6 +98,21 @@ const useAuthStore = create((set, get) => ({
     return classroom;
   },
 
+  // 레벨업 (현재 레벨 문제집 완료 시)
+  levelUp: async () => {
+    const result = await apiFetch('/auth/level-up', { method: 'POST' });
+    set((state) => ({ user: state.user ? { ...state.user, currentLevel: result.currentLevel } : state.user }));
+    return result;
+  },
+
+  // 교사가 학생 레벨 조정
+  setStudentLevel: async (classroomId, userId, level) => {
+    await apiFetch(`/classrooms/${classroomId}/members/${userId}/level`, {
+      method: 'PUT',
+      body: JSON.stringify({ level }),
+    });
+  },
+
   // 교실 나가기 (다른 교실 입장 전)
   leaveClassroom: () => {
     localStorage.removeItem('classroom');

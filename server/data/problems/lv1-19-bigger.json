@@ -1,0 +1,23 @@
+{
+  "id": "lv1-19-bigger",
+  "title": "두 수 중 큰 수",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 두 수 비교하기\n\n두 수를 비교해서 큰 쪽을 출력하는 방법이에요.\n\n```python\na = int(input())\nb = int(input())\nif a >= b:\n    print(a)\nelse:\n    print(b)\n```\n\n또는 `max()` 함수를 사용할 수도 있어요.\n```python\nprint(max(a, b))\n```\n\n---\n\n### 문제\n\n두 정수를 입력받아 더 큰 수를 출력하세요. (같으면 첫 번째 수를 출력)\n\n### 예시\n\n**입력:** `5 / 3` → **출력:** `5`  \n**입력:** `2 / 8` → **출력:** `8`",
+  "starter_code": "a = int(input())\nb = int(input())\n\n# 더 큰 수를 출력하세요\n",
+  "test_cases": [
+    { "input": "5\n3", "expected_output": "5", "description": "5가 크다" },
+    { "input": "2\n8", "expected_output": "8", "description": "8이 크다" },
+    { "input": "7\n7", "expected_output": "7", "description": "같을 때" },
+    { "input": "-1\n-5", "expected_output": "-1", "description": "음수 비교" }
+  ],
+  "hints": [
+    "if a >= b: print(a) else: print(b) 로 비교하세요.",
+    "또는 print(max(a, b))를 사용해도 돼요!"
+  ],
+  "expected_approaches": [
+    { "tag": "if/else 비교", "description": "if a >= b: print(a) else: print(b)" },
+    { "tag": "max() 함수", "description": "print(max(a, b))로 최댓값 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n**방법 1: if/else**\n```python\na = int(input())\nb = int(input())\nif a >= b:\n    print(a)\nelse:\n    print(b)\n```\n\n**방법 2: max() 함수**\n```python\na = int(input())\nb = int(input())\nprint(max(a, b))\n```\n\n`max()` 함수는 여러 값 중 가장 큰 값을 반환해요!"
+}

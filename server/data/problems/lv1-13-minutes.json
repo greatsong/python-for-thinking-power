@@ -1,0 +1,23 @@
+{
+  "id": "lv1-13-minutes",
+  "title": "분 변환",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 몫과 나머지 연산\n\n파이썬에서 `//`는 정수 나눗셈(몫), `%`는 나머지예요.\n\n```python\n총분 = 90\n시간 = 총분 // 60   # 90 // 60 = 1\n분 = 총분 % 60     # 90 % 60 = 30\nprint(f\"{시간}시간 {분}분\")  # 1시간 30분\n```\n\n---\n\n### 문제\n\n총 분(minute)을 입력받아 `X시간 Y분` 형식으로 출력하세요.\n\n### 예시\n\n**입력:** `90` → **출력:** `1시간 30분`  \n**입력:** `150` → **출력:** `2시간 30분`  \n**입력:** `60` → **출력:** `1시간 0분`",
+  "starter_code": "total = int(input())\n\n# 시간과 분을 계산해서 출력하세요\n",
+  "test_cases": [
+    { "input": "90", "expected_output": "1시간 30분", "description": "90분 = 1시간 30분" },
+    { "input": "150", "expected_output": "2시간 30분", "description": "150분 = 2시간 30분" },
+    { "input": "60", "expected_output": "1시간 0분", "description": "60분 = 1시간 0분" },
+    { "input": "45", "expected_output": "0시간 45분", "description": "45분 = 0시간 45분" }
+  ],
+  "hints": [
+    "시간 = total // 60 (정수 나눗셈)",
+    "분 = total % 60 (나머지 연산)",
+    "print(f\"{시간}시간 {분}분\") 형식으로 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "몫과 나머지", "description": "// 로 시간, % 로 분을 구해 f-string 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\ntotal = int(input())\nhour = total // 60\nminute = total % 60\nprint(f\"{hour}시간 {minute}분\")\n```\n\n`//`는 나눗셈의 몫, `%`는 나머지예요!"
+}
