@@ -139,6 +139,20 @@ router.get('/library/all', requireAuth, requireTeacher, asyncHandler(async (req,
   res.json(parsed);
 }));
 
+// 교실에 할당된 문제 목록 — 주의: /:id 보다 위에 있어야 함
+router.get('/classroom/:classroomId', requireAuth, asyncHandler(async (req, res) => {
+  const problems = queryAll(
+    `SELECT p.id, p.title, p.difficulty, p.category, p.description,
+            cp.ai_level, cp.gallery_enabled, cp.is_active, cp.sort_order
+     FROM classroom_problems cp
+     JOIN problems p ON p.id = cp.problem_id
+     WHERE cp.classroom_id = ? AND cp.is_active = 1
+     ORDER BY cp.sort_order ASC`,
+    [req.params.classroomId]
+  );
+  res.json(problems);
+}));
+
 // 문제 상세
 router.get('/:id', asyncHandler(async (req, res) => {
   const problem = queryOne(
@@ -159,20 +173,6 @@ router.get('/:id', asyncHandler(async (req, res) => {
   delete problem.expected_approaches_json;
 
   res.json(problem);
-}));
-
-// 교실에 할당된 문제 목록
-router.get('/classroom/:classroomId', asyncHandler(async (req, res) => {
-  const problems = queryAll(
-    `SELECT p.id, p.title, p.difficulty, p.category, p.description,
-            cp.ai_level, cp.gallery_enabled, cp.is_active, cp.sort_order
-     FROM classroom_problems cp
-     JOIN problems p ON p.id = cp.problem_id
-     WHERE cp.classroom_id = ? AND cp.is_active = 1
-     ORDER BY cp.sort_order ASC`,
-    [req.params.classroomId]
-  );
-  res.json(problems);
 }));
 
 // AI로 문제 생성 (교사 전용)

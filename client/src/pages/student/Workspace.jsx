@@ -75,20 +75,25 @@ export default function Workspace() {
   }, [code, saveSnapshot]);
 
   // 키보드 단축키: Ctrl+Enter(실행), Ctrl+Shift+Enter(테스트)
+  const handleRunRef = useRef(handleRun);
+  const handleRunTestsRef = useRef(handleRunTests);
+  handleRunRef.current = handleRun;
+  handleRunTestsRef.current = handleRunTests;
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         if (e.shiftKey) {
-          handleRunTests();
+          handleRunTestsRef.current();
         } else {
-          handleRun();
+          handleRunRef.current();
         }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  });
+  }, []);
 
   const handleRun = async () => {
     if (!pyodideReady) {

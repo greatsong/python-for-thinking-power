@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import useAuthStore from '../stores/authStore.js';
 
@@ -11,15 +11,8 @@ export default function JoinClassroom() {
   const [loading, setLoading] = useState(false);
 
   // 이미 교실에 참여했으면 바로 이동
-  if (classroom) {
-    navigate('/student/problems', { replace: true });
-    return null;
-  }
-
-  if (!user) {
-    navigate('/', { replace: true });
-    return null;
-  }
+  if (classroom) return <Navigate to="/student/problems" replace />;
+  if (!user) return <Navigate to="/" replace />;
 
   const handleJoin = async () => {
     if (!joinCode.trim()) {

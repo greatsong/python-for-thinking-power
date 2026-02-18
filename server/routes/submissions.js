@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, requireTeacher } from '../middleware/auth.js';
 import { queryAll, queryOne, execute, generateId } from '../db/database.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
@@ -90,7 +90,7 @@ router.post('/:id/reflection', requireAuth, asyncHandler(async (req, res) => {
 }));
 
 // 교실별 학생 소감 목록 (교사용)
-router.get('/reflections/:classroomId', requireAuth, asyncHandler(async (req, res) => {
+router.get('/reflections/:classroomId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   const reflections = queryAll(
     `SELECT s.id, s.reflection, s.submitted_at, s.passed,
             u.name as student_name, u.id as student_id,

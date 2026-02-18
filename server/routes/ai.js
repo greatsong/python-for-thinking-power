@@ -145,7 +145,7 @@ router.get('/conversations', requireAuth, asyncHandler(async (req, res) => {
 }));
 
 // 대화 요약 생성 (교사용)
-router.post('/summarize/:conversationId', requireAuth, asyncHandler(async (req, res) => {
+router.post('/summarize/:conversationId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   const conv = queryOne('SELECT * FROM ai_conversations WHERE id = ?', [req.params.conversationId]);
   if (!conv) {
     return res.status(404).json({ message: '대화를 찾을 수 없습니다' });
