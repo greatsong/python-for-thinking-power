@@ -1,0 +1,22 @@
+{
+  "id": "lv1-22-bmi",
+  "title": "BMI 계산",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 체질량지수(BMI) 계산\n\nBMI = 몸무게(kg) ÷ 키(m)²\n\n키를 cm로 입력받으면 100으로 나눠서 m 단위로 변환해야 해요.\n\n```python\nweight = float(input())  # kg\nheight = float(input())  # cm\nbmi = weight / (height / 100) ** 2\nprint(f\"{bmi:.1f}\")\n```\n\n`**` 연산자는 거듭제곱이에요. `2 ** 3 = 8`\n\n---\n\n### 문제\n\n몸무게(kg)와 키(cm)를 입력받아 BMI를 소수점 첫째 자리까지 출력하세요.\n\n### 예시\n\n**입력:** `70 / 170` → **출력:** `24.2`",
+  "starter_code": "weight = float(input())  # kg\nheight = float(input())  # cm\n\n# BMI = weight / (height / 100) ** 2\n",
+  "test_cases": [
+    { "input": "70\n170", "expected_output": "24.2", "description": "70kg 170cm" },
+    { "input": "60\n160", "expected_output": "23.4", "description": "60kg 160cm" },
+    { "input": "80\n180", "expected_output": "24.7", "description": "80kg 180cm" }
+  ],
+  "hints": [
+    "키를 100으로 나눠서 cm → m로 변환하세요.",
+    "** 2 는 제곱을 의미해요.",
+    "print(f\"{bmi:.1f}\")로 소수점 1자리 출력!"
+  ],
+  "expected_approaches": [
+    { "tag": "공식 적용", "description": "weight / (height / 100) ** 2 계산" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nweight = float(input())\nheight = float(input())\nbmi = weight / (height / 100) ** 2\nprint(f\"{bmi:.1f}\")\n```\n\n`** 2`는 제곱 연산이에요. 키를 100으로 나눠 m로 변환하는 걸 잊지 마세요!"
+}

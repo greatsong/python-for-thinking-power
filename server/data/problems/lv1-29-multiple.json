@@ -1,0 +1,22 @@
+{
+  "id": "lv1-29-multiple",
+  "title": "배수 판별",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 배수 판별하기\n\n어떤 수가 n의 배수인지 확인하려면 `%` 연산자를 사용해요.\n\nn의 배수이면 `n으로 나눈 나머지 = 0`이에요.\n\n```python\n# 12가 3의 배수인지?\nif 12 % 3 == 0:\n    print(\"배수\")   # 12 ÷ 3 = 4, 나머지 0 → 배수!\n```\n\n---\n\n### 문제\n\n두 정수 a와 b를 입력받아, a가 b의 배수이면 `배수`, 아니면 `아님`을 출력하세요.\n\n### 예시\n\n**입력:** `12 / 3` → **출력:** `배수`  \n**입력:** `10 / 3` → **출력:** `아님`",
+  "starter_code": "a = int(input())\nb = int(input())\n\n# a가 b의 배수인지 판별하세요\n",
+  "test_cases": [
+    { "input": "12\n3", "expected_output": "배수", "description": "12는 3의 배수" },
+    { "input": "10\n3", "expected_output": "아님", "description": "10은 3의 배수 아님" },
+    { "input": "15\n5", "expected_output": "배수", "description": "15는 5의 배수" },
+    { "input": "7\n2", "expected_output": "아님", "description": "7은 2의 배수 아님" }
+  ],
+  "hints": [
+    "a % b == 0 이면 a는 b의 배수예요.",
+    "if a % b == 0: print(\"배수\") else: print(\"아님\")"
+  ],
+  "expected_approaches": [
+    { "tag": "% 연산", "description": "a % b == 0이면 배수, 아니면 아님" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\na = int(input())\nb = int(input())\nif a % b == 0:\n    print(\"배수\")\nelse:\n    print(\"아님\")\n```\n\n나머지가 0이면 딱 떨어지는 배수예요!"
+}

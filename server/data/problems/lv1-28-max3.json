@@ -1,0 +1,23 @@
+{
+  "id": "lv1-28-max3",
+  "title": "세 수 중 최댓값",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 세 수 중 가장 큰 수 찾기\n\n`max()` 함수를 사용하면 여러 값 중 최댓값을 쉽게 구할 수 있어요.\n\n```python\na = int(input())\nb = int(input())\nc = int(input())\nprint(max(a, b, c))\n```\n\n또는 if/elif를 사용해서 직접 비교할 수도 있어요.\n\n---\n\n### 문제\n\n세 정수를 입력받아 가장 큰 수를 출력하세요.\n\n### 예시\n\n**입력:** `3 / 7 / 5` → **출력:** `7`  \n**입력:** `10 / 2 / 8` → **출력:** `10`",
+  "starter_code": "a = int(input())\nb = int(input())\nc = int(input())\n\n# 세 수 중 가장 큰 수를 출력하세요\n",
+  "test_cases": [
+    { "input": "3\n7\n5", "expected_output": "7", "description": "7이 가장 크다" },
+    { "input": "10\n2\n8", "expected_output": "10", "description": "10이 가장 크다" },
+    { "input": "-1\n-5\n-3", "expected_output": "-1", "description": "음수 세 개 중 최댓값" },
+    { "input": "5\n5\n5", "expected_output": "5", "description": "모두 같은 경우" }
+  ],
+  "hints": [
+    "max(a, b, c)를 사용하면 한 번에 최댓값을 구할 수 있어요!",
+    "max() 함수는 괄호 안의 값 중 가장 큰 값을 반환해요."
+  ],
+  "expected_approaches": [
+    { "tag": "max() 함수", "description": "print(max(a, b, c))" },
+    { "tag": "if/elif 비교", "description": "세 수를 직접 비교해서 최댓값 찾기" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\na = int(input())\nb = int(input())\nc = int(input())\nprint(max(a, b, c))\n```\n\n`max()` 함수에 여러 값을 쉼표로 넣으면 최댓값을 반환해요!"
+}

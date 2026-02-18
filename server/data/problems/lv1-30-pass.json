@@ -1,0 +1,22 @@
+{
+  "id": "lv1-30-pass",
+  "title": "합격/불합격",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 조건으로 합격 여부 판별\n\n점수를 입력받아 기준 이상이면 합격, 미만이면 불합격!\n\n```python\nscore = int(input())\nif score >= 60:\n    print(\"합격\")\nelse:\n    print(\"불합격\")\n```\n\n`>=` 는 \"이상\" (크거나 같다), `<` 는 \"미만\"을 의미해요.\n\n---\n\n### 문제\n\n점수를 입력받아 60점 이상이면 `합격`, 미만이면 `불합격`을 출력하세요.\n\n### 예시\n\n**입력:** `75` → **출력:** `합격`  \n**입력:** `45` → **출력:** `불합격`  \n**입력:** `60` → **출력:** `합격`",
+  "starter_code": "score = int(input())\n\n# 60점 이상이면 합격, 미만이면 불합격\n",
+  "test_cases": [
+    { "input": "75", "expected_output": "합격", "description": "75점 합격" },
+    { "input": "45", "expected_output": "불합격", "description": "45점 불합격" },
+    { "input": "60", "expected_output": "합격", "description": "60점 경계 - 합격" },
+    { "input": "59", "expected_output": "불합격", "description": "59점 - 불합격" }
+  ],
+  "hints": [
+    ">= 는 '이상'을 의미해요. 60점 이상 = score >= 60",
+    "if score >= 60: print(\"합격\") else: print(\"불합격\")"
+  ],
+  "expected_approaches": [
+    { "tag": "if/else 비교", "description": "score >= 60이면 합격, 아니면 불합격" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nscore = int(input())\nif score >= 60:\n    print(\"합격\")\nelse:\n    print(\"불합격\")\n```\n\n`>=` 연산자는 '크거나 같다'는 뜻이에요. 60점도 합격!"
+}

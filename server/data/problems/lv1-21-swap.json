@@ -1,0 +1,22 @@
+{
+  "id": "lv1-21-swap",
+  "title": "두 변수 교환",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 두 변수의 값 교환하기\n\n두 변수의 값을 서로 바꾸는 방법이에요.\n\n**방법 1: 임시 변수 사용**\n```python\na = 3\nb = 7\ntemp = a   # temp에 a 저장\na = b      # a에 b 값 넣기\nb = temp   # b에 원래 a 값 넣기\n```\n\n**방법 2: 파이썬 동시 대입 (더 쉬운 방법!)**\n```python\na, b = b, a   # 한 번에 교환!\n```\n\n---\n\n### 문제\n\n두 정수를 입력받아 서로 교환한 뒤 출력하세요.\n첫 번째 줄에 두 번째 수, 두 번째 줄에 첫 번째 수가 오도록 출력하세요.\n\n### 예시\n\n**입력:** `3 / 7` → **출력:** `7 / 3`",
+  "starter_code": "a = int(input())\nb = int(input())\n\n# a와 b의 값을 교환해서 출력하세요\n",
+  "test_cases": [
+    { "input": "3\n7", "expected_output": "7\n3", "description": "3과 7 교환" },
+    { "input": "10\n20", "expected_output": "20\n10", "description": "10과 20 교환" },
+    { "input": "1\n1", "expected_output": "1\n1", "description": "같은 값" }
+  ],
+  "hints": [
+    "a, b = b, a 로 한 번에 교환할 수 있어요!",
+    "print(b)를 먼저, print(a)를 나중에 출력하면 돼요."
+  ],
+  "expected_approaches": [
+    { "tag": "파이썬 동시 대입", "description": "a, b = b, a 로 교환 후 출력" },
+    { "tag": "임시 변수", "description": "temp = a; a = b; b = temp 패턴" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\na = int(input())\nb = int(input())\na, b = b, a\nprint(a)\nprint(b)\n```\n\n파이썬의 `a, b = b, a` 문법은 두 변수를 동시에 교환해줘요!"
+}

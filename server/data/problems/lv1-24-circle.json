@@ -1,0 +1,22 @@
+{
+  "id": "lv1-24-circle",
+  "title": "원의 둘레",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 원의 둘레 공식\n\n원의 둘레 = 2 × π × 반지름\n\n파이썬에서 π(파이)는 `3.14`로 계산해요.\n\n```python\nr = float(input())\ncircumference = 2 * 3.14 * r\nprint(f\"{circumference:.2f}\")\n```\n\n---\n\n### 문제\n\n원의 반지름을 입력받아 둘레를 소수점 둘째 자리까지 출력하세요. (π = 3.14 사용)\n\n### 예시\n\n**입력:** `5` → **출력:** `31.40`  \n**입력:** `10` → **출력:** `62.80`",
+  "starter_code": "r = float(input())\n\n# 원의 둘레 = 2 * 3.14 * r\n",
+  "test_cases": [
+    { "input": "5", "expected_output": "31.40", "description": "반지름 5" },
+    { "input": "10", "expected_output": "62.80", "description": "반지름 10" },
+    { "input": "1", "expected_output": "6.28", "description": "반지름 1" },
+    { "input": "3", "expected_output": "18.84", "description": "반지름 3" }
+  ],
+  "hints": [
+    "원의 둘레 = 2 × 3.14 × r",
+    "print(f\"{circumference:.2f}\")로 소수점 2자리까지 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "둘레 공식", "description": "2 * 3.14 * r 계산 후 :.2f로 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nr = float(input())\ncircumference = 2 * 3.14 * r\nprint(f\"{circumference:.2f}\")\n```\n\n원의 둘레 공식 2πr에서 π = 3.14를 사용했어요!"
+}

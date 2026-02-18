@@ -1,0 +1,22 @@
+{
+  "id": "lv1-25-km2m",
+  "title": "km를 m로 변환",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 단위 변환\n\n1 km = 1000 m\n\n```python\nkm = float(input())\nm = km * 1000\nprint(int(m))  # 정수로 출력\n```\n\n단위 변환은 일상에서 자주 쓰이는 계산이에요!\n\n---\n\n### 문제\n\nkm를 입력받아 m 단위로 변환해서 정수로 출력하세요.\n\n### 예시\n\n**입력:** `3` → **출력:** `3000`  \n**입력:** `1.5` → **출력:** `1500`",
+  "starter_code": "km = float(input())\n\n# m로 변환해서 출력하세요\n",
+  "test_cases": [
+    { "input": "3", "expected_output": "3000", "description": "3km = 3000m" },
+    { "input": "1.5", "expected_output": "1500", "description": "1.5km = 1500m" },
+    { "input": "10", "expected_output": "10000", "description": "10km = 10000m" },
+    { "input": "0.5", "expected_output": "500", "description": "0.5km = 500m" }
+  ],
+  "hints": [
+    "1 km = 1000 m 이므로 km * 1000을 계산하면 돼요.",
+    "int()로 감싸서 정수로 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "곱셈 변환", "description": "print(int(km * 1000))" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nkm = float(input())\nprint(int(km * 1000))\n```\n\n1km = 1000m 이니까 km에 1000을 곱하면 돼요!"
+}

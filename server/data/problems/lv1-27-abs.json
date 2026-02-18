@@ -1,0 +1,23 @@
+{
+  "id": "lv1-27-abs",
+  "title": "절댓값",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 절댓값이란?\n\n절댓값은 수직선에서 0까지의 거리예요.\n음수이면 양수로 바꾸고, 양수는 그대로!\n\n```\n|-5| = 5\n|3| = 3\n|0| = 0\n```\n\n파이썬에서는 `abs()` 함수를 쓸 수 있어요.\n```python\nn = int(input())\nprint(abs(n))\n```\n\n또는 if/else로도 구현할 수 있어요:\n```python\nif n < 0:\n    print(-n)\nelse:\n    print(n)\n```\n\n---\n\n### 문제\n\n정수를 입력받아 절댓값을 출력하세요.\n\n### 예시\n\n**입력:** `-5` → **출력:** `5`  \n**입력:** `3` → **출력:** `3`",
+  "starter_code": "n = int(input())\n\n# 절댓값을 출력하세요\n",
+  "test_cases": [
+    { "input": "-5", "expected_output": "5", "description": "음수의 절댓값" },
+    { "input": "3", "expected_output": "3", "description": "양수의 절댓값" },
+    { "input": "0", "expected_output": "0", "description": "0의 절댓값" },
+    { "input": "-100", "expected_output": "100", "description": "큰 음수" }
+  ],
+  "hints": [
+    "abs() 함수를 사용하면 절댓값을 바로 구할 수 있어요.",
+    "또는 if n < 0: print(-n) else: print(n) 으로도 가능해요!"
+  ],
+  "expected_approaches": [
+    { "tag": "abs() 함수", "description": "print(abs(n))" },
+    { "tag": "if/else", "description": "음수면 -n 출력, 아니면 n 출력" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nn = int(input())\nprint(abs(n))\n```\n\n`abs()` 함수는 절댓값을 계산해줘요. 음수 → 양수, 양수는 그대로!"
+}

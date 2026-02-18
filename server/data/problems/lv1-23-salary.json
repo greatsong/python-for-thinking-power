@@ -1,0 +1,21 @@
+{
+  "id": "lv1-23-salary",
+  "title": "연봉 계산",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 월급으로 연봉 계산하기\n\n연봉 = 월급 × 12\n\n```python\nmonthly = int(input())\nyearly = monthly * 12\nprint(yearly)\n```\n\n간단하지만 실생활에서 자주 쓰는 계산이에요!\n\n---\n\n### 문제\n\n월급(만원)을 입력받아 연봉(만원)을 출력하세요.\n\n### 예시\n\n**입력:** `300` → **출력:** `3600`  \n**입력:** `250` → **출력:** `3000`",
+  "starter_code": "monthly = int(input())\n\n# 연봉을 계산해서 출력하세요\n",
+  "test_cases": [
+    { "input": "300", "expected_output": "3600", "description": "월 300 → 연 3600" },
+    { "input": "250", "expected_output": "3000", "description": "월 250 → 연 3000" },
+    { "input": "500", "expected_output": "6000", "description": "월 500 → 연 6000" }
+  ],
+  "hints": [
+    "연봉 = 월급 × 12",
+    "print(monthly * 12)로 출력하면 됩니다."
+  ],
+  "expected_approaches": [
+    { "tag": "곱셈", "description": "print(monthly * 12)" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\nmonthly = int(input())\nprint(monthly * 12)\n```\n\n1년은 12달이니까 월급에 12를 곱하면 연봉이 돼요!"
+}

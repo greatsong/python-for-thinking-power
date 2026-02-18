@@ -1,0 +1,21 @@
+{
+  "id": "lv1-26-change",
+  "title": "거스름돈 계산",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "### 거스름돈\n\n물건을 사고 돈을 냈을 때 받는 거스름돈을 계산해요.\n\n거스름돈 = 낸 돈 - 물건 가격\n\n```python\npaid = int(input())   # 낸 돈\nprice = int(input())  # 물건 가격\nchange = paid - price\nprint(change)\n```\n\n---\n\n### 문제\n\n낸 돈과 물건 가격을 입력받아 거스름돈을 출력하세요.\n\n### 예시\n\n**입력:** `5000 / 3200` → **출력:** `1800`  \n**입력:** `10000 / 7500` → **출력:** `2500`",
+  "starter_code": "paid = int(input())\nprice = int(input())\n\n# 거스름돈을 계산해서 출력하세요\n",
+  "test_cases": [
+    { "input": "5000\n3200", "expected_output": "1800", "description": "5000원 내고 3200원짜리 구매" },
+    { "input": "10000\n7500", "expected_output": "2500", "description": "10000원 내고 7500원짜리 구매" },
+    { "input": "1000\n1000", "expected_output": "0", "description": "딱 맞게 낸 경우" }
+  ],
+  "hints": [
+    "거스름돈 = 낸 돈 - 물건 가격",
+    "print(paid - price)로 출력하면 돼요."
+  ],
+  "expected_approaches": [
+    { "tag": "뺄셈", "description": "print(paid - price)" }
+  ],
+  "explanation": "### 풀이 해설\n\n```python\npaid = int(input())\nprice = int(input())\nprint(paid - price)\n```\n\n낸 돈에서 물건 가격을 빼면 거스름돈이에요!"
+}
