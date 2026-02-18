@@ -53,10 +53,9 @@ async function seed(skipInit = false) {
   // 3. 데모 데이터 삽입
   await seedDemoData();
 
-  // DB를 디스크에 즉시 저장 후 종료
+  // DB를 디스크에 즉시 저장
   saveDatabase();
   console.log('[Seed] 시딩 완료!');
-  process.exit(0);
 }
 
 function seedProblemSets() {
@@ -496,7 +495,9 @@ async function seedDemoData() {
 // 직접 실행 시 (node db/seed.js)
 const isMain = process.argv[1]?.endsWith('seed.js');
 if (isMain) {
-  seed().catch(err => {
+  seed().then(() => {
+    process.exit(0);
+  }).catch(err => {
     console.error('[Seed] 오류:', err);
     process.exit(1);
   });
