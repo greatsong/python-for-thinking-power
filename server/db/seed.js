@@ -6,9 +6,11 @@ import { initDatabase, execute, queryOne, queryAll, generateId, saveDatabase } f
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROBLEMS_DIR = path.resolve(__dirname, '..', 'data', 'problems');
 
-async function seed() {
-  await initDatabase();
-  console.log('[Seed] 데이터베이스 초기화 완료');
+async function seed(skipInit = false) {
+  if (!skipInit) {
+    await initDatabase();
+    console.log('[Seed] 데이터베이스 초기화 완료');
+  }
 
   // 1. 문제 JSON 파일 로드 및 삽입
   const files = fs.readdirSync(PROBLEMS_DIR).filter(f => f.endsWith('.json'));
@@ -456,7 +458,13 @@ async function seedDemoData() {
   console.log(`  학생: ${demoStudents.map(s => s.name).join(', ')}`);
 }
 
-seed().catch(err => {
-  console.error('[Seed] 오류:', err);
-  process.exit(1);
-});
+// 직접 실행 시 (node db/seed.js)
+const isMain = process.argv[1]?.endsWith('seed.js');
+if (isMain) {
+  seed().catch(err => {
+    console.error('[Seed] 오류:', err);
+    process.exit(1);
+  });
+}
+
+export { seed, seedProblemSets };

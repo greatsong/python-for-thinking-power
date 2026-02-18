@@ -3,7 +3,8 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { initDatabase } from './db/database.js';
+import { initDatabase, queryOne } from './db/database.js';
+import { seed, seedProblemSets } from './db/seed.js';
 import problemsRouter from './routes/problems.js';
 import authRouter from './routes/auth.js';
 import classroomsRouter from './routes/classrooms.js';
@@ -60,7 +61,18 @@ if (isProduction) {
 }
 
 // DB 초기화 후 서버 시작
-initDatabase().then(() => {
+initDatabase().then(async () => {
+  // 문제가 없으면 자동 시드 (첫 배포 or 빈 DB)
+  const problemCount = queryOne('SELECT COUNT(*) as cnt FROM problems');
+  if (!problemCount?.cnt) {
+    console.log('[PyThink] 빈 데이터베이스 감지 — 자동 시드 실행 중...');
+    await seed(true); // skipInit=true (이미 initDatabase 완료)
+    console.log('[PyThink] 자동 시드 완료');
+  } else {
+    // 기존 DB에도 새 문제집 항목 업데이트 (신규 JSON 파일 반영)
+    seedProblemSets();
+  }
+
   app.listen(PORT, () => {
     console.log(`[PyThink] 서버 실행 중: http://localhost:${PORT}`);
     if (isProduction) {
