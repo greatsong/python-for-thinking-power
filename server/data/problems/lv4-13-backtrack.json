@@ -1,0 +1,20 @@
+{
+  "id": "lv4-13-backtrack",
+  "title": "N-퀸 문제 (4×4)",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## ♛ 체스 퀸 배치 퍼즐!\n\n4×4 체스판에 4개의 퀸을 서로 공격하지 못하게 배치하는 방법을 구해요.\n\n퀸은 **같은 행, 열, 대각선**으로 공격해요.\n\n**백트래킹(Backtracking)**:\n1. 첫 번째 행에 퀸을 놓아봐요 (열 0~3 각각 시도)\n2. 두 번째 행에 안전한 곳에 퀸을 놓아봐요\n3. 막히면 이전 행으로 돌아가서 다른 위치 시도\n4. 4행 모두 성공하면 한 가지 해답!\n\n---\n\n## 문제\n\n4×4 판에서 N-퀸의 모든 해를 출력하세요.\n각 해는 행별로 퀸의 열 위치를 출력해요.\n\n### 예시\n```\n입력: 4\n출력:\n[1, 3, 0, 2]\n[2, 0, 3, 1]\n총 2가지\n```\n> [1,3,0,2] = 0행에 1열, 1행에 3열, 2행에 0열, 3행에 2열",
+  "starter_code": "n = int(input())  # 4\nsolutions = []\n\ndef is_safe(board, row, col):\n    # 현재 위치(row, col)에 퀸을 놓을 수 있는지 확인\n    pass\n\ndef solve(board, row):\n    # 백트래킹으로 해 탐색\n    pass\n\nsolve([], 0)\nfor sol in solutions:\n    print(sol)\nprint(f\"총 {len(solutions)}가지\")\n",
+  "test_cases": [
+    { "input": "4", "expected_output": "[1, 3, 0, 2]\n[2, 0, 3, 1]\n총 2가지", "description": "4-퀸 해: 2가지" }
+  ],
+  "hints": [
+    "is_safe: 같은 열(board[i]==col) 또는 대각선(abs(board[i]-col)==row-i) 확인",
+    "solve: for col in range(n): if is_safe(board, row, col): solve(board+[col], row+1)",
+    "row==n이 되면 해를 발견한 것!"
+  ],
+  "expected_approaches": [
+    { "tag": "백트래킹 재귀", "description": "행마다 안전한 열에 퀸 배치, 막히면 되돌아가기" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nsolutions = []\n\ndef is_safe(board, row, col):\n    for i in range(row):\n        if board[i] == col:                    # 같은 열\n            return False\n        if abs(board[i] - col) == row - i:    # 대각선\n            return False\n    return True\n\ndef solve(board, row):\n    if row == n:  # 모든 행에 퀸 배치 성공!\n        solutions.append(board[:])\n        return\n    for col in range(n):\n        if is_safe(board, row, col):\n            board.append(col)\n            solve(board, row + 1)\n            board.pop()  # 백트래킹! 원상복구\n\nsolve([], 0)\nfor sol in solutions:\n    print(sol)\nprint(f\"총 {len(solutions)}가지\")\n```\n\n**백트래킹의 핵심**: 가지치기!\n- 안전하지 않은 위치는 시도조차 안 함\n- 막히면 이전 선택을 취소(board.pop())\n\n**N-퀸 해의 수**: 4→2, 5→10, 8→92, 15→2,279,184\n백트래킹 없이 완전탐색은 4^4=256 → 백트래킹은 훨씬 적게!"
+}

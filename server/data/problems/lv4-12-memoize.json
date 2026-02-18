@@ -1,0 +1,23 @@
+{
+  "id": "lv4-12-memoize",
+  "title": "메모이제이션으로 빠른 피보나치",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## ⚡ 같은 계산은 두 번 하지 마세요!\n\n일반 재귀 피보나치:\n```\nfib(5) → fib(4) + fib(3)\nfib(4) → fib(3) + fib(2)   ← fib(3) 중복!\nfib(3) → fib(2) + fib(1)   ← fib(2) 중복!\n```\n\nfib(30)를 계산하면 fib(1)을 **832,040번** 계산해요!\n\n**메모이제이션**: 한 번 계산한 결과를 저장해서 재사용!\n```python\nmemo = {}\ndef fib(n):\n    if n in memo: return memo[n]  # 캐시 히트!\n    ...\n```\n\n---\n\n## 문제\n\nn을 입력받아 피보나치(n)를 출력하세요.\n단, 계산에 사용된 함수 호출 횟수도 함께 출력하세요.\n\n### 예시\n```\n입력: 10\n출력:\nfib(10) = 55\n호출 횟수: 19\n```\n(메모이제이션 없이는 177번!)",
+  "starter_code": "n = int(input())\ncall_count = 0\nmemo = {}\n\ndef fib(n):\n    global call_count\n    call_count += 1\n    # 메모이제이션 피보나치를 구현하세요\n\nresult = fib(n)\nprint(f\"fib({n}) = {result}\")\nprint(f\"호출 횟수: {call_count}\")\n",
+  "test_cases": [
+    { "input": "10", "expected_output": "fib(10) = 55\n호출 횟수: 19", "description": "fib(10) = 55" },
+    { "input": "1", "expected_output": "fib(1) = 1\n호출 횟수: 1", "description": "기저 조건" },
+    { "input": "5", "expected_output": "fib(5) = 5\n호출 횟수: 9", "description": "fib(5) = 5" }
+  ],
+  "hints": [
+    "if n in memo: return memo[n] 으로 캐시를 확인하세요.",
+    "계산 후: memo[n] = result 로 저장하세요.",
+    "기저 조건: if n <= 1: return n"
+  ],
+  "expected_approaches": [
+    { "tag": "딕셔너리 메모이제이션", "description": "memo 딕셔너리로 계산 결과 캐싱" },
+    { "tag": "@lru_cache 데코레이터", "description": "from functools import lru_cache" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\ncall_count = 0\nmemo = {}\n\ndef fib(n):\n    global call_count\n    call_count += 1\n    if n <= 1:\n        return n\n    if n in memo:        # 이미 계산했나?\n        return memo[n]   # 저장된 값 반환!\n    result = fib(n-1) + fib(n-2)\n    memo[n] = result     # 결과 저장\n    return result\n\nresult = fib(n)\nprint(f\"fib({n}) = {result}\")\nprint(f\"호출 횟수: {call_count}\")\n```\n\n**메모이제이션 없이 vs 있을 때 호출 횟수**:\n| n | 없을 때 | 있을 때 |\n|---|---------|--------|\n| 10 | 177 | 19 |\n| 20 | 21,891 | 39 |\n| 30 | 2,692,537 | 59 |\n\n**파이썬의 @lru_cache 데코레이터**:\n```python\nfrom functools import lru_cache\n@lru_cache(maxsize=None)\ndef fib(n):\n    if n <= 1: return n\n    return fib(n-1) + fib(n-2)\n```\n자동으로 메모이제이션!"
+}

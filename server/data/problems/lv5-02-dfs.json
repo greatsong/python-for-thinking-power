@@ -1,0 +1,23 @@
+{
+  "id": "lv5-02-dfs",
+  "title": "섬의 개수 세기 (DFS)",
+  "difficulty": 5,
+  "category": "graph",
+  "description": "## 🏝️ 섬이 몇 개인가요? (DFS)\n\n격자에서 1은 땅, 0은 바다예요.\n상하좌우 또는 대각선으로 연결된 1들이 하나의 섬이에요.\n\n```\n0 1 1 0\n0 1 0 0\n0 0 0 1\n0 0 1 1\n```\n→ 섬 2개\n(왼쪽 위 1,1,1 이 한 섬 / 오른쪽 아래 1,1,1 이 한 섬)\n\n### DFS (깊이 우선 탐색)\n한 섬을 만나면 연결된 모든 땅을 끝까지 탐색!\n탐색 후 방문 표시 → 다음 미방문 땅 찾기 → 새 섬!\n\n재귀 함수나 스택으로 구현해요.\n\n---\n\n## 문제\n\nn×m 격자를 입력받아 섬(8방향 연결)의 개수를 출력하세요.\n\n### 입력\n- 첫째 줄: n m\n- 이후 n줄: 격자 (0과 1, 공백 구분)\n\n### 예시\n```\n입력:\n4 4\n0 1 1 0\n0 1 0 0\n0 0 0 1\n0 0 1 1\n출력: 2\n```",
+  "starter_code": "import sys\nsys.setrecursionlimit(10000)\n\nn, m = map(int, input().split())\ngrid = []\nfor _ in range(n):\n    row = list(map(int, input().split()))\n    grid.append(row)\n\n# DFS로 섬의 개수를 구하세요\n",
+  "test_cases": [
+    { "input": "4 4\n0 1 1 0\n0 1 0 0\n0 0 0 1\n0 0 1 1", "expected_output": "2", "description": "섬 2개" },
+    { "input": "3 3\n1 1 1\n1 0 1\n1 1 1", "expected_output": "1", "description": "도넛 모양 (8방향이라 하나)" },
+    { "input": "2 2\n0 0\n0 0", "expected_output": "0", "description": "섬 없음" },
+    { "input": "1 4\n1 0 1 0", "expected_output": "2", "description": "1차원" }
+  ],
+  "hints": [
+    "def dfs(r, c): grid[r][c] = 0 으로 방문 표시 (침수!)",
+    "8방향: for dr in [-1,0,1]: for dc in [-1,0,1]: if dr==dc==0: continue",
+    "모든 칸 순회: if grid[r][c]==1: count+=1; dfs(r,c)"
+  ],
+  "expected_approaches": [
+    { "tag": "DFS 재귀", "description": "땅 발견 시 DFS로 연결된 모든 땅을 0으로 침수, count 증가" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nimport sys\nsys.setrecursionlimit(10000)\n\nn, m = map(int, input().split())\ngrid = []\nfor _ in range(n):\n    row = list(map(int, input().split()))\n    grid.append(row)\n\ndef dfs(r, c):\n    grid[r][c] = 0  # 방문 표시 (바다로 침수)\n    for dr in [-1, 0, 1]:\n        for dc in [-1, 0, 1]:\n            if dr == 0 and dc == 0:\n                continue\n            nr, nc = r + dr, c + dc\n            if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] == 1:\n                dfs(nr, nc)\n\ncount = 0\nfor r in range(n):\n    for c in range(m):\n        if grid[r][c] == 1:\n            count += 1\n            dfs(r, c)  # 연결된 모든 땅 침수\n\nprint(count)\n```\n\n**\"침수\" 아이디어의 우아함**\n\n땅을 발견하면 연결된 모든 땅을 바다(0)로 만들어요.\n그러면 같은 섬은 다시 카운트되지 않아요!\n\n**DFS 실행 흐름** (예시):\n```\ngrid[0][1]=1 발견 → count=1, DFS 시작\n→ grid[0][1]=0 (침수)\n→ 이웃 grid[0][2]=1 → DFS → 침수\n→ 이웃 grid[1][1]=1 → DFS → 침수\n→ 더 이상 연결된 땅 없음, DFS 종료\n다음 미발견 땅: grid[2][3]=1 → count=2...\n```\n\n**재귀 깊이 제한**: Python 기본 1000, `sys.setrecursionlimit`으로 늘려야 해요!"
+}

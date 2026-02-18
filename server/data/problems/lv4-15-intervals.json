@@ -1,0 +1,22 @@
+{
+  "id": "lv4-15-intervals",
+  "title": "겹치는 구간 합치기",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 📏 겹치는 구간들을 하나로!\n\n여러 구간이 있을 때 겹치는 것들을 합쳐요.\n\n```\n입력: [[1,3],[2,6],[8,10],[15,18]]\n출력: [[1,6],[8,10],[15,18]]\n\n[1,3]과 [2,6]이 겹치므로 [1,6]으로 합침\n```\n\n### 알고리즘\n1. 시작점 기준으로 정렬\n2. 현재 구간 끝이 다음 구간 시작보다 크거나 같으면 합치기\n3. 아니면 새 구간 추가\n\n---\n\n## 문제\n\n구간 수와 각 구간의 시작/끝을 입력받아 합친 구간들을 출력하세요.\n\n### 입력\n- 첫째 줄: 구간 수 n\n- 이후 n줄: 시작 끝\n\n### 예시\n```\n입력:\n4\n1 3\n2 6\n8 10\n15 18\n출력:\n1 6\n8 10\n15 18\n```",
+  "starter_code": "n = int(input())\nintervals = []\nfor _ in range(n):\n    s, e = map(int, input().split())\n    intervals.append([s, e])\n\n# 겹치는 구간을 합치세요\n",
+  "test_cases": [
+    { "input": "4\n1 3\n2 6\n8 10\n15 18", "expected_output": "1 6\n8 10\n15 18", "description": "[1,3],[2,6] 합침" },
+    { "input": "2\n1 4\n4 5", "expected_output": "1 5", "description": "끝과 시작이 같아도 합침" },
+    { "input": "3\n1 2\n5 6\n9 10", "expected_output": "1 2\n5 6\n9 10", "description": "겹치는 것 없음" }
+  ],
+  "hints": [
+    "먼저 정렬: intervals.sort()",
+    "merged = [intervals[0]]",
+    "for start, end in intervals[1:]: if start <= merged[-1][1]: merged[-1][1] = max(merged[-1][1], end)"
+  ],
+  "expected_approaches": [
+    { "tag": "정렬 후 순차 합치기", "description": "시작점 정렬 후 현재 끝과 다음 시작 비교" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nintervals = []\nfor _ in range(n):\n    s, e = map(int, input().split())\n    intervals.append([s, e])\n\n# 시작점 기준 정렬\nintervals.sort()\nmerged = [intervals[0]]\n\nfor start, end in intervals[1:]:\n    if start <= merged[-1][1]:  # 겹침!\n        merged[-1][1] = max(merged[-1][1], end)  # 끝 확장\n    else:  # 안 겹침\n        merged.append([start, end])\n\nfor s, e in merged:\n    print(s, e)\n```\n\n**왜 정렬을 먼저 하나?**\n정렬하면 겹치는 구간이 반드시 인접해 있어요!\n정렬 없이는 모든 쌍을 비교해야 해서 O(n²) → 정렬 후 O(n log n)\n\n**경계 처리**: `start <= merged[-1][1]` — `<=`이어야 [1,4],[4,5]도 합쳐요!"
+}

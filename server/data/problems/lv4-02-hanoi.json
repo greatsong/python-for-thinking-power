@@ -1,0 +1,22 @@
+{
+  "id": "lv4-02-hanoi",
+  "title": "하노이 탑",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 🗼 고대 인도의 수학 퍼즐!\n\n**하노이 탑** 규칙:\n1. 한 번에 원판 하나씩만 이동\n2. 작은 원판이 큰 원판 위에만 올라감\n3. A의 n개 원판을 C로 모두 이동\n\n**재귀적 사고**:\n```\nn개를 A→C로 이동하려면?\n1. (n-1)개를 A→B로 이동\n2. 가장 큰 원판을 A→C로 이동\n3. (n-1)개를 B→C로 이동\n```\n\n기저 조건: 1개는 그냥 이동!\n\n---\n\n## 문제\n\n원판 수 n을 입력받아 최소 이동 횟수와 이동 순서를 출력하세요.\n\n### 예시\n```\n입력: 3\n출력:\n이동 횟수: 7\nA → C\nA → B\nC → B\nA → C\nB → A\nB → C\nA → C\n```",
+  "starter_code": "n = int(input())\nmoves = []\n\ndef hanoi(n, from_peg, to_peg, via_peg):\n    pass  # 재귀 함수를 완성하세요\n\nhanoi(n, 'A', 'C', 'B')\nprint(f\"이동 횟수: {len(moves)}\")\nfor m in moves:\n    print(m)\n",
+  "test_cases": [
+    { "input": "3", "expected_output": "이동 횟수: 7\nA → C\nA → B\nC → B\nA → C\nB → A\nB → C\nA → C", "description": "3개 원판" },
+    { "input": "1", "expected_output": "이동 횟수: 1\nA → C", "description": "1개 원판" },
+    { "input": "2", "expected_output": "이동 횟수: 3\nA → B\nA → C\nB → C", "description": "2개 원판" }
+  ],
+  "hints": [
+    "기저 조건: n==1이면 from_peg → to_peg 이동 1번",
+    "재귀: hanoi(n-1, from, via, to) → n번 이동 → hanoi(n-1, via, to, from)",
+    "최소 이동 횟수: 2^n - 1"
+  ],
+  "expected_approaches": [
+    { "tag": "재귀 함수", "description": "hanoi(n-1, A→B) + 큰 원판 A→C + hanoi(n-1, B→C)" }
+  ],
+  "explanation": "## 풀이 해설\n\n재귀의 아름다움이 빛나는 문제예요!\n\n```python\nn = int(input())\nmoves = []\n\ndef hanoi(n, from_peg, to_peg, via_peg):\n    if n == 1:\n        moves.append(f\"{from_peg} → {to_peg}\")\n        return\n    hanoi(n-1, from_peg, via_peg, to_peg)  # n-1개를 임시 기둥으로\n    moves.append(f\"{from_peg} → {to_peg}\")  # 가장 큰 원판 이동\n    hanoi(n-1, via_peg, to_peg, from_peg)  # n-1개를 목표 기둥으로\n\nhanoi(n, 'A', 'C', 'B')\nprint(f\"이동 횟수: {len(moves)}\")\nfor m in moves:\n    print(m)\n```\n\n**최소 이동 횟수**: `2^n - 1`\n- n=1: 1번\n- n=2: 3번\n- n=3: 7번\n- n=64: 18,446,744,073,709,551,615번 (100억 년 이상!)\n\n**재귀의 핵심**: '어떻게'가 아니라 '무엇을'을 정의하면 컴퓨터가 알아서 해요!"
+}

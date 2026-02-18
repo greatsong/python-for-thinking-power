@@ -1,0 +1,22 @@
+{
+  "id": "lv5-06-trie",
+  "title": "트라이로 단어 검색",
+  "difficulty": 5,
+  "category": "data-structure",
+  "description": "## 🌳 단어 검색 트리! (Trie)\n\n트라이는 문자열을 효율적으로 저장하고 검색하는 트리 자료구조예요.\n\n```\n단어: cat, car, card, care, bat, ball\n\n트라이 구조:\n       root\n      /    \\\n     c      b\n     |      |\n     a      a\n    / \\    / \\\n   t   r  t   l\n       |       |\n     d e       l\n```\n\n### 장점\n- 단어 검색: O(단어 길이) - 단어 수와 무관!\n- 접두사(prefix) 검색에 최강\n\n---\n\n## 문제\n\n단어들을 트라이에 저장하고, 검색 쿼리에 대해 \"YES\" 또는 \"NO\"를 출력하세요.\n\n### 입력\n- 첫째 줄: 단어 수 n\n- 다음 n줄: 단어들\n- 이후 쿼리 수 q\n- 다음 q줄: 검색할 단어\n\n### 예시\n```\n입력:\n3\ncat\ncar\nbat\n3\ncat\nca\ndot\n출력:\nYES\nNO\nNO\n```",
+  "starter_code": "# 트라이 자료구조를 구현하세요\nn = int(input())\nwords = [input() for _ in range(n)]\nq = int(input())\nqueries = [input() for _ in range(q)]\n\n# 각 쿼리에 대해 YES 또는 NO 출력\n",
+  "test_cases": [
+    { "input": "3\ncat\ncar\nbat\n3\ncat\nca\ndot", "expected_output": "YES\nNO\nNO", "description": "기본 검색" },
+    { "input": "2\nhello\nworld\n2\nhello\nhell", "expected_output": "YES\nNO", "description": "부분 문자열 검색" },
+    { "input": "1\na\n1\na", "expected_output": "YES", "description": "단일 문자" }
+  ],
+  "hints": [
+    "class TrieNode: def __init__(self): self.children = {}; self.is_end = False",
+    "insert: for c in word: node = node.children.setdefault(c, TrieNode()); node.is_end = True",
+    "search: for c in word: if c not in node.children: return False; return node.is_end"
+  ],
+  "expected_approaches": [
+    { "tag": "딕셔너리 기반 트라이", "description": "각 노드가 children dict와 is_end 플래그를 가짐" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nclass TrieNode:\n    def __init__(self):\n        self.children = {}   # 자식 노드들\n        self.is_end = False  # 단어 끝 표시\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n    \n    def insert(self, word):\n        node = self.root\n        for c in word:\n            if c not in node.children:\n                node.children[c] = TrieNode()\n            node = node.children[c]\n        node.is_end = True  # 단어 끝 표시\n    \n    def search(self, word):\n        node = self.root\n        for c in word:\n            if c not in node.children:\n                return False\n            node = node.children[c]\n        return node.is_end  # 실제 단어여야 True\n\nn = int(input())\ntrie = Trie()\nfor _ in range(n):\n    trie.insert(input())\n\nq = int(input())\nfor _ in range(q):\n    word = input()\n    print('YES' if trie.search(word) else 'NO')\n```\n\n**트라이 vs 딕셔너리 검색**\n\n단순 딕셔너리: `word in word_set` → O(단어 길이)\n트라이: 검색 O(단어 길이) - 비슷해 보이지만!\n\n**트라이가 빛나는 순간**:\n- **접두사 검색**: \"ca\"로 시작하는 모든 단어 찾기\n- **자동완성**: 타이핑 중 추천 단어\n- **사전 구현**: 단어와 그 의미를 함께 저장\n\n`is_end`가 중요한 이유: \"ca\"는 트라이에 있는 경로지만 등록된 단어가 아니에요!"
+}

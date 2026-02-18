@@ -1,0 +1,25 @@
+{
+  "id": "lv3-10-brackets",
+  "title": "중첩 괄호 검사기",
+  "difficulty": 3,
+  "category": "string",
+  "description": "## 🔢 괄호가 올바르게 짝지어졌나?\n\n수학 수식에서 괄호가 올바르게 열리고 닫히는지 확인해요.\n\n```\n((1+2) * (3+4)) → 올바름\n((1+2)           → 틀림 (닫는 괄호 부족)\n(1+2))           → 틀림 (닫는 괄호 초과)\n)(               → 틀림 (순서가 반대)\n```\n\n### 핵심 아이디어: 카운터\n- `(` 가 나오면 카운터 +1\n- `)` 가 나오면 카운터 -1\n- 카운터가 음수가 되면 순서 오류!\n- 마지막에 카운터가 0이면 올바름\n\n---\n\n## 문제\n\n문자열을 입력받아 괄호가 올바르면 `올바름`, 아니면 `틀림`을 출력하세요.\n\n### 예시\n```\n입력: ((1+2)*(3+4))\n출력: 올바름\n\n입력: ((1+2)\n출력: 틀림\n```",
+  "starter_code": "s = input()\n\n# 괄호가 올바른지 확인하세요\n",
+  "test_cases": [
+    { "input": "((1+2)*(3+4))", "expected_output": "올바름", "description": "올바른 괄호" },
+    { "input": "((1+2)", "expected_output": "틀림", "description": "닫는 괄호 부족" },
+    { "input": "(1+2))", "expected_output": "틀림", "description": "닫는 괄호 초과" },
+    { "input": ")(", "expected_output": "틀림", "description": "순서 오류" },
+    { "input": "1+2*3", "expected_output": "올바름", "description": "괄호 없음 → 올바름" }
+  ],
+  "hints": [
+    "count = 0 에서 시작해요.",
+    "'(' 만나면 count += 1, ')' 만나면 count -= 1",
+    "count < 0 이 되면 즉시 틀림! 마지막에 count == 0 이면 올바름."
+  ],
+  "expected_approaches": [
+    { "tag": "카운터 방식", "description": "count로 (와 )를 추적, 음수=오류, 최종 0=올바름" },
+    { "tag": "스택 방식", "description": "스택에 ( 쌓고 ) 만나면 pop, 스택이 빈 채로 )가 오면 오류" }
+  ],
+  "explanation": "## 풀이 해설\n\n방법 1 — 카운터:\n```python\ns = input()\ncount = 0\nfor c in s:\n    if c == '(':\n        count += 1\n    elif c == ')':\n        count -= 1\n    if count < 0:  # 닫는 괄호가 먼저 나옴\n        print(\"틀림\")\n        break\nelse:\n    print(\"올바름\" if count == 0 else \"틀림\")\n```\n\n방법 2 — 스택(더 확장 가능한 방식):\n```python\ns = input()\nstack = []\nfor c in s:\n    if c == '(':\n        stack.append('(')\n    elif c == ')':\n        if not stack:  # 스택이 비어있는데 ) 가 옴\n            print(\"틀림\")\n            break\n        stack.pop()\nelse:\n    print(\"올바름\" if not stack else \"틀림\")\n```\n\n스택 방식은 `(){}[]` 세 종류의 괄호도 처리할 수 있어요!"
+}

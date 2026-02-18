@@ -1,0 +1,22 @@
+{
+  "id": "lv2-17-listSort",
+  "title": "점수 줄 세우기",
+  "difficulty": 2,
+  "category": "list",
+  "description": "## 🏃 점수 순서대로 줄 세워요!\n\n여러 점수를 입력받아 낮은 순서대로 정렬해봐요.\n\n```python\nscores = list(map(int, input().split()))\nscores.sort()\nprint(scores)\n```\n\n또는 내림차순:\n```python\nscores.sort(reverse=True)\n```\n\n---\n\n## 문제\n\n공백으로 구분된 점수들을 입력받아 오름차순으로 정렬해 출력하세요.\n\n### 예시\n```\n입력: 85 92 78 95 70\n출력: [70, 78, 85, 92, 95]\n```",
+  "starter_code": "scores = list(map(int, input().split()))\n\n# 오름차순으로 정렬해서 출력하세요\n",
+  "test_cases": [
+    { "input": "85 92 78 95 70", "expected_output": "[70, 78, 85, 92, 95]", "description": "오름차순 정렬" },
+    { "input": "3 1 4 1 5 9 2 6", "expected_output": "[1, 1, 2, 3, 4, 5, 6, 9]", "description": "중복 포함 정렬" },
+    { "input": "10", "expected_output": "[10]", "description": "원소 하나" }
+  ],
+  "hints": [
+    "scores.sort() 로 리스트를 오름차순 정렬해요.",
+    "sorted(scores) 는 원본을 바꾸지 않고 정렬된 새 리스트를 반환해요."
+  ],
+  "expected_approaches": [
+    { "tag": ".sort() 메서드", "description": "scores.sort(); print(scores)" },
+    { "tag": "sorted() 함수", "description": "print(sorted(scores))" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nscores = list(map(int, input().split()))\nscores.sort()\nprint(scores)\n```\n\n`.sort()`는 리스트 자체를 정렬해요 (원본 변경).\n`sorted()`는 새 리스트를 반환해요 (원본 유지).\n내림차순: `scores.sort(reverse=True)`"
+}

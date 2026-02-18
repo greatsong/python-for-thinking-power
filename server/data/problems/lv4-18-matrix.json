@@ -1,0 +1,23 @@
+{
+  "id": "lv4-18-matrix",
+  "title": "행렬 시계방향 90도 회전",
+  "difficulty": 4,
+  "category": "simulation",
+  "description": "## 🔄 행렬을 돌려라!\n\nn×n 행렬을 시계방향으로 90도 회전해요.\n\n```\n원본:        90도 회전:\n1 2 3        7 4 1\n4 5 6   →   8 5 2\n7 8 9        9 6 3\n```\n\n### 패턴을 찾아보세요!\n회전 후 행렬에서 `[i][j]`의 값은\n원본의 어디서 왔을까요?\n\n원본 `[0][0]=1` → 결과 `[0][2]=1`\n원본 `[1][0]=4` → 결과 `[0][1]=4`\n원본 `[2][0]=7` → 결과 `[0][0]=7`\n\n**규칙**: `result[j][n-1-i] = original[i][j]`\n\n---\n\n## 문제\n\nn×n 행렬을 시계방향 90도 회전한 결과를 출력하세요.\n\n### 입력\n- 첫째 줄: n\n- 이후 n줄: 행렬 (공백 구분)\n\n### 예시\n```\n입력:\n3\n1 2 3\n4 5 6\n7 8 9\n출력:\n7 4 1\n8 5 2\n9 6 3\n```",
+  "starter_code": "n = int(input())\nmatrix = []\nfor _ in range(n):\n    row = list(map(int, input().split()))\n    matrix.append(row)\n\n# 시계방향 90도 회전한 행렬을 출력하세요\n",
+  "test_cases": [
+    { "input": "3\n1 2 3\n4 5 6\n7 8 9", "expected_output": "7 4 1\n8 5 2\n9 6 3", "description": "3×3 회전" },
+    { "input": "1\n5", "expected_output": "5", "description": "1×1" },
+    { "input": "2\n1 2\n3 4", "expected_output": "3 1\n4 2", "description": "2×2 회전" }
+  ],
+  "hints": [
+    "새 빈 행렬을 만들어서 결과를 채워요: result = [[0]*n for _ in range(n)]",
+    "규칙 찾기: result[j][n-1-i] = matrix[i][j]",
+    "또는: 전치(transpose) 후 각 행을 뒤집기"
+  ],
+  "expected_approaches": [
+    { "tag": "인덱스 공식 적용", "description": "result[j][n-1-i] = matrix[i][j] 공식으로 새 행렬 채우기" },
+    { "tag": "전치 + 좌우 뒤집기", "description": "행렬 전치(행↔열) 후 각 행을 reverse" }
+  ],
+  "explanation": "## 풀이 해설\n\n### 방법 1: 공식 적용\n```python\nn = int(input())\nmatrix = []\nfor _ in range(n):\n    row = list(map(int, input().split()))\n    matrix.append(row)\n\nresult = [[0]*n for _ in range(n)]\nfor i in range(n):\n    for j in range(n):\n        result[j][n-1-i] = matrix[i][j]\n\nfor row in result:\n    print(*row)\n```\n\n### 방법 2: 전치 + 뒤집기 (2단계)\n```python\n# 1단계: 전치 (행과 열 바꾸기)\ntransposed = [[matrix[j][i] for j in range(n)] for i in range(n)]\n\n# 2단계: 각 행을 뒤집기\nfor row in transposed:\n    print(*row[::-1])\n```\n\n**왜 이 공식이 성립하나?**\n시계방향 90도 회전을 분해하면:\n1. 행렬 전치 (대각선 기준 반전): `matrix[i][j] → matrix[j][i]`\n2. 각 행을 가로로 뒤집기: `matrix[j][i] → matrix[j][n-1-i]`\n\n합치면: `result[j][n-1-i] = matrix[i][j]`\n\n**패턴 인식이 핵심!**\n몇 가지 좌표를 손으로 추적해보면 규칙이 보여요."
+}

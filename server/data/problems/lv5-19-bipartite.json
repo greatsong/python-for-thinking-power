@@ -1,0 +1,22 @@
+{
+  "id": "lv5-19-bipartite",
+  "title": "이분 그래프 판별",
+  "difficulty": 5,
+  "category": "graph",
+  "description": "## 🎨 두 색으로 칠할 수 있나? (이분 그래프)\n\n그래프의 정점들을 두 가지 색으로 칠할 때,\n**인접한 정점끼리는 항상 다른 색**이 되게 할 수 있으면 이분 그래프예요!\n\n```\n이분 그래프 O:     이분 그래프 X:\n1 - 2              1 - 2\n|   |              | \\ |\n3 - 4              3 - 4\n\n1,4=빨강           삼각형 있으면\n2,3=파랑  ✓        3색 필요 → 이분 X\n```\n\n### BFS/DFS로 2-색칠\n1. 한 정점에 색 1 부여\n2. BFS로 이웃에 색 2 부여\n3. 이웃의 이웃에 색 1 부여...\n4. 같은 색 이웃 발견 시 → 이분 그래프 아님!\n\n---\n\n## 문제\n\nn개의 정점과 m개의 간선을 입력받아 이분 그래프인지 판별하세요.\n\n### 입력\n- 첫째 줄: n m\n- 이후 m줄: a b (연결)\n\n### 예시\n```\n입력:\n4 4\n1 2\n2 3\n3 4\n4 1\n출력: YES\n\n입력:\n3 3\n1 2\n2 3\n3 1\n출력: NO\n```",
+  "starter_code": "from collections import deque\n\nn, m = map(int, input().split())\ngraph = [[] for _ in range(n+1)]\nfor _ in range(m):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    graph[b].append(a)\n\n# 이분 그래프인지 YES/NO로 출력하세요\n",
+  "test_cases": [
+    { "input": "4 4\n1 2\n2 3\n3 4\n4 1", "expected_output": "YES", "description": "사각형 = 이분 그래프" },
+    { "input": "3 3\n1 2\n2 3\n3 1", "expected_output": "NO", "description": "삼각형 = 이분 아님" },
+    { "input": "4 2\n1 2\n3 4", "expected_output": "YES", "description": "분리된 그래프" }
+  ],
+  "hints": [
+    "color = [-1] * (n+1) / color[start] = 0",
+    "BFS: 이웃의 color = 1 - color[current] (0↔1 반전)",
+    "이웃의 색이 현재와 같으면 → NO"
+  ],
+  "expected_approaches": [
+    { "tag": "BFS 2-색칠", "description": "BFS로 순회하며 인접 정점에 반대 색 부여, 충돌 시 이분 아님" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nfrom collections import deque\n\nn, m = map(int, input().split())\ngraph = [[] for _ in range(n+1)]\nfor _ in range(m):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    graph[b].append(a)\n\ncolor = [-1] * (n+1)  # -1 = 미방문\n\ndef bfs(start):\n    queue = deque([start])\n    color[start] = 0  # 색 0 부여\n    while queue:\n        node = queue.popleft()\n        for neighbor in graph[node]:\n            if color[neighbor] == -1:  # 미방문\n                color[neighbor] = 1 - color[node]  # 반대 색!\n                queue.append(neighbor)\n            elif color[neighbor] == color[node]:  # 같은 색 충돌!\n                return False\n    return True\n\nis_bipartite = True\nfor i in range(1, n+1):\n    if color[i] == -1:  # 연결 안 된 컴포넌트도 확인\n        if not bfs(i):\n            is_bipartite = False\n            break\n\nprint('YES' if is_bipartite else 'NO')\n```\n\n**이분 그래프 = 2-색칠 가능 = 홀수 사이클 없음**\n\n세 가지 표현은 모두 동치예요!\n\n**실제 활용**:\n- **매칭 알고리즘**: 학생-과목, 남학생-여학생 등 완벽한 매칭\n- **작업 스케줄링**: 작업자와 작업을 최적 배정\n- **네트워크 플로우**: 유량 최대화\n\n이분 그래프이면 **최대 매칭**을 효율적으로 구할 수 있어요!"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "lv1-14-levelup",
+  "title": "게임 레벨업!",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "## 🎮 경험치를 모아서 레벨업!\n\n경험치가 100 이상이면 레벨업, 아니면 몇 점 더 필요한지 알려줘요.\n\n```python\nexp = int(input())\nif exp >= 100:\n    print(\"레벨업!\")\nelse:\n    print(100 - exp)\n```\n\n---\n\n## 문제\n\n현재 경험치를 입력받아:\n- 100 이상이면 `레벨업!` 출력\n- 100 미만이면 `n점 더 필요` 형태로 출력 (n = 100 - 경험치)\n\n### 예시\n```\n입력: 85\n출력: 15점 더 필요\n\n입력: 100\n출력: 레벨업!\n```",
+  "starter_code": "exp = int(input())\n\n# 레벨업 조건을 확인하세요\n",
+  "test_cases": [
+    { "input": "85", "expected_output": "15점 더 필요", "description": "85점 → 15점 부족" },
+    { "input": "100", "expected_output": "레벨업!", "description": "100점 → 레벨업!" },
+    { "input": "150", "expected_output": "레벨업!", "description": "150점 → 레벨업! (100 초과도 OK)" },
+    { "input": "0", "expected_output": "100점 더 필요", "description": "0점 → 100점 필요" },
+    { "input": "99", "expected_output": "1점 더 필요", "description": "99점 → 1점 부족" }
+  ],
+  "hints": [
+    "if exp >= 100: 으로 조건을 확인하세요.",
+    "부족한 점수는 100 - exp 로 계산해요.",
+    "f-string으로 출력: print(f\"{100 - exp}점 더 필요\")"
+  ],
+  "expected_approaches": [
+    { "tag": "if/else 조건문", "description": "exp >= 100 조건으로 분기" },
+    { "tag": "f-string 출력", "description": "print(f\"{100 - exp}점 더 필요\")" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nexp = int(input())\nif exp >= 100:\n    print(\"레벨업!\")\nelse:\n    print(f\"{100 - exp}점 더 필요\")\n```\n\n`>=`는 '이상' 연산자예요. `100 - exp`로 부족한 점수를 계산하고 f-string으로 출력!"
+}

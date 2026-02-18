@@ -1,0 +1,23 @@
+{
+  "id": "lv1-25-typing",
+  "title": "타이핑 속도 측정",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "## ⌨️ 내 타이핑 속도는?\n\n타이핑 속도 단위는 **타/분 (타이핑 횟수/분)** 이에요.\n글자 수와 걸린 시간(초)을 알면 속도를 계산할 수 있어요!\n\n```python\nchars = int(input())\nseconds = int(input())\n# 분당 타이핑 수 = (글자 수 / 초) * 60\nspeed = chars * 60 // seconds\nprint(speed)\n```\n\n---\n\n## 문제\n\n입력한 글자 수와 걸린 시간(초)을 받아 분당 타이핑 속도를 출력하세요.\n\n### 입력\n- 첫째 줄: 글자 수\n- 둘째 줄: 걸린 시간 (초)\n\n### 출력\n- 분당 타이핑 수 (소수점 버림)\n\n### 예시\n```\n입력:\n200\n60\n출력: 200\n```\n> 60초에 200자 → 분당 200타",
+  "starter_code": "chars = int(input())\nseconds = int(input())\n\n# 분당 타이핑 속도를 계산하세요\n",
+  "test_cases": [
+    { "input": "200\n60", "expected_output": "200", "description": "60초에 200자 → 분당 200타" },
+    { "input": "150\n30", "expected_output": "300", "description": "30초에 150자 → 분당 300타" },
+    { "input": "100\n120", "expected_output": "50", "description": "120초에 100자 → 분당 50타" },
+    { "input": "500\n100", "expected_output": "300", "description": "100초에 500자 → 분당 300타" }
+  ],
+  "hints": [
+    "분당 속도 = 글자 수 × 60 / 초",
+    "chars * 60 // seconds 처럼 계산하면 소수점이 잘려요."
+  ],
+  "expected_approaches": [
+    { "tag": "정수 나눗셈 (//, *)", "description": "chars * 60 // seconds" },
+    { "tag": "int() 변환", "description": "int(chars / seconds * 60)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nchars = int(input())\nseconds = int(input())\nprint(chars * 60 // seconds)\n```\n\n분당 타이핑 수 = (글자 수 ÷ 초) × 60\n`//`를 써서 소수점 없이 정수로만 출력해요.\n또는 `int(chars / seconds * 60)`처럼 써도 돼요!"
+}

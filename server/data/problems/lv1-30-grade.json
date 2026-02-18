@@ -1,0 +1,25 @@
+{
+  "id": "lv1-30-grade",
+  "title": "실력 등급 판정",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "## 🏆 코딩 실력 등급을 판정해요!\n\n점수에 따라 등급이 달라지는 시스템이에요.\n\n| 점수 | 등급 |\n|------|------|\n| 90 이상 | S급 |\n| 70~89 | A급 |\n| 50~69 | B급 |\n| 50 미만 | C급 |\n\n```python\nscore = int(input())\nif score >= 90:\n    print(\"S급\")\nelif score >= 70:\n    print(\"A급\")\nelif score >= 50:\n    print(\"B급\")\nelse:\n    print(\"C급\")\n```\n\n---\n\n## 문제\n\n점수를 입력받아 위 기준으로 등급을 출력하세요.\n\n### 예시\n```\n입력: 75\n출력: A급\n\n입력: 45\n출력: C급\n```",
+  "starter_code": "score = int(input())\n\n# 점수에 따라 등급을 출력하세요 (S급/A급/B급/C급)\n",
+  "test_cases": [
+    { "input": "95", "expected_output": "S급", "description": "95점 → S급" },
+    { "input": "75", "expected_output": "A급", "description": "75점 → A급" },
+    { "input": "60", "expected_output": "B급", "description": "60점 → B급" },
+    { "input": "45", "expected_output": "C급", "description": "45점 → C급" },
+    { "input": "90", "expected_output": "S급", "description": "90점 → S급 (경계값)" },
+    { "input": "50", "expected_output": "B급", "description": "50점 → B급 (경계값)" }
+  ],
+  "hints": [
+    "elif는 '아니면 만약'이에요. if → elif → elif → else 순서로요.",
+    "조건을 높은 점수부터 확인하면 돼요.",
+    "score >= 90, score >= 70, score >= 50 순서로 확인하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "if/elif/else 다중 조건", "description": "score >= 90부터 내려가며 확인" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nscore = int(input())\nif score >= 90:\n    print(\"S급\")\nelif score >= 70:\n    print(\"A급\")\nelif score >= 50:\n    print(\"B급\")\nelse:\n    print(\"C급\")\n```\n\n`elif`는 '아니면 만약'이에요. 조건을 위에서부터 순서대로 확인하기 때문에, 높은 점수 조건부터 작성하면 돼요!\n이미 90 이상이 아닌 것이 확인됐으니 `elif score >= 70`은 사실 70~89 범위만 체크하게 돼요."
+}

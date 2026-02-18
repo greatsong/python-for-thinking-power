@@ -1,0 +1,24 @@
+{
+  "id": "lv2-16-average",
+  "title": "시험 평균 계산기",
+  "difficulty": 2,
+  "category": "list",
+  "description": "## 📊 시험 점수 평균을 구해요!\n\nn개의 점수를 입력받아 평균을 구하는 프로그램이에요.\n\n```python\nn = int(input())\nscores = [int(input()) for _ in range(n)]\navg = sum(scores) / n\nprint(round(avg, 1))\n```\n\n`sum()` = 합계, `len()` = 개수, `round()` = 반올림\n\n---\n\n## 문제\n\n학생 수와 점수를 입력받아 평균을 소수점 첫째 자리까지 출력하세요.\n\n### 입력\n- 첫째 줄: 학생 수 n\n- 이후 n줄: 점수\n\n### 예시\n```\n입력:\n4\n80\n90\n70\n100\n출력: 85.0\n```",
+  "starter_code": "n = int(input())\n\n# 평균을 소수점 첫째 자리까지 출력하세요\n",
+  "test_cases": [
+    { "input": "4\n80\n90\n70\n100", "expected_output": "85.0", "description": "(80+90+70+100)/4 = 85.0" },
+    { "input": "3\n90\n85\n95", "expected_output": "90.0", "description": "(90+85+95)/3 = 90.0" },
+    { "input": "2\n75\n80", "expected_output": "77.5", "description": "(75+80)/2 = 77.5" },
+    { "input": "1\n100", "expected_output": "100.0", "description": "학생 1명, 100점" }
+  ],
+  "hints": [
+    "scores = [int(input()) for _ in range(n)] 으로 n개의 점수를 리스트에 저장해요.",
+    "sum(scores) / n 으로 평균을 구해요.",
+    "round(avg, 1) 로 소수점 첫째 자리까지 반올림해요."
+  ],
+  "expected_approaches": [
+    { "tag": "sum() / n", "description": "sum(scores) / n 으로 평균 계산" },
+    { "tag": "직접 합산 후 나누기", "description": "total=0; for s in scores: total+=s; print(total/n)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nscores = [int(input()) for _ in range(n)]\navg = sum(scores) / n\nprint(round(avg, 1))\n```\n\n`sum()`: 리스트의 합계\n`round(값, 자릿수)`: 반올림. `round(77.5, 1)` → `77.5`\n`/`는 항상 float(실수)를 반환해요. `10 / 2 = 5.0`"
+}

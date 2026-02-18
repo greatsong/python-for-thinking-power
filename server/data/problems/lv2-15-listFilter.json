@@ -1,0 +1,25 @@
+{
+  "id": "lv2-15-listFilter",
+  "title": "양수만 골라내기",
+  "difficulty": 2,
+  "category": "list",
+  "description": "## 🔍 양수만 걸러내요!\n\n숫자 목록에서 양수(0보다 큰 수)만 골라내는 프로그램이에요.\n\n```python\nnumbers = list(map(int, input().split()))\nresult = [x for x in numbers if x > 0]\nprint(result)\n```\n\n**리스트 컴프리헨션**: `[표현식 for 변수 in 리스트 if 조건]`\n파이썬만의 강력한 문법이에요!\n\n---\n\n## 문제\n\n공백으로 구분된 정수들을 입력받아 양수만 골라 리스트로 출력하세요.\n\n### 예시\n```\n입력: -3 1 -5 2 0 4\n출력: [1, 2, 4]\n```",
+  "starter_code": "numbers = list(map(int, input().split()))\n\n# 양수만 골라서 리스트로 출력하세요\n",
+  "test_cases": [
+    { "input": "-3 1 -5 2 0 4", "expected_output": "[1, 2, 4]", "description": "양수만: 1, 2, 4" },
+    { "input": "1 2 3 4 5", "expected_output": "[1, 2, 3, 4, 5]", "description": "모두 양수" },
+    { "input": "-1 -2 -3", "expected_output": "[]", "description": "양수 없음" },
+    { "input": "0 5 -2 3", "expected_output": "[5, 3]", "description": "0은 양수 아님" }
+  ],
+  "hints": [
+    "map(int, input().split()) 으로 여러 숫자를 한 번에 읽어요.",
+    "[x for x in numbers if x > 0] 은 조건에 맞는 것만 골라내요.",
+    "for 반복문 + 빈 리스트에 append하는 방식도 가능해요."
+  ],
+  "expected_approaches": [
+    { "tag": "리스트 컴프리헨션", "description": "[x for x in numbers if x > 0]" },
+    { "tag": "for + append", "description": "result=[];for x in numbers: if x>0: result.append(x)" },
+    { "tag": "filter 함수", "description": "list(filter(lambda x: x>0, numbers))" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nnumbers = list(map(int, input().split()))\nresult = [x for x in numbers if x > 0]\nprint(result)\n```\n\n리스트 컴프리헨션: `[x for x in numbers if x > 0]`\n영어로 읽으면 \"numbers에서 x를 하나씩 꺼내되, x > 0인 것만 x로\"!\n\nfor문으로 같은 내용:\n```python\nresult = []\nfor x in numbers:\n    if x > 0:\n        result.append(x)\n```"
+}

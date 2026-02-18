@@ -1,0 +1,24 @@
+{
+  "id": "lv4-21-bracket",
+  "title": "괄호 유효성 검사기",
+  "difficulty": 4,
+  "category": "string",
+  "description": "## 🔐 괄호가 올바른가요?\n\n세 종류의 괄호 `()`, `[]`, `{}`가 올바르게 열리고 닫혔는지 확인해요.\n\n```\n올바른 예시:\n\"({[]})\" ✓\n\"()[]{}\" ✓\n\n틀린 예시:\n\"(]\" ✗  → 열린 괄호 타입과 닫힌 괄호 타입이 다름\n\"([)]\" ✗ → 순서가 잘못됨\n\"{\" ✗   → 닫히지 않음\n```\n\n### 핵심 아이디어\n가장 최근에 열린 괄호가 먼저 닫혀야 해요.\n→ **LIFO(Last In, First Out)** 구조!\n\n열린 괄호를 스택에 쌓고, 닫힌 괄호가 오면 스택 맨 위와 비교!\n\n---\n\n## 문제\n\n괄호 문자열이 유효하면 `YES`, 아니면 `NO`를 출력하세요.\n\n### 예시\n```\n입력: ({[]})\n출력: YES\n\n입력: ([)]\n출력: NO\n```",
+  "starter_code": "s = input()\n\n# 괄호가 올바르면 YES, 아니면 NO 출력\n",
+  "test_cases": [
+    { "input": "({[]})", "expected_output": "YES", "description": "중첩 괄호" },
+    { "input": "()[]{}", "expected_output": "YES", "description": "나란한 괄호" },
+    { "input": "([)]", "expected_output": "NO", "description": "엇갈린 괄호" },
+    { "input": "{", "expected_output": "NO", "description": "열리기만 함" },
+    { "input": "", "expected_output": "YES", "description": "빈 문자열" }
+  ],
+  "hints": [
+    "stack = [] 리스트를 스택으로 활용",
+    "열린 괄호 '(', '[', '{' 는 stack에 push",
+    "닫힌 괄호를 만나면: stack.pop()이 짝인지 확인. 스택이 비어있거나 짝이 안맞으면 NO"
+  ],
+  "expected_approaches": [
+    { "tag": "스택 활용", "description": "열린 괄호 push, 닫힌 괄호에서 pop 후 짝 확인" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\ns = input()\n\nstack = []\npairs = {')': '(', ']': '[', '}': '{'}\n\nfor c in s:\n    if c in '([{':\n        stack.append(c)  # 열린 괄호: 스택에 저장\n    elif c in ')]}':\n        if not stack or stack[-1] != pairs[c]:\n            print('NO')  # 스택 비었거나 짝 안맞음\n            exit()\n        stack.pop()  # 짝 맞음: 제거\n\nprint('YES' if not stack else 'NO')\n```\n\n**왜 스택인가?**\n\n`({[]})` 처리 과정:\n```\n'(' → 스택: ['(']\n'{' → 스택: ['(', '{']\n'[' → 스택: ['(', '{', '[']\n']' → '[' 꺼냄 ✓, 스택: ['(', '{']\n'}' → '{' 꺼냄 ✓, 스택: ['(']\n')' → '(' 꺼냄 ✓, 스택: []\n→ 스택 비었다 → YES!\n```\n\n**핵심**: 가장 최근에 열린 괄호가 먼저 닫혀야 하는 규칙이\n딱 스택의 LIFO 특성과 맞아요!\n\n괄호 검사기는 컴파일러가 코드 문법을 검사할 때 실제로 사용하는 방법이에요."
+}

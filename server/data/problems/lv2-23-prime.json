@@ -1,0 +1,25 @@
+{
+  "id": "lv2-23-prime",
+  "title": "소수 판별기",
+  "difficulty": 2,
+  "category": "logic",
+  "description": "## 🔢 소수인지 아닌지 판별해요!\n\n소수는 1과 자기 자신으로만 나눠지는 수예요.\n예: 2, 3, 5, 7, 11, 13...\n\n```python\nn = int(input())\ndef is_prime(n):\n    if n < 2:\n        return False\n    for i in range(2, n):\n        if n % i == 0:\n            return False\n    return True\n\nprint(\"소수\" if is_prime(n) else \"소수 아님\")\n```\n\n---\n\n## 문제\n\n양의 정수 n을 입력받아 소수이면 `소수`, 아니면 `소수 아님`을 출력하세요.\n\n### 예시\n```\n입력: 7\n출력: 소수\n\n입력: 4\n출력: 소수 아님\n```",
+  "starter_code": "n = int(input())\n\n# 소수이면 '소수', 아니면 '소수 아님'을 출력하세요\n",
+  "test_cases": [
+    { "input": "7", "expected_output": "소수", "description": "7은 소수" },
+    { "input": "4", "expected_output": "소수 아님", "description": "4=2×2, 소수 아님" },
+    { "input": "2", "expected_output": "소수", "description": "2는 가장 작은 소수" },
+    { "input": "1", "expected_output": "소수 아님", "description": "1은 소수가 아님" },
+    { "input": "17", "expected_output": "소수", "description": "17은 소수" }
+  ],
+  "hints": [
+    "소수는 2 이상이고 1과 자신 외에는 나눠지지 않아요.",
+    "2부터 n-1까지 나눠보고 하나라도 나눠지면 소수가 아니에요.",
+    "더 효율적으로: 2부터 √n 까지만 확인해도 돼요."
+  ],
+  "expected_approaches": [
+    { "tag": "2~n-1 전부 확인", "description": "for i in range(2, n): if n%i==0: 소수 아님" },
+    { "tag": "√n까지만 확인 (효율적)", "description": "for i in range(2, int(n**0.5)+1)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nif n < 2:\n    print(\"소수 아님\")\nelse:\n    is_prime = True\n    for i in range(2, n):\n        if n % i == 0:\n            is_prime = False\n            break\n    print(\"소수\" if is_prime else \"소수 아님\")\n```\n\n더 빠른 방법 — √n까지만 확인:\n```python\nimport math\nfor i in range(2, int(math.sqrt(n)) + 1):\n    if n % i == 0: ...\n```\n\n왜 √n까지만? n의 약수는 쌍으로 존재해요. 더 큰 약수는 이미 작은 약수로 발견됐어요!"
+}

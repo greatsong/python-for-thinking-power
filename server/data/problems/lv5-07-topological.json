@@ -1,0 +1,23 @@
+{
+  "id": "lv5-07-topological",
+  "title": "선수 과목 순서 정하기 (위상 정렬)",
+  "difficulty": 5,
+  "category": "graph",
+  "description": "## 📚 선수 과목 순서 정하기! (위상 정렬)\n\n과목을 수강하려면 선수 과목을 먼저 들어야 해요.\n**모든 선수 조건을 만족하는 수강 순서**를 구해요.\n\n```\n선수 조건:\n- 파이썬 → 알고리즘\n- 파이썬 → 데이터구조\n- 알고리즘 → AI\n- 데이터구조 → AI\n\n가능한 순서: 파이썬 → 알고리즘 → 데이터구조 → AI\n또는:        파이썬 → 데이터구조 → 알고리즘 → AI\n```\n\n### 카흔(Kahn) 알고리즘\n1. 진입차수(incoming edges) 계산\n2. 진입차수 0인 노드를 큐에 넣기\n3. 큐에서 꺼내며 이웃의 진입차수를 줄이기\n4. 진입차수 0이 되면 큐에 추가!\n\n---\n\n## 문제\n\nn개 과목과 선수 조건을 입력받아 위상 정렬 순서를 출력하세요.\n(여러 답이 있으면 번호 작은 것부터, 사이클 있으면 CYCLE 출력)\n\n### 입력\n- 첫째 줄: n m (과목 수, 조건 수)\n- 이후 m줄: a b (a를 들어야 b를 들을 수 있음)\n\n### 예시\n```\n입력:\n4 4\n1 2\n1 3\n2 4\n3 4\n출력: 1 2 3 4\n```",
+  "starter_code": "from collections import deque\n\nn, m = map(int, input().split())\ngraph = [[] for _ in range(n+1)]\nin_degree = [0] * (n+1)\n\nfor _ in range(m):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    in_degree[b] += 1\n\n# 위상 정렬 순서를 출력하세요 (사이클이면 CYCLE)\n",
+  "test_cases": [
+    { "input": "4 4\n1 2\n1 3\n2 4\n3 4", "expected_output": "1 2 3 4", "description": "기본 위상정렬" },
+    { "input": "3 3\n1 2\n2 3\n3 1", "expected_output": "CYCLE", "description": "사이클 있음" },
+    { "input": "3 2\n1 3\n2 3", "expected_output": "1 2 3", "description": "두 선수 과목" }
+  ],
+  "hints": [
+    "import heapq / 번호 작은 것 우선이면 heap 사용",
+    "heap = [i for i in range(1, n+1) if in_degree[i] == 0]",
+    "heapq.heapify(heap)",
+    "꺼낸 노드의 이웃 in_degree -= 1, 0이 되면 heap에 추가"
+  ],
+  "expected_approaches": [
+    { "tag": "카흔 알고리즘 + 우선순위 큐", "description": "진입차수 0인 노드를 heapq로 관리, 숫자 순 정렬 보장" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nimport heapq\nfrom collections import deque\n\nn, m = map(int, input().split())\ngraph = [[] for _ in range(n+1)]\nin_degree = [0] * (n+1)\n\nfor _ in range(m):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    in_degree[b] += 1\n\n# 진입차수 0인 노드를 우선순위 큐에 넣기\nheap = [i for i in range(1, n+1) if in_degree[i] == 0]\nheapq.heapify(heap)\n\nresult = []\nwhile heap:\n    node = heapq.heappop(heap)  # 가장 작은 번호\n    result.append(node)\n    for neighbor in graph[node]:\n        in_degree[neighbor] -= 1\n        if in_degree[neighbor] == 0:\n            heapq.heappush(heap, neighbor)\n\nif len(result) == n:\n    print(*result)\nelse:\n    print('CYCLE')  # 처리 못한 노드 있음 = 사이클\n```\n\n**사이클 감지**: 위상 정렬 완료 후 결과 개수가 n보다 작으면 사이클!\n사이클이 있으면 진입차수가 영원히 0이 되지 않는 노드가 생겨요.\n\n**위상 정렬의 활용**:\n- 빌드 시스템 (Makefile, npm 의존성)\n- 대학 수강 계획\n- 데이터 파이프라인 실행 순서\n- 작업 스케줄링"
+}

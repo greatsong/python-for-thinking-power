@@ -1,0 +1,21 @@
+{
+  "id": "lv2-01-traffic",
+  "title": "신호등 판단",
+  "difficulty": 2,
+  "category": "logic",
+  "description": "## 🚦 신호등 색깔에 따라 행동해요!\n\n신호등 색깔을 입력받아 해야 할 행동을 출력하는 프로그램이에요.\n\n| 색깔 | 행동 |\n|------|------|\n| 빨강 | 멈추세요 |\n| 노랑 | 주의하세요 |\n| 초록 | 출발하세요 |\n\n```python\ncolor = input()\nif color == \"빨강\":\n    print(\"멈추세요\")\nelif color == \"노랑\":\n    print(\"주의하세요\")\nelse:\n    print(\"출발하세요\")\n```\n\n---\n\n## 문제\n\n신호등 색깔(빨강/노랑/초록)을 입력받아 해야 할 행동을 출력하세요.\n\n### 예시\n```\n입력: 빨강\n출력: 멈추세요\n```",
+  "starter_code": "color = input()\n\n# 신호등 색깔에 따라 행동을 출력하세요\n",
+  "test_cases": [
+    { "input": "빨강", "expected_output": "멈추세요", "description": "빨강 → 멈추세요" },
+    { "input": "노랑", "expected_output": "주의하세요", "description": "노랑 → 주의하세요" },
+    { "input": "초록", "expected_output": "출발하세요", "description": "초록 → 출발하세요" }
+  ],
+  "hints": [
+    "문자열 비교는 == 를 사용해요.",
+    "if/elif/else 로 세 가지 경우를 처리하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "if/elif/else", "description": "color == \"빨강\" 등으로 조건 분기" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\ncolor = input()\nif color == \"빨강\":\n    print(\"멈추세요\")\nelif color == \"노랑\":\n    print(\"주의하세요\")\nelse:\n    print(\"출발하세요\")\n```\n\n문자열 비교도 숫자처럼 `==`를 사용해요!\n`elif`는 'else if'의 줄임말이에요."
+}

@@ -1,0 +1,25 @@
+{
+  "id": "lv2-02-season",
+  "title": "월별 계절 찾기",
+  "difficulty": 2,
+  "category": "logic",
+  "description": "## 🌸🌞🍂❄️ 이 달은 무슨 계절?\n\n월(month)을 입력하면 계절을 알려주는 프로그램이에요.\n\n| 월 | 계절 |\n|----|------|\n| 3, 4, 5월 | 봄 |\n| 6, 7, 8월 | 여름 |\n| 9, 10, 11월 | 가을 |\n| 12, 1, 2월 | 겨울 |\n\n`in` 연산자를 활용해봐요!\n\n```python\nmonth = int(input())\nif month in [3, 4, 5]:\n    print(\"봄\")\n```\n\n---\n\n## 문제\n\n월(1~12)을 입력받아 계절을 출력하세요.\n\n### 예시\n```\n입력: 7\n출력: 여름\n\n입력: 12\n출력: 겨울\n```",
+  "starter_code": "month = int(input())\n\n# 계절을 출력하세요 (봄/여름/가을/겨울)\n",
+  "test_cases": [
+    { "input": "3", "expected_output": "봄", "description": "3월 → 봄" },
+    { "input": "7", "expected_output": "여름", "description": "7월 → 여름" },
+    { "input": "10", "expected_output": "가을", "description": "10월 → 가을" },
+    { "input": "12", "expected_output": "겨울", "description": "12월 → 겨울" },
+    { "input": "1", "expected_output": "겨울", "description": "1월 → 겨울" },
+    { "input": "5", "expected_output": "봄", "description": "5월 → 봄" }
+  ],
+  "hints": [
+    "in [3, 4, 5] 로 리스트 안에 있는지 확인할 수 있어요.",
+    "또는 elif 3 <= month <= 5: 처럼 범위로 확인해도 돼요."
+  ],
+  "expected_approaches": [
+    { "tag": "in 연산자 활용", "description": "if month in [3, 4, 5]" },
+    { "tag": "범위 조건 (and)", "description": "if 3 <= month <= 5" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nmonth = int(input())\nif month in [3, 4, 5]:\n    print(\"봄\")\nelif month in [6, 7, 8]:\n    print(\"여름\")\nelif month in [9, 10, 11]:\n    print(\"가을\")\nelse:\n    print(\"겨울\")\n```\n\n`in` 연산자는 리스트 안에 값이 있는지 확인해요!\n또 다른 방법:\n```python\nif 3 <= month <= 5:\n    print(\"봄\")\n```"
+}

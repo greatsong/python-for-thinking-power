@@ -1,0 +1,23 @@
+{
+  "id": "lv1-23-bus",
+  "title": "버스 자리 확인",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "## 🚌 버스에 자리가 있을까요?\n\n버스 총 좌석 수와 현재 탑승 인원을 알면 빈 자리를 계산할 수 있어요.\n\n```python\ntotal = int(input())\npassengers = int(input())\nprint(total - passengers)\n```\n\n---\n\n## 문제\n\n버스 총 좌석 수와 현재 탑승 인원을 입력받아 남은 빈 자리 수를 출력하세요.\n\n### 입력\n- 첫째 줄: 총 좌석 수\n- 둘째 줄: 현재 탑승 인원\n\n### 출력\n- 남은 빈 자리 수\n\n### 예시\n```\n입력:\n45\n32\n출력: 13\n```",
+  "starter_code": "total = int(input())\npassengers = int(input())\n\n# 남은 빈 자리 수를 출력하세요\n",
+  "test_cases": [
+    { "input": "45\n32", "expected_output": "13", "description": "45석 중 32명 탑승 → 13자리 남음" },
+    { "input": "28\n28", "expected_output": "0", "description": "만석! 빈 자리 없음" },
+    { "input": "60\n0", "expected_output": "60", "description": "아무도 안 탔음 → 60자리 모두 남음" },
+    { "input": "30\n17", "expected_output": "13", "description": "30석 중 17명 탑승 → 13자리 남음" }
+  ],
+  "hints": [
+    "빈 자리 = 총 좌석 - 탑승 인원",
+    "total - passengers 로 계산하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "뺄셈 연산", "description": "print(total - passengers)" },
+    { "tag": "변수 저장", "description": "empty = total - passengers 후 print(empty)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\ntotal = int(input())\npassengers = int(input())\nprint(total - passengers)\n```\n\n빈 자리 = 총 좌석 - 탑승 인원, 간단한 뺄셈이에요!\n변수 이름을 `total`, `passengers`처럼 뜻이 잘 드러나게 짓는 게 좋아요."
+}

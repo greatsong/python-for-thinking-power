@@ -1,0 +1,22 @@
+{
+  "id": "lv2-24-dict",
+  "title": "단어장 만들기",
+  "difficulty": 2,
+  "category": "logic",
+  "description": "## 📖 단어와 뜻을 저장해요!\n\n딕셔너리(dict)는 키(key)와 값(value)을 짝지어 저장해요.\n마치 국어사전처럼요!\n\n```python\nglossary = {}\nn = int(input())\nfor _ in range(n):\n    word, meaning = input().split(\" \", 1)\n    glossary[word] = meaning\n\nquery = input()\nif query in glossary:\n    print(glossary[query])\nelse:\n    print(\"없는 단어예요\")\n```\n\n---\n\n## 문제\n\nn개의 단어와 뜻을 입력받아 저장한 후, 찾을 단어를 입력받아 뜻을 출력하세요.\n\n### 입력\n- 첫째 줄: 단어 수 n\n- 이후 n줄: `단어 뜻` 형식 (단어와 뜻은 첫 공백으로 구분)\n- 마지막 줄: 찾을 단어\n\n### 예시\n```\n입력:\n3\npython 파이썬 프로그래밍 언어\njava 자바 프로그래밍 언어\ncat 고양이\npython\n출력: 파이썬 프로그래밍 언어\n```",
+  "starter_code": "glossary = {}\nn = int(input())\n\n# n개의 단어와 뜻을 저장하고 검색하세요\n",
+  "test_cases": [
+    { "input": "3\npython 파이썬 프로그래밍 언어\njava 자바 프로그래밍 언어\ncat 고양이\npython", "expected_output": "파이썬 프로그래밍 언어", "description": "python 검색" },
+    { "input": "2\nhello 안녕하세요\nbye 안녕히 가세요\nhi", "expected_output": "없는 단어예요", "description": "없는 단어 검색" },
+    { "input": "1\ndog 강아지\ndog", "expected_output": "강아지", "description": "단어 1개 저장 후 검색" }
+  ],
+  "hints": [
+    "word, meaning = line.split(\" \", 1) 로 첫 공백에서만 나눠요.",
+    "glossary[word] = meaning 으로 딕셔너리에 저장해요.",
+    "if query in glossary: 로 단어가 있는지 확인하고, glossary[query]로 값을 가져와요."
+  ],
+  "expected_approaches": [
+    { "tag": "딕셔너리 활용", "description": "glossary[word]=meaning 저장 후 glossary[query] 검색" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nglossary = {}\nn = int(input())\nfor _ in range(n):\n    line = input()\n    word, meaning = line.split(\" \", 1)  # 첫 공백에서만 분리\n    glossary[word] = meaning\n\nquery = input()\nif query in glossary:\n    print(glossary[query])\nelse:\n    print(\"없는 단어예요\")\n```\n\n딕셔너리 `{키: 값}` 구조로 단어장을 만들어요!\n`split(\" \", 1)` : 최대 1번만 나눠서 뜻에 공백이 있어도 괜찮아요."
+}

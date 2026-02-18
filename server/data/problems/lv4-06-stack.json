@@ -1,0 +1,23 @@
+{
+  "id": "lv4-06-stack",
+  "title": "스택으로 수식 계산",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 🔢 후위 표기법(RPN) 계산기!\n\n우리가 보통 쓰는 수식은 **중위 표기법**: `3 + 4 * 2`\n컴퓨터가 계산하기 쉬운 **후위 표기법**: `3 4 2 * +`\n\n**후위 표기법 계산 규칙**:\n- 숫자면 스택에 push\n- 연산자면 스택에서 두 수를 pop해서 계산 후 push\n\n```\n3 4 2 * +\n→ push 3: [3]\n→ push 4: [3, 4]\n→ push 2: [3, 4, 2]\n→ *: pop 2, 4 → 4*2=8, push: [3, 8]\n→ +: pop 8, 3 → 3+8=11, push: [11]\n→ 결과: 11\n```\n\n---\n\n## 문제\n\n후위 표기법 수식을 입력받아 계산 결과를 출력하세요.\n\n### 예시\n```\n입력: 3 4 2 * +\n출력: 11\n```",
+  "starter_code": "tokens = input().split()\nstack = []\n\n# 후위 표기법 수식을 계산하세요\n",
+  "test_cases": [
+    { "input": "3 4 2 * +", "expected_output": "11", "description": "3 + 4*2 = 11" },
+    { "input": "5 1 2 + 4 * + 3 -", "expected_output": "14", "description": "5 + (1+2)*4 - 3 = 14" },
+    { "input": "2 3 +", "expected_output": "5", "description": "2 + 3 = 5" },
+    { "input": "10 2 /", "expected_output": "5", "description": "10 / 2 = 5" }
+  ],
+  "hints": [
+    "숫자 판별: token.lstrip('-').isdigit() 또는 try: int(token)",
+    "연산자 처리: b = stack.pop(); a = stack.pop(); stack.append(a 연산 b)",
+    "주의: pop 순서! 먼저 꺼낸 것이 오른쪽 피연산자예요."
+  ],
+  "expected_approaches": [
+    { "tag": "스택 시뮬레이션", "description": "숫자=push, 연산자=pop 두 개 계산 후 push" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\ntokens = input().split()\nstack = []\n\nfor token in tokens:\n    if token in ['+', '-', '*', '/']:\n        b = stack.pop()  # 오른쪽 피연산자\n        a = stack.pop()  # 왼쪽 피연산자\n        if token == '+':   stack.append(a + b)\n        elif token == '-': stack.append(a - b)\n        elif token == '*': stack.append(a * b)\n        elif token == '/': stack.append(int(a / b))  # 정수 나눗셈\n    else:\n        stack.append(int(token))\n\nprint(stack[0])\n```\n\n**pop 순서 주의!**\n`5 3 -` = 5-3 = 2 이지만,\npop하면 3이 먼저 나와요 → `b=3, a=5` → `a-b = 5-3 = 2`\n\n**스택**은 컴퓨터 과학의 핵심 자료구조예요!\n실제 파이썬 인터프리터도 수식 계산에 스택을 사용해요."
+}

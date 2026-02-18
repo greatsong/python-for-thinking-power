@@ -1,0 +1,25 @@
+{
+  "id": "lv4-04-binary",
+  "title": "10진수 ↔ 2진수 변환기",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 💻 컴퓨터의 언어, 이진수!\n\n10진수를 2진수로, 2진수를 10진수로 직접 변환해봐요.\n\n**10진수 → 2진수 방법**:\n```\n13을 2로 계속 나눠요:\n13 ÷ 2 = 6 ... 나머지 1\n6 ÷ 2 = 3  ... 나머지 0\n3 ÷ 2 = 1  ... 나머지 1\n1 ÷ 2 = 0  ... 나머지 1\n나머지를 역순으로: 1101₂ = 13\n```\n\n**2진수 → 10진수 방법**:\n```\n1101₂ = 1×2³ + 1×2² + 0×2¹ + 1×2⁰\n       = 8 + 4 + 0 + 1 = 13\n```\n\n---\n\n## 문제\n\n변환 방향(`d2b` 또는 `b2d`)과 숫자를 입력받아 변환 결과를 출력하세요.\n\n### 예시\n```\n입력:\nd2b\n13\n출력: 1101\n\n입력:\nb2d\n1101\n출력: 13\n```",
+  "starter_code": "mode = input()\nnum = input()\n\n# d2b: 10진수→2진수, b2d: 2진수→10진수\n",
+  "test_cases": [
+    { "input": "d2b\n13", "expected_output": "1101", "description": "13 → 1101" },
+    { "input": "b2d\n1101", "expected_output": "13", "description": "1101 → 13" },
+    { "input": "d2b\n255", "expected_output": "11111111", "description": "255 → 11111111" },
+    { "input": "b2d\n10000000", "expected_output": "128", "description": "10000000 → 128" },
+    { "input": "d2b\n1", "expected_output": "1", "description": "1 → 1" }
+  ],
+  "hints": [
+    "d2b: while n > 0: bits = [n%2] + bits; n //= 2 / 또는 bin(n)[2:]",
+    "b2d: result = 0; for bit in s: result = result*2 + int(bit) / 또는 int(s, 2)",
+    "파이썬 내장: bin(13) = '0b1101', int('1101', 2) = 13 (내장 함수를 알아도 원리도 이해해요!)"
+  ],
+  "expected_approaches": [
+    { "tag": "직접 구현 (나머지 반복)", "description": "while n>0: bits.insert(0, n%2); n//=2" },
+    { "tag": "파이썬 내장 함수", "description": "bin(n)[2:] / int(s, 2)" }
+  ],
+  "explanation": "## 풀이 해설\n\n**원리를 이해하는 구현:**\n\n```python\nmode = input()\nnum = input()\n\nif mode == 'd2b':\n    n = int(num)\n    if n == 0:\n        print(0)\n    else:\n        bits = []\n        while n > 0:\n            bits.append(n % 2)  # 나머지 저장\n            n //= 2             # 몫으로 계속\n        print(\"\".join(map(str, reversed(bits))))  # 역순으로!\n\nelif mode == 'b2d':\n    result = 0\n    for bit in num:\n        result = result * 2 + int(bit)  # 자릿값 계산\n    print(result)\n```\n\n**간단한 파이썬 방법:**\n```python\nif mode == 'd2b':\n    print(bin(int(num))[2:])\nelif mode == 'b2d':\n    print(int(num, 2))\n```\n\n**원리가 핵심**: 내장 함수도 결국 같은 원리로 동작해요! 원리를 알면 어떤 진수도 변환할 수 있어요."
+}

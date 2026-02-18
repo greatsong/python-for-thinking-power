@@ -1,0 +1,23 @@
+{
+  "id": "lv4-19-twosum",
+  "title": "두 수의 합 = 목표값",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 🎯 두 수를 찾아라!\n\n정수 목록에서 두 수를 골랐을 때 합이 목표값(target)이 되는 **인덱스 쌍**을 찾아요.\n\n```\n예시:\nnumbers = [2, 7, 11, 15]\ntarget = 9\n\n2 + 7 = 9 → 인덱스 0, 1\n출력: 0 1\n```\n\n### 두 가지 방법\n**방법 1 (단순)**: 모든 쌍을 확인 → O(n²)\n**방법 2 (영리)**: \"이미 본 숫자\"를 기록 → O(n)\n\n방법 2의 아이디어:\n- `target - 현재값`이 이미 본 숫자인지 확인!\n- `7`을 보면 `9-7=2`가 이미 봤는지 체크\n\n---\n\n## 문제\n\nn개의 숫자와 target을 입력받아, 합이 target이 되는 두 수의 인덱스를 작은 것부터 출력하세요. (항상 정답이 하나 존재)\n\n### 입력\n- 첫째 줄: n\n- 둘째 줄: 숫자들 (공백 구분)\n- 셋째 줄: target\n\n### 예시\n```\n입력:\n4\n2 7 11 15\n9\n출력: 0 1\n```",
+  "starter_code": "n = int(input())\nnums = list(map(int, input().split()))\ntarget = int(input())\n\n# 합이 target인 두 수의 인덱스를 출력하세요\n",
+  "test_cases": [
+    { "input": "4\n2 7 11 15\n9", "expected_output": "0 1", "description": "2+7=9" },
+    { "input": "3\n3 2 4\n6", "expected_output": "1 2", "description": "2+4=6" },
+    { "input": "2\n3 3\n6", "expected_output": "0 1", "description": "같은 숫자 두 개" }
+  ],
+  "hints": [
+    "방법1: for i in range(n): for j in range(i+1, n): if nums[i]+nums[j]==target: print(i,j)",
+    "방법2: seen = {} 딕셔너리로 '이미 본 숫자의 인덱스' 기록",
+    "방법2 핵심: complement = target - nums[i] / if complement in seen: 찾았다!"
+  ],
+  "expected_approaches": [
+    { "tag": "완전 탐색 O(n²)", "description": "모든 쌍 (i,j) 검사" },
+    { "tag": "딕셔너리 활용 O(n)", "description": "seen dict로 complement 즉시 검색" }
+  ],
+  "explanation": "## 풀이 해설\n\n### 방법 1: 완전 탐색\n```python\nn = int(input())\nnums = list(map(int, input().split()))\ntarget = int(input())\n\nfor i in range(n):\n    for j in range(i+1, n):\n        if nums[i] + nums[j] == target:\n            print(i, j)\n            break\n```\n\n### 방법 2: 딕셔너리 (한 번만 순회!)\n```python\nn = int(input())\nnums = list(map(int, input().split()))\ntarget = int(input())\n\nseen = {}  # {값: 인덱스}\nfor i, num in enumerate(nums):\n    complement = target - num  # 짝꿍 숫자\n    if complement in seen:\n        print(seen[complement], i)  # 이미 봤다!\n        break\n    seen[num] = i  # 아직 못 찾았으면 기록\n```\n\n**발상의 전환:**\n\n`a + b = target` 을 찾는 게 목표예요.\n`b = target - a`니까, `a`를 볼 때 \"내 짝꿍 `b`를 이미 봤나?\"를 물어보면 돼요!\n\n딕셔너리는 검색이 O(1)이라서 전체가 O(n)이 됩니다.\n\n**이 발상이 중요한 이유**: O(n²) → O(n)으로 개선!\n숫자가 100만 개면 완전탐색은 1조 번, 딕셔너리 방법은 100만 번."
+}

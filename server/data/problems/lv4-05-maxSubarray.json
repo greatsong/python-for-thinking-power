@@ -1,0 +1,24 @@
+{
+  "id": "lv4-05-maxSubarray",
+  "title": "연속 부분합 최대",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 📈 카데인 알고리즘!\n\n수열에서 **연속된 부분 수열의 합**이 최대인 것을 찾아요.\n\n```\n[-2, 1, -3, 4, -1, 2, 1, -5, 4]\n최대 연속 부분합: [4, -1, 2, 1] = 6\n```\n\n### 브루트포스 vs 카데인\n- 완전탐색: 모든 (i,j) 쌍을 확인 → O(n²)\n- 카데인 알고리즘: 한 번만 순회 → O(n)\n\n**카데인의 핵심 아이디어**:\n- 현재 위치까지의 최대 연속합 = max(현재 원소, 이전 최대 + 현재 원소)\n- 이전 최대합이 음수면 그냥 현재 원소부터 새로 시작!\n\n---\n\n## 문제\n\n공백으로 구분된 정수 수열을 입력받아 최대 연속 부분합을 출력하세요.\n\n### 예시\n```\n입력: -2 1 -3 4 -1 2 1 -5 4\n출력: 6\n```",
+  "starter_code": "nums = list(map(int, input().split()))\n\n# 최대 연속 부분합을 구하세요\n",
+  "test_cases": [
+    { "input": "-2 1 -3 4 -1 2 1 -5 4", "expected_output": "6", "description": "[4,-1,2,1] = 6" },
+    { "input": "1", "expected_output": "1", "description": "원소 하나" },
+    { "input": "-1 -2 -3", "expected_output": "-1", "description": "모두 음수 → 가장 큰 원소" },
+    { "input": "5 4 -1 7 8", "expected_output": "23", "description": "전체 합이 최대" }
+  ],
+  "hints": [
+    "current = nums[0], max_sum = nums[0] 로 시작",
+    "for n in nums[1:]: current = max(n, current + n); max_sum = max(max_sum, current)",
+    "완전 탐색도 정답이에요 (단, 시간이 더 걸림)"
+  ],
+  "expected_approaches": [
+    { "tag": "카데인 알고리즘 O(n)", "description": "current = max(n, current+n) 으로 한 번 순회" },
+    { "tag": "완전 탐색 O(n²)", "description": "모든 (i,j) 구간 합 계산 후 최댓값" }
+  ],
+  "explanation": "## 풀이 해설\n\n**카데인 알고리즘의 직관**:\n\"이전까지의 합이 음수라면? 차라리 현재 원소부터 새로 시작하는 게 이득!\"\n\n```python\nnums = list(map(int, input().split()))\ncurrent = nums[0]\nmax_sum = nums[0]\n\nfor n in nums[1:]:\n    # 현재까지 이어오는 것 vs 여기서 새로 시작\n    current = max(n, current + n)\n    max_sum = max(max_sum, current)\n\nprint(max_sum)\n```\n\n**완전 탐색으로도 확인:**\n```python\nmax_sum = nums[0]\nfor i in range(len(nums)):\n    total = 0\n    for j in range(i, len(nums)):\n        total += nums[j]\n        max_sum = max(max_sum, total)\n```\n\n카데인 O(n) vs 완전탐색 O(n²) — 숫자가 10,000개라면?\n- 카데인: 10,000번 연산\n- 완전탐색: 100,000,000번 연산!"
+}

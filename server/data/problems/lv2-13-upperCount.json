@@ -1,0 +1,23 @@
+{
+  "id": "lv2-13-upperCount",
+  "title": "대문자 개수 세기",
+  "difficulty": 2,
+  "category": "string",
+  "description": "## 🔠 대문자가 몇 개야?\n\n문장 속에 대문자가 몇 개인지 세는 프로그램이에요.\n\n`.isupper()` 메서드로 대문자인지 확인할 수 있어요.\n\n```python\ns = input()\ncount = 0\nfor c in s:\n    if c.isupper():\n        count += 1\nprint(count)\n```\n\n---\n\n## 문제\n\n문자열을 입력받아 대문자의 개수를 출력하세요.\n\n### 예시\n```\n입력: Hello World\n출력: 2\n```\n> H, W → 대문자 2개",
+  "starter_code": "s = input()\n\n# 대문자가 몇 개인지 출력하세요\n",
+  "test_cases": [
+    { "input": "Hello World", "expected_output": "2", "description": "Hello World → H, W → 2개" },
+    { "input": "PYTHON", "expected_output": "6", "description": "모두 대문자 → 6개" },
+    { "input": "hello", "expected_output": "0", "description": "모두 소문자 → 0개" },
+    { "input": "PyThOn", "expected_output": "3", "description": "P, T, O → 3개" }
+  ],
+  "hints": [
+    "c.isupper() 는 c가 대문자면 True, 아니면 False를 반환해요.",
+    "for c in s: 로 문자열의 각 글자를 순서대로 확인하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "for + isupper()", "description": "for c in s: if c.isupper(): count+=1" },
+    { "tag": "sum + 조건식", "description": "sum(1 for c in s if c.isupper())" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\ns = input()\ncount = 0\nfor c in s:\n    if c.isupper():\n        count += 1\nprint(count)\n```\n\n파이썬스럽게:\n```python\ns = input()\nprint(sum(1 for c in s if c.isupper()))\n```\n\n`.isupper()`, `.islower()`, `.isdigit()` 같은 메서드들로 다양한 문자 종류를 확인할 수 있어요!"
+}

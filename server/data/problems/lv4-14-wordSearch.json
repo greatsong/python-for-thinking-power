@@ -1,0 +1,22 @@
+{
+  "id": "lv4-14-wordSearch",
+  "title": "단어 찾기 게임",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 🔍 격자에서 단어 찾기!\n\n알파벳 격자에서 연속된 칸을 이어 단어를 만들 수 있는지 확인해요.\n인접한 칸(상하좌우)을 따라 이동할 수 있고, 같은 칸은 두 번 사용 불가!\n\n```\n격자:\nA B C E\nS F C S\nA D E E\n\n단어: ABCCED\n경로: A(0,0)→B(0,1)→C(0,2)→C(1,2)→E(2,2)→D(2,1) → 가능!\n```\n\n---\n\n## 문제\n\n격자와 단어를 입력받아 단어를 만들 수 있으면 `가능`, 없으면 `불가능`을 출력하세요.\n\n### 입력\n- 첫째 줄: 행 수 r, 열 수 c\n- 이후 r줄: 격자 (공백 없이)\n- 마지막 줄: 찾을 단어\n\n### 예시\n```\n입력:\n3 4\nABCE\nSFCS\nADEE\nABCCED\n출력: 가능\n```",
+  "starter_code": "r, c = map(int, input().split())\ngrid = [list(input()) for _ in range(r)]\nword = input()\n\n# DFS로 단어를 찾으세요\n",
+  "test_cases": [
+    { "input": "3 4\nABCE\nSFCS\nADEE\nABCCED", "expected_output": "가능", "description": "ABCCED 찾기" },
+    { "input": "3 4\nABCE\nSFCS\nADEE\nSEE", "expected_output": "가능", "description": "SEE 찾기" },
+    { "input": "3 4\nABCE\nSFCS\nADEE\nABCB", "expected_output": "불가능", "description": "ABCB는 불가능 (B 재사용 필요)" }
+  ],
+  "hints": [
+    "DFS 함수: def dfs(row, col, idx): ...",
+    "기저: idx == len(word) → 성공! / 범위 벗어남 / 글자 불일치 → 실패",
+    "방문 표시: visited[row][col] = True / 탐색 후 False로 되돌리기 (백트래킹)"
+  ],
+  "expected_approaches": [
+    { "tag": "DFS + 백트래킹", "description": "각 시작점에서 DFS, 방문 처리 후 되돌리기" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nr, c = map(int, input().split())\ngrid = [list(input()) for _ in range(r)]\nword = input()\nvisited = [[False]*c for _ in range(r)]\ndirections = [(0,1),(0,-1),(1,0),(-1,0)]\n\ndef dfs(row, col, idx):\n    if idx == len(word):  # 단어 완성!\n        return True\n    if row < 0 or row >= r or col < 0 or col >= c:\n        return False  # 범위 초과\n    if visited[row][col] or grid[row][col] != word[idx]:\n        return False  # 방문했거나 글자 불일치\n    \n    visited[row][col] = True  # 방문 표시\n    for dr, dc in directions:\n        if dfs(row+dr, col+dc, idx+1):\n            visited[row][col] = False\n            return True\n    visited[row][col] = False  # 백트래킹!\n    return False\n\nfound = any(dfs(i, j, 0) for i in range(r) for j in range(c))\nprint(\"가능\" if found else \"불가능\")\n```\n\n**백트래킹 핵심**: `visited[row][col] = False` — 탐색 실패 후 방문 취소!"
+}

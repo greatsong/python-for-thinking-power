@@ -1,0 +1,23 @@
+{
+  "id": "lv5-08-kmp",
+  "title": "문자열 패턴 매칭 (KMP)",
+  "difficulty": 5,
+  "category": "string",
+  "description": "## 🔍 효율적인 문자열 검색! (KMP)\n\n긴 텍스트에서 패턴 문자열이 등장하는 **모든 위치**를 찾아요.\n\n```\ntext = \"AABAACAADAABAABA\"\npattern = \"AABA\"\n\n등장 위치: 0, 9, 12 (0-indexed)\n```\n\n### 왜 KMP인가?\n단순 비교: 불일치 시 한 칸 이동 → O(n×m)\nKMP: 불일치 시 최대한 멀리 이동 → O(n+m)!\n\n### LPS (Longest Proper Prefix which is also Suffix)\n패턴에서 접두사 = 접미사인 최장 길이를 미리 계산\n\n```\npattern = \"AABA\"\nlps = [0, 1, 0, 1]\n\n\"A\" → 0 (접두사=접미사 없음)\n\"AA\" → 1 (\"A\"=\"A\")\n\"AAB\" → 0\n\"AABA\" → 1 (\"A\"=\"A\")\n```\n\n---\n\n## 문제\n\ntextS와 pattern을 입력받아 패턴이 등장하는 0-indexed 위치를 모두 출력하세요. (없으면 아무것도 출력 안 함)\n\n### 예시\n```\n입력:\nAAABAACAAD\nAAA\n출력: 0 1\n```",
+  "starter_code": "text = input()\npattern = input()\n\n# KMP로 패턴 등장 위치를 모두 출력하세요\n",
+  "test_cases": [
+    { "input": "AAABAACAAD\nAAA", "expected_output": "0 1", "description": "중복 패턴" },
+    { "input": "HELLO WORLD\nWORLD", "expected_output": "6", "description": "단순 검색" },
+    { "input": "ABCDEF\nXYZ", "expected_output": "", "description": "패턴 없음" }
+  ],
+  "hints": [
+    "lps 배열 계산: 패턴의 접두사=접미사 최장 길이",
+    "def compute_lps(pattern): lps=[0]*len(pattern); length=0; i=1",
+    "KMP 검색: i(text), j(pattern) 포인터로 진행",
+    "j==len(pattern) 되면 발견! text 위치는 i-j"
+  ],
+  "expected_approaches": [
+    { "tag": "KMP 알고리즘", "description": "lps 배열로 불일치 시 건너뛸 위치 계산, O(n+m)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\ndef compute_lps(pattern):\n    m = len(pattern)\n    lps = [0] * m\n    length = 0  # 이전 LPS 길이\n    i = 1\n    while i < m:\n        if pattern[i] == pattern[length]:\n            length += 1\n            lps[i] = length\n            i += 1\n        else:\n            if length != 0:\n                length = lps[length - 1]  # 백트래킹!\n            else:\n                lps[i] = 0\n                i += 1\n    return lps\n\ndef kmp_search(text, pattern):\n    n, m = len(text), len(pattern)\n    lps = compute_lps(pattern)\n    \n    results = []\n    i = j = 0  # text, pattern 포인터\n    while i < n:\n        if text[i] == pattern[j]:\n            i += 1; j += 1\n        if j == m:\n            results.append(i - j)  # 발견!\n            j = lps[j - 1]  # 다음 검색 위치\n        elif i < n and text[i] != pattern[j]:\n            if j != 0:\n                j = lps[j - 1]  # 건너뜀!\n            else:\n                i += 1\n    return results\n\ntext = input()\npattern = input()\nresults = kmp_search(text, pattern)\nif results:\n    print(*results)\n```\n\n**KMP의 핵심 아이디어**:\n\n불일치가 발생했을 때 처음부터 다시 비교하지 않아요!\n이미 일치한 접두사가 접미사이기도 하면, 그만큼 건너뛸 수 있어요.\n\n예: `AABAABAAB` 에서 `AABAA` 까지 일치 후 불일치\n→ lps[4]=2이므로 패턴 2번째부터 다시 비교\n\n**Python 내장 방법**: `text.find(pattern)`, `text.count(pattern)` 등도 있지만 KMP의 원리를 이해하는 것이 중요!"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "lv2-09-staircase",
+  "title": "계단 오르기",
+  "difficulty": 2,
+  "category": "loop",
+  "description": "## 🪜 계단을 올라가요!\n\n1층부터 n층까지 계단을 오르는 모습을 출력해요.\n각 층마다 그 층 수만큼 `#`을 출력해요.\n\n```\n1층: #\n2층: ##\n3층: ###\n```\n\n```python\nn = int(input())\nfor i in range(1, n + 1):\n    print(\"#\" * i)\n```\n\n---\n\n## 문제\n\nn을 입력받아 계단 모양을 출력하세요.\n\n### 예시\n```\n입력: 4\n출력:\n#\n##\n###\n####\n```",
+  "starter_code": "n = int(input())\n\n# 계단 모양을 출력하세요\n",
+  "test_cases": [
+    { "input": "4", "expected_output": "#\n##\n###\n####", "description": "4층 계단" },
+    { "input": "1", "expected_output": "#", "description": "1층 계단" },
+    { "input": "5", "expected_output": "#\n##\n###\n####\n#####", "description": "5층 계단" }
+  ],
+  "hints": [
+    "\"#\" * i 로 i개의 #을 출력할 수 있어요.",
+    "for i in range(1, n+1) 로 1부터 n까지 반복해요."
+  ],
+  "expected_approaches": [
+    { "tag": "문자열 곱셈 + for", "description": "for i in range(1,n+1): print(\"#\"*i)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nfor i in range(1, n + 1):\n    print(\"#\" * i)\n```\n\n`\"#\" * i`로 i개의 `#`을 만들고, 반복이 진행될수록 1개씩 늘어나 계단 모양이 돼요!"
+}

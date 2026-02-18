@@ -1,0 +1,24 @@
+{
+  "id": "lv5-21-monotoneStack",
+  "title": "히스토그램 최대 직사각형 (단조 스택)",
+  "difficulty": 5,
+  "category": "algorithm",
+  "description": "## 📊 히스토그램에서 최대 직사각형! (단조 스택)\n\n히스토그램의 각 막대 높이가 주어질 때, 만들 수 있는 **최대 직사각형 넓이**를 구해요.\n\n```\n높이: [2, 1, 5, 6, 2, 3]\n\n  #\n  ##\n# ##  #\n# ## ##\n#######\n\n최대 직사각형: 높이 5, 너비 2 → 넓이 10\n```\n\n### 단조 스택 전략\n스택에는 **오름차순** 높이의 인덱스를 유지!\n\n- 현재 막대가 스택 top보다 작으면 → pop!\n- pop한 막대가 \"지금 여기까지의 높이\"로 만들 수 있는 직사각형 계산\n- 이렇게 O(n)으로 해결!\n\n---\n\n## 문제\n\nn개의 막대 높이를 입력받아 히스토그램에서 만들 수 있는 최대 직사각형 넓이를 출력하세요.\n\n### 입력\n- 첫째 줄: n\n- 둘째 줄: 높이들\n\n### 예시\n```\n입력:\n6\n2 1 5 6 2 3\n출력: 10\n```",
+  "starter_code": "n = int(input())\nheights = list(map(int, input().split()))\n\n# 최대 직사각형 넓이를 출력하세요\n",
+  "test_cases": [
+    { "input": "6\n2 1 5 6 2 3", "expected_output": "10", "description": "높이5×너비2=10" },
+    { "input": "5\n2 4 4 2 1", "expected_output": "8", "description": "높이2×너비4=8, 높이4×너비2=8, 최대=8" },
+    { "input": "3\n3 3 3", "expected_output": "9", "description": "전체가 3x3" },
+    { "input": "1\n5", "expected_output": "5", "description": "막대 1개" }
+  ],
+  "hints": [
+    "stack = [] (인덱스 저장), heights에 0을 하나 추가하면 끝처리 편함",
+    "현재 높이가 stack top보다 작으면: pop하고 넓이 계산",
+    "너비 = 현재 인덱스 - stack[-1] - 1 (스택이 비었으면 현재 인덱스)"
+  ],
+  "expected_approaches": [
+    { "tag": "단조 증가 스택 O(n)", "description": "스택에 오름차순 인덱스 유지, pop 시 직사각형 넓이 계산" },
+    { "tag": "완전 탐색 O(n²)", "description": "각 쌍 (i,j)에서 min 높이 × 너비" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nheights = list(map(int, input().split()))\nheights.append(0)  # 끝처리용 sentinel\n\nstack = []\nmax_area = 0\n\nfor i, h in enumerate(heights):\n    while stack and heights[stack[-1]] > h:\n        height = heights[stack.pop()]  # pop한 막대의 높이\n        if stack:\n            width = i - stack[-1] - 1  # 너비 계산\n        else:\n            width = i  # 스택이 비었으면 처음부터\n        max_area = max(max_area, height * width)\n    stack.append(i)\n\nprint(max_area)\n```\n\n**단조 스택 시각화** (heights = [2,1,5,6,2,3]):\n\n```\ni=0, h=2: stack=[0]\ni=1, h=1: h<heights[0]=2!\n  pop 0: height=2, width=1, area=2. max=2\n  stack=[1]\ni=2, h=5: stack=[1,2]\ni=3, h=6: stack=[1,2,3]\ni=4, h=2: h<heights[3]=6!\n  pop 3: height=6, width=1, area=6. max=6\n  h<heights[2]=5!\n  pop 2: height=5, width=2, area=10. max=10 ← 여기!\n  stack=[1,4]\ni=5, h=3: stack=[1,4,5]\ni=6, h=0: (sentinel)\n  pop 5: height=3, width=1, area=3\n  pop 4: height=2, width=4, area=8\n  pop 1: height=1, width=6, area=6\n```\n\n**핵심**: pop할 때 그 높이를 유지하면서 만들 수 있는 최대 너비를 계산!"
+}

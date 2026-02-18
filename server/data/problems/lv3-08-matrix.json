@@ -1,0 +1,23 @@
+{
+  "id": "lv3-08-matrix",
+  "title": "표 합계 계산기",
+  "difficulty": 3,
+  "category": "list",
+  "description": "## 📊 2차원 표의 행과 열 합계!\n\nn×m 크기의 표가 있어요. 각 행의 합과 각 열의 합을 구해봐요.\n\n```\n표:\n1 2 3\n4 5 6\n\n행 합계: 6 15\n열 합계: 5 7 9\n```\n\n### 문제 분해\n1. 2차원 리스트로 표를 만들기\n2. 각 행을 sum()으로 합산\n3. 각 열 합산: zip(*matrix) 활용\n\n---\n\n## 문제\n\nn행 m열의 표를 입력받아 각 행의 합과 각 열의 합을 출력하세요.\n\n### 입력\n- 첫째 줄: n m\n- 이후 n줄: 각 행의 m개 숫자\n\n### 예시\n```\n입력:\n2 3\n1 2 3\n4 5 6\n출력:\n행 합계: 6 15\n열 합계: 5 7 9\n```",
+  "starter_code": "n, m = map(int, input().split())\nmatrix = []\nfor _ in range(n):\n    row = list(map(int, input().split()))\n    matrix.append(row)\n\n# 행 합계와 열 합계를 출력하세요\n",
+  "test_cases": [
+    { "input": "2 3\n1 2 3\n4 5 6", "expected_output": "행 합계: 6 15\n열 합계: 5 7 9", "description": "2x3 표" },
+    { "input": "1 3\n10 20 30", "expected_output": "행 합계: 60\n열 합계: 10 20 30", "description": "1x3 표" },
+    { "input": "3 2\n1 2\n3 4\n5 6", "expected_output": "행 합계: 3 7 11\n열 합계: 9 12", "description": "3x2 표" }
+  ],
+  "hints": [
+    "행 합계: row_sums = [sum(row) for row in matrix]",
+    "열 합계: zip(*matrix)로 열들을 묶어요. zip(*[[1,2],[3,4]]) → (1,3), (2,4)",
+    "출력: \" \".join(map(str, 리스트))"
+  ],
+  "expected_approaches": [
+    { "tag": "zip(*matrix)로 열 합산", "description": "col_sums = [sum(col) for col in zip(*matrix)]" },
+    { "tag": "인덱스로 직접 열 합산", "description": "for j in range(m): col_sum = sum(matrix[i][j] for i in range(n))" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn, m = map(int, input().split())\nmatrix = [list(map(int, input().split())) for _ in range(n)]\n\n# 행 합계\nrow_sums = [sum(row) for row in matrix]\nprint(\"행 합계:\", \" \".join(map(str, row_sums)))\n\n# 열 합계\ncol_sums = [sum(col) for col in zip(*matrix)]\nprint(\"열 합계:\", \" \".join(map(str, col_sums)))\n```\n\n**zip(*matrix)** 마법!\n`*matrix`는 리스트를 펼쳐서 `zip`의 인수로 넘겨요.\n```\nmatrix = [[1,2,3],[4,5,6]]\nzip(*matrix) = zip([1,2,3],[4,5,6]) → (1,4), (2,5), (3,6)\n```\n행을 열로 바꾸는 **전치(transpose)** 연산이에요!\n\n**2차원 리스트 컴프리헨션**:\n```python\nmatrix = [list(map(int, input().split())) for _ in range(n)]\n```"
+}

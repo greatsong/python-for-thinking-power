@@ -1,0 +1,22 @@
+{
+  "id": "lv4-07-groupAnagram",
+  "title": "애너그램 그룹 묶기",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 🔤 같은 글자로 된 단어들을 묶어요!\n\n단어 목록에서 **서로 애너그램인 단어들을 하나의 그룹**으로 묶어요.\n\n```\n입력: [eat, tea, tan, ate, nat, bat]\n그룹:\n[eat, tea, ate]  → 정렬하면 모두 'aet'\n[tan, nat]       → 정렬하면 모두 'ant'\n[bat]            → 정렬하면 'abt'\n```\n\n**핵심 아이디어**: 정렬된 단어를 딕셔너리의 키로 사용!\n\n---\n\n## 문제\n\n공백으로 구분된 단어들을 입력받아 애너그램끼리 묶어 출력하세요.\n각 그룹은 입력 순서대로, 그룹 내 단어도 입력 순서대로 출력해요.\n\n### 예시\n```\n입력: eat tea tan ate nat bat\n출력:\neat tea ate\ntan nat\nbat\n```",
+  "starter_code": "words = input().split()\n\n# 애너그램끼리 그룹으로 묶어 출력하세요\n",
+  "test_cases": [
+    { "input": "eat tea tan ate nat bat", "expected_output": "eat tea ate\ntan nat\nbat", "description": "3개 그룹" },
+    { "input": "abc bca cab xyz", "expected_output": "abc bca cab\nxyz", "description": "한 그룹 + 단독" },
+    { "input": "hello world", "expected_output": "hello\nworld", "description": "모두 별개" }
+  ],
+  "hints": [
+    "딕셔너리 키: sorted(word) → tuple로 변환 (리스트는 키 불가)",
+    "groups = {}; key = tuple(sorted(word)); groups.setdefault(key, []).append(word)",
+    "출력: for group in groups.values(): print(\" \".join(group))"
+  ],
+  "expected_approaches": [
+    { "tag": "정렬 키 딕셔너리", "description": "tuple(sorted(word))를 키로 그룹화" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nwords = input().split()\ngroups = {}\n\nfor word in words:\n    key = tuple(sorted(word))  # 정렬된 글자 튜플을 키로\n    if key not in groups:\n        groups[key] = []\n    groups[key].append(word)\n\nfor group in groups.values():\n    print(\" \".join(group))\n```\n\n`setdefault`를 사용하면 더 간결:\n```python\nfor word in words:\n    key = tuple(sorted(word))\n    groups.setdefault(key, []).append(word)\n```\n\n**왜 tuple?** 파이썬 딕셔너리의 키는 변경 불가능(immutable)해야 해요.\n리스트는 변경 가능하지만, 튜플은 변경 불가 → 키로 사용 가능!\n\n**추상화 포인트**: '애너그램 여부 확인'을 '정렬 후 비교'로 추상화했어요."
+}

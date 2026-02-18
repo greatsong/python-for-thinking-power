@@ -1,0 +1,23 @@
+{
+  "id": "lv2-10-fizzbuzz",
+  "title": "피즈버즈 게임",
+  "difficulty": 2,
+  "category": "logic",
+  "description": "## 🎮 피즈버즈! 세계적으로 유명한 코딩 문제!\n\n1부터 n까지 숫자를 출력하되:\n- **3의 배수**: `Fizz`\n- **5의 배수**: `Buzz`  \n- **3과 5 모두의 배수**: `FizzBuzz`\n- **나머지**: 그냥 숫자\n\n> 핵심: 3과 5의 공배수(15의 배수)를 **먼저** 확인해야 해요!\n\n---\n\n## 문제\n\nn을 입력받아 1부터 n까지 피즈버즈 규칙을 적용해 출력하세요.\n\n### 예시\n```\n입력: 15\n출력:\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n```",
+  "starter_code": "n = int(input())\n\n# 1부터 n까지 피즈버즈 규칙으로 출력하세요\n",
+  "test_cases": [
+    { "input": "15", "expected_output": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz", "description": "피즈버즈 1~15" },
+    { "input": "5", "expected_output": "1\n2\nFizz\n4\nBuzz", "description": "피즈버즈 1~5" },
+    { "input": "3", "expected_output": "1\n2\nFizz", "description": "피즈버즈 1~3" }
+  ],
+  "hints": [
+    "15의 배수(FizzBuzz) 조건을 먼저 확인하세요!",
+    "순서: if i % 15 == 0 → elif i % 3 == 0 → elif i % 5 == 0 → else",
+    "또는 Fizz와 Buzz를 조합하는 방식도 있어요: result = \"\"; if i%3==0: result+=\"Fizz\" ..."
+  ],
+  "expected_approaches": [
+    { "tag": "15의 배수 먼저 확인", "description": "if i%15==0: FizzBuzz elif i%3==0: Fizz elif i%5==0: Buzz" },
+    { "tag": "문자열 조합", "description": "result = (\"Fizz\" if i%3==0 else \"\") + (\"Buzz\" if i%5==0 else \"\")" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nfor i in range(1, n + 1):\n    if i % 15 == 0:\n        print(\"FizzBuzz\")\n    elif i % 3 == 0:\n        print(\"Fizz\")\n    elif i % 5 == 0:\n        print(\"Buzz\")\n    else:\n        print(i)\n```\n\n주의: 15의 배수를 먼저 체크! 안 그러면 3의 배수나 5의 배수 조건에서 먼저 걸려요.\n\n더 파이썬다운 방법:\n```python\nfor i in range(1, n + 1):\n    result = \"\"\n    if i % 3 == 0: result += \"Fizz\"\n    if i % 5 == 0: result += \"Buzz\"\n    print(result or i)\n```"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "lv5-16-nqueens",
+  "title": "N-퀸 문제 (백트래킹)",
+  "difficulty": 5,
+  "category": "backtracking",
+  "description": "## ♛ 퀸들이 서로 공격 못하게! (N-퀸)\n\nn×n 체스판에 n개의 퀸을 서로 공격하지 않도록 배치하는 **모든 경우의 수**를 구해요.\n\n퀸은 같은 행, 열, 대각선 방향으로 공격해요.\n\n```\n4×4 퀸 배치 예시 (Q=퀸, .=빈칸):\n. Q . .     . . Q .\n. . . Q     Q . . .\nQ . . .     . . . Q\n. . Q .     . Q . .\n```\n\n4×4에서 경우의 수 = **2**\n\n### 백트래킹 전략\n- 각 행에 퀸 하나씩 배치\n- 열/대각선 충돌 체크\n- 충돌 없으면 다음 행으로\n- 충돌이면 되돌아가서 다른 열 시도\n\n---\n\n## 문제\n\nn을 입력받아 n×n 보드에 n개의 퀸을 배치하는 경우의 수를 출력하세요.\n\n### 예시\n```\n입력: 4\n출력: 2\n\n입력: 8\n출력: 92\n```",
+  "starter_code": "n = int(input())\n\n# n개의 퀸을 배치하는 경우의 수를 출력하세요\n",
+  "test_cases": [
+    { "input": "1", "expected_output": "1", "description": "1×1 = 1가지" },
+    { "input": "4", "expected_output": "2", "description": "4×4 = 2가지" },
+    { "input": "6", "expected_output": "4", "description": "6×6 = 4가지" },
+    { "input": "8", "expected_output": "92", "description": "8×8 = 92가지" }
+  ],
+  "hints": [
+    "queens = [] 로 각 행의 퀸 위치(열) 기록",
+    "def is_safe(row, col): 이전 퀸과 같은 열이거나 대각선인지 확인",
+    "def solve(row): row==n이면 count+=1, 아니면 각 열 시도"
+  ],
+  "expected_approaches": [
+    { "tag": "백트래킹 + 집합으로 충돌 체크", "description": "행마다 1개씩 배치, 열/대각선 집합으로 O(1) 체크" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\ncount = 0\n\n# 점유된 열과 대각선 집합\ncols = set()\ndiag1 = set()  # 왼쪽 대각선: row - col 동일\ndiag2 = set()  # 오른쪽 대각선: row + col 동일\n\ndef solve(row):\n    global count\n    if row == n:\n        count += 1\n        return\n    for col in range(n):\n        if col in cols or (row-col) in diag1 or (row+col) in diag2:\n            continue  # 충돌! 건너뜀\n        # 퀸 배치\n        cols.add(col)\n        diag1.add(row - col)\n        diag2.add(row + col)\n        \n        solve(row + 1)  # 다음 행으로\n        \n        # 퀸 제거 (백트래킹!)\n        cols.remove(col)\n        diag1.remove(row - col)\n        diag2.remove(row + col)\n\nsolve(0)\nprint(count)\n```\n\n**대각선 체크 공식**:\n- 왼쪽-오른쪽 대각선: `row - col`이 같으면 같은 대각선\n- 오른쪽-왼쪽 대각선: `row + col`이 같으면 같은 대각선\n\n```\n(0,0) (0,1) (0,2)\n(1,0) (1,1) (1,2)\n(2,0) (2,1) (2,2)\n\nrow-col: -2 -1  0\n         -1  0  1  ← 대각선이 같은 값\n          0  1  2\n\nrow+col:  0  1  2\n          1  2  3  ← 반대 대각선이 같은 값\n          2  3  4\n```\n\n**집합을 사용하는 이유**: O(1) 충돌 체크로 속도 향상!"
+}

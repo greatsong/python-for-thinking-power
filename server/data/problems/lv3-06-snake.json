@@ -1,0 +1,24 @@
+{
+  "id": "lv3-06-snake",
+  "title": "뱀 게임 이동 시뮬레이션",
+  "difficulty": 3,
+  "category": "logic",
+  "description": "## 🐍 방향 명령으로 뱀을 조종해요!\n\n뱀이 격자 위를 움직여요. 명령에 따라 이동하고 최종 위치를 출력해요.\n\n- 시작 위치: (0, 0)\n- 명령: U(상), D(하), L(좌), R(우)\n- 각 명령에 n칸 이동\n\n```\nR 3 → (3, 0)\nU 2 → (3, 2)\nL 1 → (2, 2)\n```\n\n---\n\n## 문제\n\n이동 명령 수와 명령들을 입력받아 최종 위치 (x, y)를 출력하세요.\n\n### 입력\n- 첫째 줄: 명령 수\n- 이후: `방향 칸수` 형식\n\n### 예시\n```\n입력:\n3\nR 3\nU 2\nL 1\n출력: (2, 2)\n```",
+  "starter_code": "n = int(input())\nx, y = 0, 0\n\n# 이동 명령을 처리하세요\n",
+  "test_cases": [
+    { "input": "3\nR 3\nU 2\nL 1", "expected_output": "(2, 2)", "description": "기본 이동" },
+    { "input": "1\nU 5", "expected_output": "(0, 5)", "description": "위로만 이동" },
+    { "input": "4\nR 3\nU 3\nL 3\nD 3", "expected_output": "(0, 0)", "description": "원점으로 돌아오기" },
+    { "input": "2\nD 2\nR 4", "expected_output": "(4, -2)", "description": "음수 좌표" }
+  ],
+  "hints": [
+    "x, y = 0, 0 에서 시작하세요.",
+    "R: x += n, L: x -= n, U: y += n, D: y -= n",
+    "방향과 칸수: direction, steps = input().split()"
+  ],
+  "expected_approaches": [
+    { "tag": "if/elif로 방향 처리", "description": "direction=R/L/U/D에 따라 x, y 업데이트" },
+    { "tag": "딕셔너리로 방향 매핑", "description": "moves = {'R':(1,0), 'L':(-1,0), 'U':(0,1), 'D':(0,-1)}" }
+  ],
+  "explanation": "## 풀이 해설\n\n**상태(x, y) 추적**이 핵심이에요!\n\n방법 1 — if/elif:\n```python\nn = int(input())\nx, y = 0, 0\nfor _ in range(n):\n    direction, steps = input().split()\n    steps = int(steps)\n    if direction == 'R': x += steps\n    elif direction == 'L': x -= steps\n    elif direction == 'U': y += steps\n    elif direction == 'D': y -= steps\nprint(f\"({x}, {y})\")\n```\n\n방법 2 — 딕셔너리로 추상화:\n```python\nmoves = {'R': (1, 0), 'L': (-1, 0), 'U': (0, 1), 'D': (0, -1)}\nfor _ in range(n):\n    d, s = input().split()\n    dx, dy = moves[d]\n    x += dx * int(s)\n    y += dy * int(s)\n```\n\n**추상화**: 방향별 이동을 딕셔너리로 정의하면 if문 없이 깔끔해져요!"
+}

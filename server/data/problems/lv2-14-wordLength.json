@@ -1,0 +1,24 @@
+{
+  "id": "lv2-14-wordLength",
+  "title": "가장 긴 단어",
+  "difficulty": 2,
+  "category": "string",
+  "description": "## 📏 단어 중에 제일 긴 건?\n\n여러 단어를 입력받아 가장 긴 단어를 찾아봐요.\n\n```python\nwords = input().split()\nlongest = max(words, key=len)\nprint(longest)\n```\n\n`.split()`은 공백으로 문자열을 나눠 리스트를 만들어요!\n\n---\n\n## 문제\n\n공백으로 구분된 단어들을 입력받아 가장 긴 단어를 출력하세요.\n(가장 긴 단어가 여러 개면 앞에 있는 것을 출력해요.)\n\n### 예시\n```\n입력: apple banana kiwi\n출력: banana\n```",
+  "starter_code": "words = input().split()\n\n# 가장 긴 단어를 출력하세요\n",
+  "test_cases": [
+    { "input": "apple banana kiwi", "expected_output": "banana", "description": "apple(5), banana(6), kiwi(4) → banana" },
+    { "input": "cat dog bird", "expected_output": "bird", "description": "cat(3), dog(3), bird(4) → bird" },
+    { "input": "python java c", "expected_output": "python", "description": "python(6), java(4), c(1) → python" },
+    { "input": "hello", "expected_output": "hello", "description": "단어 하나" }
+  ],
+  "hints": [
+    "input().split() 으로 단어 리스트를 만들어요.",
+    "max(words, key=len) 으로 길이가 가장 긴 단어를 찾아요.",
+    "직접 구현: longest = words[0]; for w in words: if len(w) > len(longest): longest = w"
+  ],
+  "expected_approaches": [
+    { "tag": "max(key=len) 활용", "description": "max(words, key=len)" },
+    { "tag": "for로 직접 비교", "description": "longest=words[0]; for w in words: if len(w)>len(longest): longest=w" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nwords = input().split()\nprint(max(words, key=len))\n```\n\n`max(words, key=len)` → `len`(길이)을 기준으로 가장 큰 값!\n직접 구현:\n```python\nwords = input().split()\nlongest = words[0]\nfor w in words:\n    if len(w) > len(longest):\n        longest = w\nprint(longest)\n```"
+}

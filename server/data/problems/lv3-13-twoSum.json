@@ -1,0 +1,24 @@
+{
+  "id": "lv3-13-twoSum",
+  "title": "두 수의 합 찾기",
+  "difficulty": 3,
+  "category": "algorithm",
+  "description": "## 🎯 목표 합계를 만드는 두 수를 찾아라!\n\n숫자 목록에서 더했을 때 목표값이 되는 두 수를 찾아요.\n\n```\n목록: [2, 7, 11, 15]\n목표: 9\n→ 2 + 7 = 9 → (2, 7)\n```\n\n### 두 가지 접근법\n1. **완전 탐색**: 모든 쌍을 확인 O(n²)\n2. **세트 활용**: 필요한 값이 있는지 빠르게 확인 O(n)\n\n---\n\n## 문제\n\n숫자 목록과 목표값을 입력받아 합이 목표값이 되는 두 수를 작은 수 먼저 출력하세요.\n(쌍이 없으면 `없음` 출력, 여러 쌍이면 가장 먼저 발견된 것)\n\n### 예시\n```\n입력:\n2 7 11 15\n9\n출력: 2 7\n```",
+  "starter_code": "numbers = list(map(int, input().split()))\ntarget = int(input())\n\n# 합이 target이 되는 두 수를 찾으세요\n",
+  "test_cases": [
+    { "input": "2 7 11 15\n9", "expected_output": "2 7", "description": "2+7=9" },
+    { "input": "1 2 3 4 5\n9", "expected_output": "4 5", "description": "4+5=9" },
+    { "input": "1 2 3\n10", "expected_output": "없음", "description": "합이 10인 쌍 없음" },
+    { "input": "5 5 10\n10", "expected_output": "5 5", "description": "같은 숫자 두 개" }
+  ],
+  "hints": [
+    "완전 탐색: for i in range(len(numbers)): for j in range(i+1, len(numbers)):",
+    "세트 활용: seen = set(); for n in numbers: if target-n in seen: 찾음!",
+    "두 수를 출력할 때 min(a,b), max(a,b)로 작은 수 먼저 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "완전 탐색 O(n²)", "description": "이중 for문으로 모든 쌍 확인" },
+    { "tag": "세트 활용 O(n)", "description": "seen에 지금까지 본 수를 저장, target-n이 seen에 있으면 정답" }
+  ],
+  "explanation": "## 풀이 해설\n\n방법 1 — 완전 탐색 (이해하기 쉬움):\n```python\nnumbers = list(map(int, input().split()))\ntarget = int(input())\nfound = False\n\nfor i in range(len(numbers)):\n    for j in range(i + 1, len(numbers)):\n        if numbers[i] + numbers[j] == target:\n            a, b = sorted([numbers[i], numbers[j]])\n            print(a, b)\n            found = True\n            break\n    if found:\n        break\n\nif not found:\n    print(\"없음\")\n```\n\n방법 2 — 세트 활용 (효율적):\n```python\nnumbers = list(map(int, input().split()))\ntarget = int(input())\nseen = set()\n\nfor n in numbers:\n    complement = target - n\n    if complement in seen:\n        print(min(n, complement), max(n, complement))\n        break\n    seen.add(n)\nelse:\n    print(\"없음\")\n```\n\n**핵심 통찰**: `a + b = target`이면 `b = target - a`!\n`a`를 보면 `b`가 이미 나왔는지 확인만 하면 돼요."
+}

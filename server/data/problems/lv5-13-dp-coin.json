@@ -1,0 +1,24 @@
+{
+  "id": "lv5-13-dp-coin",
+  "title": "동전 최소 개수 (DP)",
+  "difficulty": 5,
+  "category": "dp",
+  "description": "## 💰 동전을 최소로! (DP)\n\n여러 종류의 동전으로 목표 금액을 만들 때 **최소 동전 개수**를 구해요.\n(각 동전은 무제한 사용 가능)\n\n```\n동전: [1, 5, 6, 9]\n목표: 11\n\n일반 그리디: 9+1+1 = 3개\n최적:        6+5 = 2개!\n\n→ 그리디로는 최적 불가 → DP 필요!\n```\n\n### DP 접근\n`dp[i]` = 금액 i를 만드는 최소 동전 수\n\n```\ndp[0] = 0\ndp[1] = 1  (1원 1개)\ndp[5] = 1  (5원 1개)\ndp[6] = 1  (6원 1개)\ndp[9] = 1  (9원 1개)\ndp[10] = 2 (5+5)\ndp[11] = 2 (5+6)\n```\n\n---\n\n## 문제\n\n동전 종류와 목표 금액을 입력받아 최소 동전 개수를 출력하세요. (불가능하면 -1)\n\n### 입력\n- 첫째 줄: 동전 수 n\n- 둘째 줄: 동전 가치들\n- 셋째 줄: 목표 금액\n\n### 예시\n```\n입력:\n4\n1 5 6 9\n11\n출력: 2\n```",
+  "starter_code": "n = int(input())\ncoins = list(map(int, input().split()))\ntarget = int(input())\n\n# 목표 금액을 만드는 최소 동전 개수를 출력하세요 (불가능하면 -1)\n",
+  "test_cases": [
+    { "input": "4\n1 5 6 9\n11", "expected_output": "2", "description": "5+6=11" },
+    { "input": "3\n1 5 10\n15", "expected_output": "2", "description": "5+10=15" },
+    { "input": "2\n3 5\n7", "expected_output": "-1", "description": "만들 수 없음" },
+    { "input": "1\n2\n4", "expected_output": "2", "description": "2+2=4" }
+  ],
+  "hints": [
+    "dp = [float('inf')] * (target+1); dp[0] = 0",
+    "for amount in range(1, target+1):",
+    "    for coin in coins: if coin <= amount: dp[amount] = min(dp[amount], dp[amount-coin]+1)",
+    "답: dp[target] if dp[target]!=inf else -1"
+  ],
+  "expected_approaches": [
+    { "tag": "바텀업 DP", "description": "dp[0]=0, 각 금액에 대해 모든 동전 시도, dp[amount-coin]+1의 최솟값" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\ncoins = list(map(int, input().split()))\ntarget = int(input())\n\ndp = [float('inf')] * (target + 1)\ndp[0] = 0  # 0원을 만들려면 0개\n\nfor amount in range(1, target + 1):\n    for coin in coins:\n        if coin <= amount:\n            dp[amount] = min(dp[amount], dp[amount - coin] + 1)\n\nresult = dp[target]\nprint(-1 if result == float('inf') else result)\n```\n\n**왜 그리디가 안 될까?**\n\n동전 [1, 5, 6, 9], 목표 11:\n- 그리디: 9 선택 → 남은 2 → 1+1 = 총 3개\n- 최적: 6+5 = 2개\n\n그리디는 큰 동전을 먼저 선택하지만, 때로는 작은 동전이 더 효율적!\n\n**DP 점화식**:\n`dp[i] = min(dp[i - coin] + 1)` for all coin ≤ i\n\n\"금액 i를 만들려면 coin을 하나 사용하고, 나머지 i-coin을 만드는 최적값 + 1\"\n\n**바텀업 DP**: 작은 금액부터 계산해서 큰 금액에 활용!\n이전 계산 결과를 재사용 → 중복 계산 없음!"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "lv2-08-maxMin",
+  "title": "반 최고점과 최저점",
+  "difficulty": 2,
+  "category": "loop",
+  "description": "## 📊 시험 점수 분석!\n\nn명의 시험 점수 중 최고점과 최저점을 찾아요.\n\n```python\nn = int(input())\nscores = []\nfor _ in range(n):\n    scores.append(int(input()))\nprint(max(scores))\nprint(min(scores))\n```\n\n---\n\n## 문제\n\n학생 수와 점수를 입력받아 최고점과 최저점을 출력하세요.\n\n### 입력\n- 첫째 줄: 학생 수 n\n- 이후 n줄: 각 학생의 점수\n\n### 출력\n- 첫째 줄: 최고점\n- 둘째 줄: 최저점\n\n### 예시\n```\n입력:\n4\n85\n92\n78\n95\n출력:\n95\n78\n```",
+  "starter_code": "n = int(input())\n\n# 점수를 입력받아 최고점과 최저점을 출력하세요\n",
+  "test_cases": [
+    { "input": "4\n85\n92\n78\n95", "expected_output": "95\n78", "description": "4명 점수 중 최고 95, 최저 78" },
+    { "input": "3\n70\n70\n70", "expected_output": "70\n70", "description": "모두 같은 점수" },
+    { "input": "1\n100", "expected_output": "100\n100", "description": "학생 1명" }
+  ],
+  "hints": [
+    "scores = [] 빈 리스트를 만들고 scores.append(점수)로 추가하세요.",
+    "max(scores), min(scores)로 최댓값과 최솟값을 구해요."
+  ],
+  "expected_approaches": [
+    { "tag": "리스트 + max/min", "description": "scores에 append 후 max/min 사용" },
+    { "tag": "반복 중 비교", "description": "current_max, current_min을 유지하며 비교" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nscores = []\nfor _ in range(n):\n    scores.append(int(input()))\nprint(max(scores))\nprint(min(scores))\n```\n\n`_`는 반복 변수를 실제로 사용하지 않을 때 관례상 쓰는 이름이에요!\n`append()`로 리스트에 하나씩 추가하고, `max()`, `min()`으로 최댓값/최솟값을 구해요."
+}

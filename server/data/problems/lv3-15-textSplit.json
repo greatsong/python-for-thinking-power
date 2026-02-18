@@ -1,0 +1,23 @@
+{
+  "id": "lv3-15-textSplit",
+  "title": "메시지 분석기",
+  "difficulty": 3,
+  "category": "string",
+  "description": "## 💬 채팅 메시지를 분석해요!\n\n채팅 메시지에서 다음을 분석해요:\n- 총 단어 수\n- 가장 많이 쓴 단어\n- 이모지(특수문자) 개수\n\n**문제 분해**:\n1. 단어 분리 → `.split()`\n2. 단어 빈도 → 딕셔너리 또는 `Counter`\n3. 이모지 판별 → 아스키 코드 범위 밖의 문자\n\n---\n\n## 문제\n\n메시지를 입력받아 단어 수, 가장 많이 나온 단어, 비아스키 문자 수를 출력하세요.\n\n### 예시\n```\n입력: hello world hello python hello\n출력:\n단어 수: 5\n최빈 단어: hello (3회)\n특수문자: 0개\n```",
+  "starter_code": "msg = input()\nwords = msg.split()\n\n# 단어 수, 최빈 단어, 비아스키 문자 수를 출력하세요\n",
+  "test_cases": [
+    { "input": "hello world hello python hello", "expected_output": "단어 수: 5\n최빈 단어: hello (3회)\n특수문자: 0개", "description": "영어 메시지" },
+    { "input": "나는 파이썬 파이썬 좋아", "expected_output": "단어 수: 4\n최빈 단어: 파이썬 (2회)\n특수문자: 8개", "description": "한글 메시지" },
+    { "input": "one", "expected_output": "단어 수: 1\n최빈 단어: one (1회)\n특수문자: 0개", "description": "단어 1개" }
+  ],
+  "hints": [
+    "단어 빈도: freq = {}; for w in words: freq[w] = freq.get(w, 0) + 1",
+    "최빈 단어: max(freq, key=freq.get)",
+    "비아스키: ord(c) > 127 이면 비아스키 문자예요."
+  ],
+  "expected_approaches": [
+    { "tag": "딕셔너리 + max(key=)", "description": "freq 딕셔너리 구축 후 max로 최빈 단어 찾기" },
+    { "tag": "Counter 모듈", "description": "Counter(words).most_common(1)[0]" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nmsg = input()\nwords = msg.split()\n\n# 단어 수\nprint(f\"단어 수: {len(words)}\")\n\n# 최빈 단어\nfreq = {}\nfor w in words:\n    freq[w] = freq.get(w, 0) + 1\nmost_word = max(freq, key=freq.get)\nprint(f\"최빈 단어: {most_word} ({freq[most_word]}회)\")\n\n# 비아스키 문자 수\nspecial = sum(1 for c in msg if ord(c) > 127)\nprint(f\"특수문자: {special}개\")\n```\n\n`freq.get(w, 0)`: 키가 없으면 기본값 0을 반환해요!\n`max(freq, key=freq.get)`: 딕셔너리에서 값이 가장 큰 키를 찾아요.\n`ord(c) > 127`: 아스키 코드 범위(0~127) 밖이면 한글, 이모지 등이에요."
+}

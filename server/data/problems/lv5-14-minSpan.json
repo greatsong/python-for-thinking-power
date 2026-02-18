@@ -1,0 +1,22 @@
+{
+  "id": "lv5-14-minSpan",
+  "title": "최소 신장 트리 (크루스칼)",
+  "difficulty": 5,
+  "category": "graph",
+  "description": "## 🌲 최소 비용으로 연결! (MST)\n\nn개의 도시를 **가장 적은 비용**으로 모두 연결하는 방법!\n\n최소 신장 트리(MST)는 모든 정점을 연결하되 가중치 합이 최소인 트리예요.\n\n```\n도시 4개:\n1-2: 비용 1\n2-3: 비용 2\n3-4: 비용 3\n1-4: 비용 5\n2-4: 비용 4\n\n최적: 1-2(1) + 2-3(2) + 3-4(3) = 6\n→ 사이클 없이 n-1개 간선으로 모두 연결!\n```\n\n### 크루스칼 알고리즘\n1. 간선을 가중치 순으로 정렬\n2. 가중치 작은 간선부터 추가\n3. 사이클이 생기면 건너뜀 (Union-Find로 체크!)\n4. n-1개 간선이 추가되면 완료\n\n---\n\n## 문제\n\nn개 도시와 m개 도로를 입력받아 MST의 총 비용을 출력하세요.\n\n### 입력\n- 첫째 줄: n m\n- 이후 m줄: a b 비용\n\n### 예시\n```\n입력:\n4 5\n1 2 1\n2 3 2\n3 4 3\n1 4 5\n2 4 4\n출력: 6\n```",
+  "starter_code": "n, m = map(int, input().split())\nedges = []\nfor _ in range(m):\n    a, b, cost = map(int, input().split())\n    edges.append((cost, a, b))\n\n# 크루스칼 알고리즘으로 MST 비용을 출력하세요\n",
+  "test_cases": [
+    { "input": "4 5\n1 2 1\n2 3 2\n3 4 3\n1 4 5\n2 4 4", "expected_output": "6", "description": "기본 MST" },
+    { "input": "3 3\n1 2 5\n2 3 3\n1 3 4", "expected_output": "7", "description": "삼각형" },
+    { "input": "2 1\n1 2 10", "expected_output": "10", "description": "두 정점" }
+  ],
+  "hints": [
+    "간선을 비용 기준으로 정렬: edges.sort()",
+    "Union-Find로 사이클 체크: find(a) != find(b) 이면 추가 가능",
+    "n-1개 간선 추가되면 종료"
+  ],
+  "expected_approaches": [
+    { "tag": "크루스칼 + Union-Find", "description": "비용 정렬 → 사이클 체크 후 추가 → n-1개 선택" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn, m = map(int, input().split())\nedges = []\nfor _ in range(m):\n    a, b, cost = map(int, input().split())\n    edges.append((cost, a, b))\n\n# 크루스칼: 가중치 기준 정렬\nedges.sort()\n\n# Union-Find\nparent = list(range(n + 1))\n\ndef find(x):\n    if parent[x] != x:\n        parent[x] = find(parent[x])\n    return parent[x]\n\ndef union(x, y):\n    px, py = find(x), find(y)\n    if px == py:\n        return False  # 이미 같은 그룹 (사이클!)\n    parent[px] = py\n    return True\n\ntotal = 0\ncount = 0\nfor cost, a, b in edges:\n    if union(a, b):  # 사이클 없으면 추가\n        total += cost\n        count += 1\n    if count == n - 1:  # n-1개 추가 완료!\n        break\n\nprint(total)\n```\n\n**왜 n-1개 간선인가?**\n\nn개의 노드를 트리로 연결하면 항상 정확히 n-1개의 간선!\n(트리는 사이클 없는 연결 그래프)\n\n**크루스칼 vs 프림**:\n- 크루스칼: 간선 기준, 희소 그래프에 유리\n- 프림: 정점 기준 확장, 밀집 그래프에 유리\n\n**실제 적용**: 통신망, 전력망, 도로 설계에서 최소 비용으로 연결 방법!"
+}

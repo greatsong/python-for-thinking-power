@@ -1,0 +1,23 @@
+{
+  "id": "lv2-12-charCount",
+  "title": "글자 수 세기",
+  "difficulty": 2,
+  "category": "string",
+  "description": "## 📏 문장에 특정 글자가 몇 번 나왔을까?\n\n문장에서 특정 글자가 몇 번 등장하는지 세는 프로그램이에요.\n\n```python\nsentence = input()\nchar = input()\nprint(sentence.count(char))\n```\n\n`.count()` 메서드는 문자열에서 특정 문자의 등장 횟수를 세요.\n\n---\n\n## 문제\n\n문장과 찾을 글자를 입력받아 그 글자가 등장하는 횟수를 출력하세요.\n\n### 입력\n- 첫째 줄: 문장\n- 둘째 줄: 찾을 글자\n\n### 예시\n```\n입력:\nhello world\nl\n출력: 3\n```",
+  "starter_code": "sentence = input()\nchar = input()\n\n# char이 sentence에 몇 번 등장하는지 출력하세요\n",
+  "test_cases": [
+    { "input": "hello world\nl", "expected_output": "3", "description": "hello world에서 l은 3번" },
+    { "input": "banana\na", "expected_output": "3", "description": "banana에서 a는 3번" },
+    { "input": "python is fun\nn", "expected_output": "2", "description": "python is fun에서 n은 2번" },
+    { "input": "abcdef\nz", "expected_output": "0", "description": "없는 글자는 0번" }
+  ],
+  "hints": [
+    "sentence.count(char) 로 등장 횟수를 셀 수 있어요.",
+    "직접 구현하려면 for 문으로 각 글자를 확인하세요."
+  ],
+  "expected_approaches": [
+    { "tag": ".count() 메서드", "description": "sentence.count(char)" },
+    { "tag": "for 반복으로 직접 세기", "description": "count=0; for c in sentence: if c==char: count+=1" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nsentence = input()\nchar = input()\nprint(sentence.count(char))\n```\n\n`.count()` 메서드를 쓰면 한 줄로 끝!\n직접 구현하면:\n```python\ncount = 0\nfor c in sentence:\n    if c == char:\n        count += 1\nprint(count)\n```\n두 방법을 비교해보면 파이썬 내장 함수가 얼마나 편리한지 알 수 있어요."
+}

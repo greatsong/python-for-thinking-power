@@ -1,0 +1,23 @@
+{
+  "id": "lv3-16-pigLatin",
+  "title": "피그 라틴 변환기",
+  "difficulty": 3,
+  "category": "string",
+  "description": "## 🐷 피그 라틴(Pig Latin)!\n\n영어 단어를 변형하는 놀이 언어예요.\n\n**규칙**:\n- 모음(`a, e, i, o, u`)으로 시작하면 끝에 `yay` 추가\n  - `apple` → `appleyay`\n- 자음으로 시작하면 첫 자음을 끝으로 보내고 `ay` 추가\n  - `hello` → `ellohay`\n  - `str` → 연속 자음 처리: `straw` → `awstray`\n\n---\n\n## 문제 (단순화 버전)\n\n단어를 입력받아 피그 라틴으로 변환하세요.\n(첫 글자만 처리: 모음이면 yay, 자음이면 첫 글자를 끝으로 + ay)\n\n### 예시\n```\n입력: hello\n출력: ellohay\n\n입력: apple\n출력: appleyay\n```",
+  "starter_code": "word = input().lower()\nvowels = \"aeiou\"\n\n# 피그 라틴으로 변환하세요\n",
+  "test_cases": [
+    { "input": "hello", "expected_output": "ellohay", "description": "자음 시작 → 끝으로 이동 + ay" },
+    { "input": "apple", "expected_output": "appleyay", "description": "모음 시작 → yay 추가" },
+    { "input": "python", "expected_output": "ythonpay", "description": "자음 p → 끝으로" },
+    { "input": "eagle", "expected_output": "eagleyay", "description": "모음 e → yay" }
+  ],
+  "hints": [
+    "word[0] in vowels 로 모음 시작인지 확인하세요.",
+    "자음 시작: word[1:] + word[0] + \"ay\"",
+    "모음 시작: word + \"yay\""
+  ],
+  "expected_approaches": [
+    { "tag": "슬라이싱 활용", "description": "word[1:] + word[0] + \"ay\" vs word + \"yay\"" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nword = input().lower()\nvowels = \"aeiou\"\n\nif word[0] in vowels:\n    result = word + \"yay\"\nelse:\n    result = word[1:] + word[0] + \"ay\"\n\nprint(result)\n```\n\n**슬라이싱**이 핵심이에요!\n- `word[0]` → 첫 글자\n- `word[1:]` → 첫 글자 이후 모든 글자\n- `word[1:] + word[0] + \"ay\"` → 첫 글자를 끝으로 이동하고 ay 추가\n\n예: `\"hello\"` → `word[1:]=\"ello\"` + `word[0]=\"h\"` + `\"ay\"` = `\"ellohay\"`\n\n**확장 도전**: 연속 자음도 처리하고 싶다면?\n```python\ni = 0\nwhile i < len(word) and word[i] not in vowels:\n    i += 1\nresult = word[i:] + word[:i] + \"ay\"\n```"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "lv3-03-caesar",
+  "title": "카이사르 암호",
+  "difficulty": 3,
+  "category": "string",
+  "description": "## 🔐 고대 로마의 암호 기법!\n\n줄리어스 카이사르가 사용했다는 암호예요.\n각 알파벳을 n칸씩 뒤로 밀어요!\n\n```\n평문: HELLO\n이동: 3\n암호: KHOOR\n```\n\n- H → K (H+3)\n- E → H (E+3)\n- L → O (L+3)\n- O → R (O+3)\n\nZ를 넘어가면 다시 A로 돌아와요! (순환)\n\n### 풀이 힌트\n```python\nord('A') = 65  # 알파벳의 ASCII 코드\nchr(65) = 'A'  # 코드를 문자로 변환\n```\n\n---\n\n## 문제\n\n영문 대문자 문자열과 이동 칸 수 n을 입력받아 암호화한 문자열을 출력하세요.\n\n### 예시\n```\n입력:\nHELLO\n3\n출력: KHOOR\n```",
+  "starter_code": "text = input()\nn = int(input())\n\n# 각 알파벳을 n칸 뒤로 밀어서 출력하세요\n",
+  "test_cases": [
+    { "input": "HELLO\n3", "expected_output": "KHOOR", "description": "HELLO를 3칸 이동" },
+    { "input": "ABC\n1", "expected_output": "BCD", "description": "ABC를 1칸 이동" },
+    { "input": "XYZ\n3", "expected_output": "ABC", "description": "XYZ를 3칸 이동 (Z→A 순환)" },
+    { "input": "PYTHON\n13", "expected_output": "CLGUBA", "description": "13칸 이동 (ROT13)" }
+  ],
+  "hints": [
+    "ord('A') = 65, ord('Z') = 90 이에요.",
+    "이동: (ord(c) - ord('A') + n) % 26 → 0~25 범위",
+    "다시 문자로: chr(결과 + ord('A'))"
+  ],
+  "expected_approaches": [
+    { "tag": "ord/chr + 모듈러 산술", "description": "chr((ord(c)-65+n)%26+65) 로 각 문자 변환" },
+    { "tag": "문자열 테이블 직접 구성", "description": "알파벳 리스트 만들고 인덱스로 접근" }
+  ],
+  "explanation": "## 풀이 해설\n\n**모듈러 산술**이 핵심이에요!\n\nA=0, B=1, ..., Z=25 로 생각하면:\n- 이동 후 위치 = (현재 위치 + n) % 26\n- 26으로 나눈 나머지라서 Z를 넘으면 자동으로 A로 돌아와요\n\n```python\ntext = input()\nn = int(input())\nresult = \"\"\nfor c in text:\n    new_pos = (ord(c) - ord('A') + n) % 26\n    result += chr(new_pos + ord('A'))\nprint(result)\n```\n\n한 줄 버전:\n```python\nprint(\"\".join(chr((ord(c) - 65 + n) % 26 + 65) for c in text))\n```\n\n**사고 과정**:\n1. 알파벳을 숫자(0~25)로 변환\n2. n을 더하고 26으로 나눈 나머지로 순환 처리\n3. 다시 알파벳으로 변환"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "lv3-09-anagram",
+  "title": "애너그램 확인",
+  "difficulty": 3,
+  "category": "string",
+  "description": "## 🔤 같은 글자로 만든 다른 단어!\n\n**애너그램**: 같은 글자들을 재배열해서 만든 다른 단어\n\n```\n\"listen\" ↔ \"silent\"  → 애너그램!\n\"hello\" ↔ \"world\"   → 애너그램 아님\n```\n\n### 어떻게 확인할까?\n- 두 단어를 정렬했을 때 같으면 애너그램이에요!\n- `sorted(\"listen\") == sorted(\"silent\")`\n- 또는 각 글자의 개수를 비교해도 돼요\n\n---\n\n## 문제\n\n두 단어를 입력받아 애너그램이면 `애너그램`, 아니면 `애너그램 아님`을 출력하세요.\n(대소문자 구분 없음)\n\n### 예시\n```\n입력:\nlisten\nsilent\n출력: 애너그램\n\n입력:\nhello\nworld\n출력: 애너그램 아님\n```",
+  "starter_code": "word1 = input().lower()\nword2 = input().lower()\n\n# 애너그램인지 확인하세요\n",
+  "test_cases": [
+    { "input": "listen\nsilent", "expected_output": "애너그램", "description": "listen, silent는 애너그램" },
+    { "input": "hello\nworld", "expected_output": "애너그램 아님", "description": "hello, world는 아님" },
+    { "input": "Astronomer\nMoon starer", "expected_output": "애너그램 아님", "description": "공백이 있으면 다름" },
+    { "input": "Triangle\nIntegral", "expected_output": "애너그램", "description": "대소문자 무관" }
+  ],
+  "hints": [
+    "sorted(word1) == sorted(word2) 로 확인하세요.",
+    "또는 두 단어의 각 글자 개수를 비교해요.",
+    ".lower()로 소문자로 바꾸면 대소문자 구분이 없어져요."
+  ],
+  "expected_approaches": [
+    { "tag": "정렬 비교", "description": "sorted(word1) == sorted(word2)" },
+    { "tag": "Counter로 빈도 비교", "description": "Counter(word1) == Counter(word2)" }
+  ],
+  "explanation": "## 풀이 해설\n\n방법 1 — 정렬 비교:\n```python\nword1 = input().lower()\nword2 = input().lower()\n\nif sorted(word1) == sorted(word2):\n    print(\"애너그램\")\nelse:\n    print(\"애너그램 아님\")\n```\n\n방법 2 — Counter 활용:\n```python\nfrom collections import Counter\nif Counter(word1) == Counter(word2):\n    print(\"애너그램\")\n```\n\n**사고 과정**: '같은 글자인지 확인' → '순서를 없애면 어때?' → 둘 다 정렬하면 같아지는지 확인!\n\n`Counter('listen')` → `{'l':1, 'i':1, 's':1, 't':1, 'e':1, 'n':1}`\n각 글자의 **빈도수**를 비교하는 게 핵심이에요."
+}

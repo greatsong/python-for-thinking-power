@@ -1,0 +1,23 @@
+{
+  "id": "lv3-11-score",
+  "title": "점수판 분석기",
+  "difficulty": 3,
+  "category": "logic",
+  "description": "## 🏆 게임 점수판 분석!\n\n게임 점수 목록에서 통계를 분석해요.\n\n- **최고점**, **최저점**, **평균**, **중앙값**을 구해요\n- **중앙값**: 정렬했을 때 가운데 값\n  - 홀수 개: 정중앙\n  - 짝수 개: 가운데 두 수의 평균\n\n### 중앙값 계산\n```\n[1, 3, 5, 7, 9] → 중앙값: 5\n[1, 3, 5, 7] → 중앙값: (3+5)/2 = 4.0\n```\n\n---\n\n## 문제\n\n공백으로 구분된 점수들을 입력받아 최고점, 최저점, 평균(소수점1자리), 중앙값을 출력하세요.\n\n### 예시\n```\n입력: 85 92 78 95 70 88\n출력:\n최고점: 95\n최저점: 70\n평균: 84.7\n중앙값: 86.5\n```",
+  "starter_code": "scores = list(map(int, input().split()))\n\n# 통계를 계산해서 출력하세요\n",
+  "test_cases": [
+    { "input": "85 92 78 95 70 88", "expected_output": "최고점: 95\n최저점: 70\n평균: 84.7\n중앙값: 86.5", "description": "6개 점수 분석" },
+    { "input": "90 80 70", "expected_output": "최고점: 90\n최저점: 70\n평균: 80.0\n중앙값: 80", "description": "홀수 개 (중앙값=정수)" },
+    { "input": "100", "expected_output": "최고점: 100\n최저점: 100\n평균: 100.0\n중앙값: 100", "description": "점수 1개" }
+  ],
+  "hints": [
+    "정렬 후: sorted_scores = sorted(scores)",
+    "중앙값: n이 홀수면 sorted_scores[n//2], 짝수면 (sorted_scores[n//2-1] + sorted_scores[n//2]) / 2",
+    "평균: round(sum(scores) / len(scores), 1)"
+  ],
+  "expected_approaches": [
+    { "tag": "정렬 후 인덱스로 중앙값", "description": "sorted_scores[n//2] 또는 평균" },
+    { "tag": "statistics 모듈", "description": "import statistics; statistics.median(scores)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nscores = list(map(int, input().split()))\nn = len(scores)\nsorted_scores = sorted(scores)\n\nprint(f\"최고점: {max(scores)}\")\nprint(f\"최저점: {min(scores)}\")\nprint(f\"평균: {round(sum(scores) / n, 1)}\")\n\n# 중앙값\nif n % 2 == 1:\n    median = sorted_scores[n // 2]\nelse:\n    median = (sorted_scores[n // 2 - 1] + sorted_scores[n // 2]) / 2\n\n# 정수이면 정수로, 소수이면 소수로 출력\nif median == int(median):\n    print(f\"중앙값: {int(median)}\")\nelse:\n    print(f\"중앙값: {median}\")\n```\n\n**중앙값 인덱스 이해**:\n- 5개: 인덱스 [0,1,2,3,4], 중앙 = [2] (5//2=2)\n- 6개: 인덱스 [0,1,2,3,4,5], 중앙 = [2]와[3] 평균 (6//2=3, 3-1=2)"
+}

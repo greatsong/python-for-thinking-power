@@ -1,0 +1,23 @@
+{
+  "id": "lv1-08-dogAge",
+  "title": "강아지 나이 변환기",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "## 🐶 강아지 나이를 사람 나이로!\n\n강아지 1살은 사람 나이로 약 7살이래요.\n\n강아지 나이를 입력하면 사람 나이로 변환해주는 프로그램을 만들어봐요!\n\n```python\ndog_age = int(input())\nhuman_age = dog_age * 7\nprint(human_age)\n```\n\n---\n\n## 문제\n\n강아지 나이(정수)를 입력받아 사람 나이로 출력하세요.\n\n### 입력\n- 강아지 나이 (정수)\n\n### 출력\n- 사람 나이 (강아지 나이 × 7)\n\n### 예시\n```\n입력: 3\n출력: 21\n```",
+  "starter_code": "dog_age = int(input())\n\n# 강아지 나이를 사람 나이로 변환해서 출력하세요\n",
+  "test_cases": [
+    { "input": "3", "expected_output": "21", "description": "강아지 3살 → 사람 21살" },
+    { "input": "1", "expected_output": "7", "description": "강아지 1살 → 사람 7살" },
+    { "input": "7", "expected_output": "49", "description": "강아지 7살 → 사람 49살" },
+    { "input": "10", "expected_output": "70", "description": "강아지 10살 → 사람 70살" }
+  ],
+  "hints": [
+    "곱셈 기호는 * 예요.",
+    "dog_age * 7 을 변수에 저장하거나 바로 print()로 출력해도 돼요."
+  ],
+  "expected_approaches": [
+    { "tag": "변수 활용", "description": "human_age = dog_age * 7 후 출력" },
+    { "tag": "직접 계산", "description": "print(dog_age * 7)로 바로 출력" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\ndog_age = int(input())\nprint(dog_age * 7)\n```\n\n`dog_age * 7`로 사람 나이를 바로 계산해서 출력할 수 있어요!\n중간에 변수를 쓰는 방법도 있어요:\n```python\ndog_age = int(input())\nhuman_age = dog_age * 7\nprint(human_age)\n```"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "lv1-28-topScore",
+  "title": "맛집 최고 별점",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "## ⭐ 세 명의 별점 중 최고점은?\n\n맛집 리뷰 앱에서 세 명이 별점을 줬어요. 가장 높은 별점을 찾아요!\n\n```python\na = int(input())\nb = int(input())\nc = int(input())\nprint(max(a, b, c))\n```\n\n파이썬의 `max()` 함수는 여러 값 중 가장 큰 값을 반환해요.\n\n---\n\n## 문제\n\n세 명의 별점(1~5)을 입력받아 가장 높은 별점을 출력하세요.\n\n### 입력\n- 세 줄에 걸쳐 별점 (각 1~5 사이 정수)\n\n### 출력\n- 최고 별점\n\n### 예시\n```\n입력:\n4\n5\n3\n출력: 5\n```",
+  "starter_code": "a = int(input())\nb = int(input())\nc = int(input())\n\n# 세 별점 중 가장 높은 점수를 출력하세요\n",
+  "test_cases": [
+    { "input": "4\n5\n3", "expected_output": "5", "description": "4, 5, 3 → 최고 5점" },
+    { "input": "3\n3\n3", "expected_output": "3", "description": "모두 같으면 그 점수 출력" },
+    { "input": "1\n2\n5", "expected_output": "5", "description": "1, 2, 5 → 최고 5점" },
+    { "input": "5\n4\n4", "expected_output": "5", "description": "5, 4, 4 → 최고 5점" }
+  ],
+  "hints": [
+    "max() 함수는 가장 큰 값을 찾아줘요.",
+    "max(a, b, c)로 세 값 중 최댓값을 구하세요.",
+    "if문으로 직접 비교해도 돼요: if a >= b and a >= c: print(a)"
+  ],
+  "expected_approaches": [
+    { "tag": "max() 함수 활용", "description": "print(max(a, b, c))" },
+    { "tag": "if문으로 직접 비교", "description": "if/elif로 세 값 비교" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\na = int(input())\nb = int(input())\nc = int(input())\nprint(max(a, b, c))\n```\n\n`max()` 함수는 여러 값 중 최댓값을 바로 구해줘요!\nif문으로 하려면 더 길지만 이해하기 쉬워요:\n```python\nif a >= b and a >= c:\n    print(a)\nelif b >= c:\n    print(b)\nelse:\n    print(c)\n```"
+}

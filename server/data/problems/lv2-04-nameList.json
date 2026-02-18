@@ -1,0 +1,23 @@
+{
+  "id": "lv2-04-nameList",
+  "title": "출석부 만들기",
+  "difficulty": 2,
+  "category": "loop",
+  "description": "## 📋 반 친구들 출석부!\n\nn명의 이름을 입력받아 번호를 붙여서 출력해요.\n\n```python\nn = int(input())\nfor i in range(1, n + 1):\n    name = input()\n    print(f\"{i}. {name}\")\n```\n\n`range(1, n+1)` 은 1부터 n까지예요!\n\n---\n\n## 문제\n\n학생 수 n과 이름 목록을 입력받아 번호와 함께 출력하세요.\n\n### 입력\n- 첫째 줄: 학생 수 n\n- 이후 n줄: 학생 이름 (한 명씩)\n\n### 출력\n- `1. 이름` 형태로 번호와 이름 출력\n\n### 예시\n```\n입력:\n3\n지민\n태형\n정국\n출력:\n1. 지민\n2. 태형\n3. 정국\n```",
+  "starter_code": "n = int(input())\n\n# n명의 이름을 번호와 함께 출력하세요\n",
+  "test_cases": [
+    { "input": "3\n지민\n태형\n정국", "expected_output": "1. 지민\n2. 태형\n3. 정국", "description": "3명 출석부" },
+    { "input": "1\n홍길동", "expected_output": "1. 홍길동", "description": "1명 출석부" },
+    { "input": "2\nAlice\nBob", "expected_output": "1. Alice\n2. Bob", "description": "영문 이름 2명" }
+  ],
+  "hints": [
+    "for i in range(1, n+1): 로 1부터 n까지 반복해요.",
+    "반복문 안에서 name = input()으로 이름을 하나씩 입력받으세요.",
+    "f-string으로 f\"{i}. {name}\" 처럼 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "for + input()", "description": "for i in range(1, n+1): name=input(); print(f\"{i}. {name}\")" },
+    { "tag": "enumerate 활용", "description": "names=[];for _ in range(n):... 후 enumerate(names)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nfor i in range(1, n + 1):\n    name = input()\n    print(f\"{i}. {name}\")\n```\n\n반복문 안에서 매번 `input()`을 호출하면 여러 줄 입력을 받을 수 있어요!\n`range(1, n+1)`은 1, 2, ..., n 을 순서대로 돌아요."
+}

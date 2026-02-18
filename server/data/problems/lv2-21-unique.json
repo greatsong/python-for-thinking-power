@@ -1,0 +1,23 @@
+{
+  "id": "lv2-21-unique",
+  "title": "중복 없애기",
+  "difficulty": 2,
+  "category": "list",
+  "description": "## 🧹 같은 값은 하나만!\n\n숫자 목록에서 중복을 제거해봐요.\n`set`을 사용하면 중복을 자동으로 없애줘요!\n\n```python\nnumbers = list(map(int, input().split()))\nunique = list(set(numbers))\nunique.sort()\nprint(unique)\n```\n\n`set`은 집합 자료형으로 중복을 허용하지 않아요.\n\n---\n\n## 문제\n\n공백으로 구분된 정수들을 입력받아 중복을 제거하고 오름차순으로 출력하세요.\n\n### 예시\n```\n입력: 3 1 4 1 5 9 2 6 5 3\n출력: [1, 2, 3, 4, 5, 6, 9]\n```",
+  "starter_code": "numbers = list(map(int, input().split()))\n\n# 중복을 제거하고 오름차순으로 출력하세요\n",
+  "test_cases": [
+    { "input": "3 1 4 1 5 9 2 6 5 3", "expected_output": "[1, 2, 3, 4, 5, 6, 9]", "description": "중복 제거 후 정렬" },
+    { "input": "1 2 3 4 5", "expected_output": "[1, 2, 3, 4, 5]", "description": "중복 없음" },
+    { "input": "5 5 5 5", "expected_output": "[5]", "description": "모두 같은 숫자" }
+  ],
+  "hints": [
+    "set()은 중복을 자동으로 제거해요.",
+    "list(set(numbers)) 로 다시 리스트로 변환하고 .sort()로 정렬하세요.",
+    "직접 구현: seen = []; for x in numbers: if x not in seen: seen.append(x)"
+  ],
+  "expected_approaches": [
+    { "tag": "set() 활용", "description": "sorted(list(set(numbers)))" },
+    { "tag": "seen 리스트로 직접 구현", "description": "for x in numbers: if x not in seen: seen.append(x)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nnumbers = list(map(int, input().split()))\nunique = sorted(list(set(numbers)))\nprint(unique)\n```\n\n`set()`: 수학의 '집합'. 같은 값을 두 번 가질 수 없어요!\n직접 구현하면 왜 `set`이 편리한지 느낄 수 있어요:\n```python\nseen = []\nfor x in numbers:\n    if x not in seen:\n        seen.append(x)\nprint(sorted(seen))\n```"
+}

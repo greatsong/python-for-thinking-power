@@ -1,0 +1,24 @@
+{
+  "id": "lv2-07-multiply",
+  "title": "숫자 누적 곱",
+  "difficulty": 2,
+  "category": "loop",
+  "description": "## 🔢 1부터 n까지 곱하면?\n\n1 × 2 × 3 × ... × n 을 계산해봐요. 이걸 **팩토리얼(n!)**이라고 해요.\n\n```python\nn = int(input())\nresult = 1\nfor i in range(1, n + 1):\n    result *= i\nprint(result)\n```\n\n합계를 구할 때는 `total = 0`에서 `+= i` 지만,\n곱셈은 `result = 1`에서 `*= i` 로 시작해요!\n\n---\n\n## 문제\n\nn을 입력받아 1부터 n까지 모든 수의 곱을 출력하세요.\n\n### 예시\n```\n입력: 5\n출력: 120\n```\n> 1 × 2 × 3 × 4 × 5 = 120",
+  "starter_code": "n = int(input())\n\n# 1부터 n까지 모든 수의 곱을 구하세요\n",
+  "test_cases": [
+    { "input": "5", "expected_output": "120", "description": "5! = 120" },
+    { "input": "1", "expected_output": "1", "description": "1! = 1" },
+    { "input": "3", "expected_output": "6", "description": "3! = 6" },
+    { "input": "7", "expected_output": "5040", "description": "7! = 5040" }
+  ],
+  "hints": [
+    "합산은 total = 0 에서 시작하지만 곱셈은 result = 1 에서 시작해요.",
+    "result *= i 는 result = result * i 와 같아요.",
+    "파이썬에는 math.factorial(n) 함수도 있어요!"
+  ],
+  "expected_approaches": [
+    { "tag": "for 반복 곱셈", "description": "result=1; for i in range(1,n+1): result*=i" },
+    { "tag": "math.factorial", "description": "import math; print(math.factorial(n))" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nresult = 1\nfor i in range(1, n + 1):\n    result *= i\nprint(result)\n```\n\n곱셈의 누적은 `1`에서 시작해요. (덧셈은 `0`에서 시작하는 것처럼)\n`*=`는 `result = result * i`의 짧은 표현이에요!"
+}

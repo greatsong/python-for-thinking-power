@@ -1,0 +1,23 @@
+{
+  "id": "lv1-15-store",
+  "title": "편의점 계산대",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "## 🏪 편의점에 오신 것을 환영합니다!\n\n물건 가격과 개수를 입력하면 총 금액을 계산해줘요.\n\n```python\nprice = int(input())\ncount = int(input())\ntotal = price * count\nprint(total)\n```\n\n---\n\n## 문제\n\n물건 가격과 구매 개수를 입력받아 총 금액을 출력하세요.\n\n### 입력\n- 첫째 줄: 물건 가격 (원)\n- 둘째 줄: 구매 개수\n\n### 출력\n- 총 금액\n\n### 예시\n```\n입력:\n1500\n3\n출력: 4500\n```",
+  "starter_code": "price = int(input())\ncount = int(input())\n\n# 총 금액을 계산해서 출력하세요\n",
+  "test_cases": [
+    { "input": "1500\n3", "expected_output": "4500", "description": "1500원 × 3개 = 4500원" },
+    { "input": "800\n5", "expected_output": "4000", "description": "800원 × 5개 = 4000원" },
+    { "input": "2000\n1", "expected_output": "2000", "description": "2000원 × 1개 = 2000원" },
+    { "input": "500\n10", "expected_output": "5000", "description": "500원 × 10개 = 5000원" }
+  ],
+  "hints": [
+    "총 금액 = 가격 × 개수",
+    "price * count 로 계산하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "곱셈 연산", "description": "print(price * count)" },
+    { "tag": "변수 저장", "description": "total = price * count 후 print(total)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nprice = int(input())\ncount = int(input())\nprint(price * count)\n```\n\n총 금액은 단순히 가격과 개수를 곱하면 돼요!\n변수 이름을 `price`, `count`처럼 의미 있게 짓는 것도 좋은 습관이에요."
+}

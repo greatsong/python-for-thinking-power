@@ -1,0 +1,24 @@
+{
+  "id": "lv5-11-dp-lis",
+  "title": "가장 긴 증가하는 부분수열 (LIS)",
+  "difficulty": 5,
+  "category": "dp",
+  "description": "## 📈 오름차순으로 고르면? (LIS)\n\n수열에서 **순서를 유지하면서** 골랐을 때 가장 긴 증가하는 부분 수열(LIS)의 길이!\n\n```\n수열: [10, 9, 2, 5, 3, 7, 101, 18]\n\n가능한 증가 부분수열:\n[2, 5, 7, 101] → 길이 4\n[2, 3, 7, 101] → 길이 4\n[2, 5, 7, 18]  → 길이 4\n\nLIS 길이 = 4\n```\n\n### DP 접근\n`dp[i]` = i번째 원소를 마지막으로 하는 LIS의 최대 길이\n\n```\n[10, 9, 2, 5, 3, 7, 101, 18]\ndp = [1,  1, 1, 2, 2, 3,  4,  4]\n```\n\n---\n\n## 문제\n\nn개의 정수 수열에서 LIS의 길이를 출력하세요.\n\n### 예시\n```\n입력:\n8\n10 9 2 5 3 7 101 18\n출력: 4\n```",
+  "starter_code": "n = int(input())\narr = list(map(int, input().split()))\n\n# LIS 길이를 출력하세요\n",
+  "test_cases": [
+    { "input": "8\n10 9 2 5 3 7 101 18", "expected_output": "4", "description": "기본 LIS" },
+    { "input": "5\n1 2 3 4 5", "expected_output": "5", "description": "이미 오름차순" },
+    { "input": "4\n5 4 3 2", "expected_output": "1", "description": "내림차순" },
+    { "input": "6\n3 1 4 1 5 9", "expected_output": "4", "description": "파이 수열" }
+  ],
+  "hints": [
+    "dp = [1] * n (각 원소 자신만으로 길이 1)",
+    "for i in range(n): for j in range(i): if arr[j]<arr[i]: dp[i]=max(dp[i], dp[j]+1)",
+    "answer = max(dp)"
+  ],
+  "expected_approaches": [
+    { "tag": "O(n²) DP", "description": "dp[i] = i 이전 원소 중 arr[j]<arr[i]인 dp[j]+1의 최대값" },
+    { "tag": "O(n log n) 이진 탐색", "description": "tails 배열 유지, bisect_left로 삽입 위치 탐색" }
+  ],
+  "explanation": "## 풀이 해설\n\n### 방법 1: O(n²) DP\n```python\nn = int(input())\narr = list(map(int, input().split()))\n\ndp = [1] * n\nfor i in range(n):\n    for j in range(i):\n        if arr[j] < arr[i]:  # j가 i의 이전이고 더 작으면\n            dp[i] = max(dp[i], dp[j] + 1)\n\nprint(max(dp))\n```\n\n### 방법 2: O(n log n) 이진 탐색\n```python\nfrom bisect import bisect_left\n\nn = int(input())\narr = list(map(int, input().split()))\n\ntails = []  # LIS 후보의 마지막 원소들\nfor x in arr:\n    pos = bisect_left(tails, x)\n    if pos == len(tails):\n        tails.append(x)\n    else:\n        tails[pos] = x  # 더 작은 값으로 교체!\n\nprint(len(tails))\n```\n\n**O(n log n) 아이디어**:\n\n`tails[i]` = 길이 i+1인 증가 부분수열의 마지막 원소 중 **최솟값**\n\n이 배열은 항상 정렬된 상태 → 이진 탐색 사용!\n\n예시: `[3, 1, 4, 1, 5, 9]`\n```\n3 → tails: [3]\n1 → tails: [1]  (3→1로 교체, 더 작아서 미래가 유리)\n4 → tails: [1, 4]\n1 → tails: [1, 4]  (이미 있음)\n5 → tails: [1, 4, 5]\n9 → tails: [1, 4, 5, 9]\n→ LIS 길이 = 4\n```"
+}

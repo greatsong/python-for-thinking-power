@@ -1,0 +1,21 @@
+{
+  "id": "lv2-05-multiplication",
+  "title": "내가 원하는 단 구구단",
+  "difficulty": 2,
+  "category": "loop",
+  "description": "## ✖️ 원하는 단을 골라서 구구단!\n\n구구단에서 원하는 단을 골라 출력해요.\n\n```python\nn = int(input())\nfor i in range(1, 10):\n    print(f\"{n} x {i} = {n * i}\")\n```\n\n---\n\n## 문제\n\n단(n)을 입력받아 n단 구구단을 출력하세요.\n\n### 출력 형식: `n x i = n*i`\n\n### 예시\n```\n입력: 7\n출력:\n7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n```",
+  "starter_code": "n = int(input())\n\n# n단 구구단을 출력하세요\n",
+  "test_cases": [
+    { "input": "7", "expected_output": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63", "description": "7단 구구단" },
+    { "input": "3", "expected_output": "3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27", "description": "3단 구구단" },
+    { "input": "9", "expected_output": "9 x 1 = 9\n9 x 2 = 18\n9 x 3 = 27\n9 x 4 = 36\n9 x 5 = 45\n9 x 6 = 54\n9 x 7 = 63\n9 x 8 = 72\n9 x 9 = 81", "description": "9단 구구단" }
+  ],
+  "hints": [
+    "for i in range(1, 10): 로 1부터 9까지 반복해요.",
+    "f-string으로 f\"{n} x {i} = {n * i}\" 처럼 출력하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "for + f-string", "description": "for i in range(1,10): print(f\"{n} x {i} = {n*i}\")" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nfor i in range(1, 10):\n    print(f\"{n} x {i} = {n * i}\")\n```\n\n`range(1, 10)`은 1, 2, 3, ..., 9 까지예요. (10은 포함하지 않아요!)\nf-string으로 계산 결과까지 깔끔하게 출력해요."
+}

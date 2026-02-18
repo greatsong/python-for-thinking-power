@@ -1,0 +1,22 @@
+{
+  "id": "lv5-09-segment",
+  "title": "구간 합 쿼리 (세그먼트 트리)",
+  "difficulty": 5,
+  "category": "data-structure",
+  "description": "## 📊 빠른 구간 합! (세그먼트 트리)\n\nn개의 숫자 배열에서 구간 합 쿼리와 값 업데이트를 빠르게 처리해요.\n\n```\n배열: [1, 3, 5, 7, 9, 11]\n\n쿼리 1: 1~3번 합 = 1+3+5 = 9\n업데이트: 3번을 6으로 변경\n쿼리 2: 1~3번 합 = 1+3+6 = 10\n```\n\n### 왜 세그먼트 트리인가?\n\n| 방법 | 쿼리 | 업데이트 |\n|------|------|----------|\n| 단순 배열 | O(n) | O(1) |\n| 누적 합 배열 | O(1) | O(n) |\n| 세그먼트 트리 | O(log n) | O(log n) |\n\n업데이트가 많으면 세그먼트 트리가 최적!\n\n---\n\n## 문제\n\nn개의 숫자와 쿼리를 처리하세요.\n- `Q l r`: l~r 구간의 합 출력 (1-indexed)\n- `U i v`: i번째 값을 v로 업데이트\n\n### 입력\n- 첫째 줄: n\n- 둘째 줄: 배열 값들\n- 셋째 줄: 쿼리 수 q\n- 이후 q줄: 쿼리\n\n### 예시\n```\n입력:\n6\n1 3 5 7 9 11\n3\nQ 1 3\nU 3 6\nQ 1 3\n출력:\n9\n10\n```",
+  "starter_code": "n = int(input())\narr = list(map(int, input().split()))\nq = int(input())\n\n# 세그먼트 트리를 구현하고 쿼리를 처리하세요\n",
+  "test_cases": [
+    { "input": "6\n1 3 5 7 9 11\n3\nQ 1 3\nU 3 6\nQ 1 3", "expected_output": "9\n10", "description": "기본 쿼리+업데이트" },
+    { "input": "4\n1 2 3 4\n2\nQ 1 4\nQ 2 3", "expected_output": "10\n5", "description": "전체 합과 부분 합" }
+  ],
+  "hints": [
+    "tree = [0] * (4*n) 으로 세그먼트 트리 배열 초기화",
+    "def build(node, start, end): if start==end: tree[node]=arr[start-1]",
+    "def query(node, start, end, l, r): 범위 체크 후 합 반환",
+    "def update(node, start, end, idx, val): 재귀로 아래 내려가 값 변경"
+  ],
+  "expected_approaches": [
+    { "tag": "세그먼트 트리 (배열 기반)", "description": "4*n 크기 배열로 트리 구성, 재귀로 build/query/update" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\narr = list(map(int, input().split()))\ntree = [0] * (4 * n)\n\ndef build(node, start, end):\n    if start == end:\n        tree[node] = arr[start - 1]\n    else:\n        mid = (start + end) // 2\n        build(2*node, start, mid)\n        build(2*node+1, mid+1, end)\n        tree[node] = tree[2*node] + tree[2*node+1]\n\ndef query(node, start, end, l, r):\n    if r < start or end < l:  # 범위 밖\n        return 0\n    if l <= start and end <= r:  # 완전히 포함\n        return tree[node]\n    mid = (start + end) // 2\n    return query(2*node, start, mid, l, r) + query(2*node+1, mid+1, end, l, r)\n\ndef update(node, start, end, idx, val):\n    if start == end:\n        tree[node] = val\n    else:\n        mid = (start + end) // 2\n        if idx <= mid:\n            update(2*node, start, mid, idx, val)\n        else:\n            update(2*node+1, mid+1, end, idx, val)\n        tree[node] = tree[2*node] + tree[2*node+1]\n\nbuild(1, 1, n)\n\nq = int(input())\nfor _ in range(q):\n    parts = input().split()\n    if parts[0] == 'Q':\n        l, r = int(parts[1]), int(parts[2])\n        print(query(1, 1, n, l, r))\n    else:  # U\n        i, v = int(parts[1]), int(parts[2])\n        update(1, 1, n, i, v)\n```\n\n**세그먼트 트리 구조**:\n```\n[1,3,5,7]\n→ 루트: 1+3+5+7=16\n→ 왼쪽: 1+3=4, 오른쪽: 5+7=12\n→ 리프: 1, 3, 5, 7\n```\n\n자식 노드: `2*node`, `2*node+1`\n부모 노드: `node//2`\n\n**쿼리 최적화**: 구간이 노드 구간에 완전히 포함되면 즉시 반환 → O(log n)"
+}

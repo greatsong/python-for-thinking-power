@@ -1,0 +1,23 @@
+{
+  "id": "lv5-18-suffixArray",
+  "title": "접미사 배열로 문자열 검색",
+  "difficulty": 5,
+  "category": "string",
+  "description": "## 📜 접미사 배열! (Suffix Array)\n\n문자열의 모든 접미사(suffix)를 사전순 정렬한 **접미사 배열**을 구해요.\n\n```\n문자열: \"banana\"\n\n접미사들:\n0: banana\n1: anana\n2: nana\n3: ana\n4: na\n5: a\n\n사전순 정렬:\n5: a\n3: ana\n1: anana\n0: banana\n4: na\n2: nana\n\n접미사 배열 = [5, 3, 1, 0, 4, 2]\n```\n\n### 활용\n접미사 배열로 부분 문자열을 O(m log n)에 검색 가능!\n(m = 패턴 길이)\n\n---\n\n## 문제\n\n문자열을 입력받아 접미사 배열과, 주어진 패턴이 등장하는지 출력하세요.\n\n### 입력\n- 첫째 줄: 문자열\n- 둘째 줄: 검색 패턴\n\n### 예시\n```\n입력:\nbanana\nana\n출력:\n5 3 1 0 4 2\nYES\n```",
+  "starter_code": "s = input()\npattern = input()\n\n# 접미사 배열을 출력하고, 패턴이 존재하면 YES, 아니면 NO 출력\n",
+  "test_cases": [
+    { "input": "banana\nana", "expected_output": "5 3 1 0 4 2\nYES", "description": "banana 접미사 배열" },
+    { "input": "abcd\ncd", "expected_output": "0 1 2 3\nYES", "description": "단순 케이스" },
+    { "input": "hello\nxyz", "expected_output": "1 0 2 3 4\nNO", "description": "패턴 없음" }
+  ],
+  "hints": [
+    "suffix_array = sorted(range(len(s)), key=lambda i: s[i:]) 로 간단히 구현",
+    "검색: 이진 탐색 또는 단순히 pattern in s 도 가능",
+    "접미사 배열에서 이진 탐색: s[sa[mid]:sa[mid]+len(pattern)] == pattern 비교"
+  ],
+  "expected_approaches": [
+    { "tag": "O(n log n) 정렬", "description": "sorted(range(n), key=lambda i: s[i:])로 접미사 배열 구성" },
+    { "tag": "이진 탐색으로 패턴 검색", "description": "정렬된 접미사 배열에서 이진 탐색" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\ns = input()\npattern = input()\n\n# 접미사 배열 구성\nsuffix_array = sorted(range(len(s)), key=lambda i: s[i:])\n\nprint(*suffix_array)\n\n# 패턴 검색: 이진 탐색\nfrom bisect import bisect_left, bisect_right\n\ndef search(sa, s, pattern):\n    n = len(s)\n    m = len(pattern)\n    # 패턴보다 크거나 같은 첫 번째 접미사\n    lo = bisect_left(sa, 0, lo=0, hi=n,\n                     key=lambda i: s[i:i+m])\n    # 간단한 방법:\n    for idx in sa:\n        if s[idx:idx+m] == pattern:\n            return True\n    return False\n\n# 더 간단하게\nprint('YES' if pattern in s else 'NO')\n```\n\n### 완전한 이진 탐색 버전\n```python\nfrom bisect import bisect_left\n\n# 접미사 배열은 사전순 정렬됨!\n# pattern이 존재하면 접미사 중 pattern으로 시작하는 것이 있음\nlo, hi = 0, len(s)\nfound = False\n\nwhile lo < hi:\n    mid = (lo + hi) // 2\n    idx = suffix_array[mid]\n    sub = s[idx:idx+len(pattern)]\n    if sub == pattern:\n        found = True\n        break\n    elif sub < pattern:\n        lo = mid + 1\n    else:\n        hi = mid\n\nprint('YES' if found else 'NO')\n```\n\n**접미사 배열의 힘**:\n\n텍스트를 미리 접미사 배열로 전처리해두면\n이후 어떤 패턴이든 O(m log n)에 검색 가능!\n\n텍스트가 매우 길고 쿼리가 많을 때 강력해요.\n(예: 유전자 데이터베이스 검색)"
+}

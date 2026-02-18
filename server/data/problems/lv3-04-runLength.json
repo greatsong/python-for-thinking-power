@@ -1,0 +1,24 @@
+{
+  "id": "lv3-04-runLength",
+  "title": "런렝스 인코딩",
+  "difficulty": 3,
+  "category": "string",
+  "description": "## 📦 문자열 압축 기법!\n\n**런렝스 인코딩**은 연속된 같은 문자를 `횟수+문자`로 압축해요.\n\n```\nAAABBCCCC → 3A2B4C\nABAB → 1A1B1A1B\n```\n\n### 문제 분해\n1. 현재 문자와 개수를 추적\n2. 다음 문자가 달라지면 `개수+문자` 출력\n3. 마지막 그룹도 처리\n\n---\n\n## 문제\n\n문자열을 입력받아 런렝스 인코딩한 결과를 출력하세요.\n\n### 예시\n```\n입력: AAABBBCCDDDDEE\n출력: 3A3B2C4D2E\n```",
+  "starter_code": "s = input()\n\n# 런렝스 인코딩으로 압축해서 출력하세요\n",
+  "test_cases": [
+    { "input": "AAABBBCCDDDDEE", "expected_output": "3A3B2C4D2E", "description": "런렝스 인코딩" },
+    { "input": "ABCDE", "expected_output": "1A1B1C1D1E", "description": "연속 없음 → 모두 1개씩" },
+    { "input": "AAAAAA", "expected_output": "6A", "description": "한 종류만" },
+    { "input": "AABB", "expected_output": "2A2B", "description": "기본 케이스" }
+  ],
+  "hints": [
+    "현재 문자(current)와 개수(count)를 변수로 추적하세요.",
+    "다음 문자가 current와 다르면 f\"{count}{current}\" 를 결과에 추가하고 초기화해요.",
+    "반복이 끝난 후 마지막 그룹도 꼭 추가하세요!"
+  ],
+  "expected_approaches": [
+    { "tag": "current/count 추적", "description": "for문으로 문자 순회하며 변화 감지" },
+    { "tag": "itertools.groupby 활용", "description": "groupby로 그룹화 후 (len, char) 출력" }
+  ],
+  "explanation": "## 풀이 해설\n\n**상태 추적**이 핵심이에요!\n\n```python\ns = input()\nresult = \"\"\ncurrent = s[0]\ncount = 1\n\nfor i in range(1, len(s)):\n    if s[i] == current:\n        count += 1  # 같은 문자 → 개수 증가\n    else:\n        result += f\"{count}{current}\"  # 다른 문자 → 현재 그룹 저장\n        current = s[i]              # 새 문자로 교체\n        count = 1                    # 카운트 초기화\n\nresult += f\"{count}{current}\"  # ⚠️ 마지막 그룹 처리 잊지 마세요!\nprint(result)\n```\n\n**자주 하는 실수**: 마지막 그룹을 for문 안에서만 처리하면 마지막 문자 그룹이 빠져요!\n\n고급 방법:\n```python\nfrom itertools import groupby\ns = input()\nprint(\"\".join(f\"{len(list(g))}{k}\" for k, g in groupby(s)))\n```"
+}

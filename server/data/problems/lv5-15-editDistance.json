@@ -1,0 +1,24 @@
+{
+  "id": "lv5-15-editDistance",
+  "title": "편집 거리 (레벤슈타인)",
+  "difficulty": 5,
+  "category": "dp",
+  "description": "## ✏️ 단어를 바꾸는 최소 횟수! (편집 거리)\n\n한 단어를 다른 단어로 바꿀 때 필요한 **최소 편집 횟수**를 구해요.\n\n### 가능한 연산 (각 1회)\n- **삽입**: 글자 추가\n- **삭제**: 글자 제거  \n- **교체**: 글자 변경\n\n```\n\"kitten\" → \"sitting\"\n\nkitten → sitten  (k→s 교체)\nsitten → sittin  (e→i 교체)\nsittin → sitting (g 삽입)\n\n편집 거리 = 3\n```\n\n### 2D DP\n`dp[i][j]` = word1의 i번째까지, word2의 j번째까지의 편집 거리\n\n---\n\n## 문제\n\n두 단어를 입력받아 편집 거리를 출력하세요.\n\n### 예시\n```\n입력:\nkitten\nsitting\n출력: 3\n\n입력:\nhorse\nros\n출력: 3\n```",
+  "starter_code": "word1 = input()\nword2 = input()\n\n# 두 단어의 편집 거리를 출력하세요\n",
+  "test_cases": [
+    { "input": "kitten\nsitting", "expected_output": "3", "description": "클래식 예제" },
+    { "input": "horse\nros", "expected_output": "3", "description": "horse→ros" },
+    { "input": "abc\nabc", "expected_output": "0", "description": "같은 단어" },
+    { "input": "abc\n", "expected_output": "3", "description": "빈 문자열로" }
+  ],
+  "hints": [
+    "dp = [[0]*(len(word2)+1) for _ in range(len(word1)+1)]",
+    "dp[i][0] = i (i번 삭제), dp[0][j] = j (j번 삽입)",
+    "if word1[i-1]==word2[j-1]: dp[i][j] = dp[i-1][j-1]",
+    "else: dp[i][j] = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])  # 삭제, 삽입, 교체"
+  ],
+  "expected_approaches": [
+    { "tag": "2D DP (레벤슈타인)", "description": "dp[i][j] = word1[:i]를 word2[:j]로 바꾸는 최소 편집 횟수" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nword1 = input()\nword2 = input()\n\nm, n = len(word1), len(word2)\ndp = [[0] * (n + 1) for _ in range(m + 1)]\n\n# 초기화: 빈 문자열과의 편집 거리\nfor i in range(m + 1):\n    dp[i][0] = i  # word1[:i]를 빈 문자열로 = i번 삭제\nfor j in range(n + 1):\n    dp[0][j] = j  # 빈 문자열에서 word2[:j]로 = j번 삽입\n\nfor i in range(1, m + 1):\n    for j in range(1, n + 1):\n        if word1[i-1] == word2[j-1]:  # 문자가 같으면\n            dp[i][j] = dp[i-1][j-1]  # 추가 편집 불필요\n        else:\n            dp[i][j] = 1 + min(\n                dp[i-1][j],    # 삭제 (word1에서 i번째 삭제)\n                dp[i][j-1],    # 삽입 (word2의 j번째 삽입)\n                dp[i-1][j-1]   # 교체 (word1[i]를 word2[j]로)\n            )\n\nprint(dp[m][n])\n```\n\n**점화식 이해**:\n\n문자가 같으면 편집 없이 넘어가고 (`dp[i-1][j-1]`)\n다르면 세 가지 중 최소:\n- 삭제: word1에서 i번째 글자 삭제 후 나머지 비교\n- 삽입: word2의 j번째 글자 삽입\n- 교체: 두 글자를 같게 만들고 이전 단계에서 오기\n\n**활용 분야**:\n- 맞춤법 검사기 (\"spell check\")\n- DNA 서열 분석\n- 표절 감지\n- 번역 품질 평가(BLEU score의 기반)"
+}

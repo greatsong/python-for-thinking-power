@@ -1,0 +1,24 @@
+{
+  "id": "lv4-08-roman",
+  "title": "로마 숫자 변환기",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 🏛️ 고대 로마의 숫자 체계!\n\n로마 숫자:\n```\nI=1, V=5, X=10, L=50, C=100, D=500, M=1000\n```\n\n**특별 규칙** (감산 표기):\n- IV = 4, IX = 9\n- XL = 40, XC = 90\n- CD = 400, CM = 900\n\n**10진수 → 로마 숫자 전략**:\n가장 큰 값부터 탐욕적으로 빼요!\n\n```\n1994:\n1994 - 1000 = 994 → M\n994 - 900 = 94   → CM\n94 - 90 = 4      → XC\n4 - 4 = 0        → IV\n→ MCMXCIV\n```\n\n---\n\n## 문제\n\n1~3999 사이의 정수를 입력받아 로마 숫자로 변환하세요.\n\n### 예시\n```\n입력: 1994\n출력: MCMXCIV\n```",
+  "starter_code": "n = int(input())\n\n# 로마 숫자로 변환하세요\n",
+  "test_cases": [
+    { "input": "1994", "expected_output": "MCMXCIV", "description": "1994 → MCMXCIV" },
+    { "input": "3", "expected_output": "III", "description": "3 → III" },
+    { "input": "4", "expected_output": "IV", "description": "4 → IV (감산 표기)" },
+    { "input": "58", "expected_output": "LVIII", "description": "58 → LVIII" },
+    { "input": "1000", "expected_output": "M", "description": "1000 → M" }
+  ],
+  "hints": [
+    "값과 기호를 짝지은 리스트를 큰 순서로 만드세요.",
+    "symbols = [(1000,'M'),(900,'CM'),(500,'D'),(400,'CD'),(100,'C'),(90,'XC'),(50,'L'),(40,'XL'),(10,'X'),(9,'IX'),(5,'V'),(4,'IV'),(1,'I')]",
+    "while n >= value: result += symbol; n -= value"
+  ],
+  "expected_approaches": [
+    { "tag": "탐욕 알고리즘 (Greedy)", "description": "큰 값부터 가능한 만큼 빼기" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nsymbols = [\n    (1000, 'M'), (900, 'CM'), (500, 'D'), (400, 'CD'),\n    (100, 'C'), (90, 'XC'), (50, 'L'), (40, 'XL'),\n    (10, 'X'), (9, 'IX'), (5, 'V'), (4, 'IV'), (1, 'I')\n]\nresult = \"\"\nfor value, symbol in symbols:\n    while n >= value:\n        result += symbol\n        n -= value\nprint(result)\n```\n\n**탐욕 알고리즘**: 매 순간 가장 큰 선택을 하는 것!\n1994에서 1000을 빼고, 남은 994에서 900을 빼고...\n\n**감산 표기를 어떻게 처리했나?**\n`(900, 'CM')` 쌍을 리스트에 미리 넣어두면 탐욕 알고리즘이 자동으로 처리해요!\n알고리즘의 **단순함**이 아름다운 이유예요."
+}

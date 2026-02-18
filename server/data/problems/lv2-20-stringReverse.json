@@ -1,0 +1,24 @@
+{
+  "id": "lv2-20-stringReverse",
+  "title": "단어별로 뒤집기",
+  "difficulty": 2,
+  "category": "string",
+  "description": "## 🔄 단어 순서를 뒤집어요!\n\n문장의 단어 순서를 거꾸로 바꾸는 프로그램이에요.\n(글자를 뒤집는 게 아니라 단어 순서를 바꾸는 거예요!)\n\n```\n입력: Hello World Python\n출력: Python World Hello\n```\n\n`.split()`으로 단어를 나누고, `[::-1]`이나 `.reverse()`로 순서를 뒤집어요.\n\n---\n\n## 문제\n\n공백으로 구분된 단어들이 있는 문장을 입력받아 단어 순서를 뒤집어 출력하세요.\n\n### 예시\n```\n입력: I love Python\n출력: Python love I\n```",
+  "starter_code": "sentence = input()\n\n# 단어 순서를 뒤집어서 출력하세요\n",
+  "test_cases": [
+    { "input": "I love Python", "expected_output": "Python love I", "description": "단어 순서 뒤집기" },
+    { "input": "Hello World", "expected_output": "World Hello", "description": "두 단어 뒤집기" },
+    { "input": "one", "expected_output": "one", "description": "단어 하나는 그대로" },
+    { "input": "a b c d e", "expected_output": "e d c b a", "description": "5개 단어 뒤집기" }
+  ],
+  "hints": [
+    "words = sentence.split() 으로 단어 리스트를 만드세요.",
+    "words[::-1] 로 리스트를 뒤집으세요.",
+    "\" \".join(reversed_words) 로 다시 문장으로 합치세요."
+  ],
+  "expected_approaches": [
+    { "tag": "split + 역순 + join", "description": "\" \".join(sentence.split()[::-1])" },
+    { "tag": "split + reverse + join", "description": "words=sentence.split(); words.reverse(); print(\" \".join(words))" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nsentence = input()\nwords = sentence.split()\nwords.reverse()\nprint(\" \".join(words))\n```\n\n또는 한 줄로:\n```python\nprint(\" \".join(input().split()[::-1]))\n```\n\n`.split()` → 리스트로 분리\n`[::-1]` → 리스트 역순\n`\" \".join()` → 공백으로 이어붙이기"
+}

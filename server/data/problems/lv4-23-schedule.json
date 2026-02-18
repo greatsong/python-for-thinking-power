@@ -1,0 +1,23 @@
+{
+  "id": "lv4-23-schedule",
+  "title": "회의실 최대 배정",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 📅 회의실을 최대한 활용하자!\n\n하나의 회의실에서 여러 회의를 진행하려 해요.\n**최대한 많은 회의**를 진행하려면 어떤 회의를 선택해야 할까요?\n\n```\n회의 목록 (시작, 끝):\n(1,4) (3,5) (0,6) (5,7) (3,8) (5,9) (6,10) (8,11) (8,12) (2,13) (12,14)\n\n최적 선택: (1,4) (5,7) (8,11) (12,14) → 4개\n```\n\n### 핵심 아이디어\n끝나는 시간이 빠른 회의를 먼저 선택하면 다음 회의를 위한 시간이 많이 남아요!\n\n왜 이것이 최적일까요? 더 빨리 끝나는 회의를 선택하면\n나머지 시간이 항상 같거나 더 많이 남기 때문이에요.\n\n---\n\n## 문제\n\n회의 수와 각 회의의 시작/끝 시간을 입력받아 최대로 진행할 수 있는 회의 수를 출력하세요.\n(같은 시간에 끝나고 시작하는 건 가능)\n\n### 입력\n- 첫째 줄: 회의 수 n\n- 이후 n줄: 시작 끝\n\n### 예시\n```\n입력:\n3\n1 4\n3 5\n5 7\n출력: 2\n```",
+  "starter_code": "n = int(input())\nmeetings = []\nfor _ in range(n):\n    s, e = map(int, input().split())\n    meetings.append((s, e))\n\n# 최대 회의 수를 출력하세요\n",
+  "test_cases": [
+    { "input": "3\n1 4\n3 5\n5 7", "expected_output": "2", "description": "(1,4)+(5,7) 선택" },
+    { "input": "5\n0 6\n1 4\n3 5\n5 7\n4 8", "expected_output": "2", "description": "겹치는 회의들" },
+    { "input": "2\n1 3\n3 5", "expected_output": "2", "description": "끝=시작: 가능" },
+    { "input": "1\n1 10", "expected_output": "1", "description": "회의 하나" }
+  ],
+  "hints": [
+    "끝나는 시간 기준으로 정렬: meetings.sort(key=lambda x: x[1])",
+    "현재 회의 끝시간이 다음 회의 시작보다 작거나 같으면 선택!",
+    "last_end 변수로 마지막 선택한 회의의 끝시간을 추적"
+  ],
+  "expected_approaches": [
+    { "tag": "그리디 (끝시간 기준 정렬)", "description": "끝시간 오름차순 정렬 후 순서대로 선택, 이전 끝<=현재 시작이면 추가" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nmeetings = []\nfor _ in range(n):\n    s, e = map(int, input().split())\n    meetings.append((s, e))\n\n# 끝나는 시간 기준 정렬 (같으면 시작 시간으로)\nmeetings.sort(key=lambda x: (x[1], x[0]))\n\ncount = 0\nlast_end = -1  # 마지막 선택한 회의의 끝시간\n\nfor start, end in meetings:\n    if start >= last_end:  # 이전 회의가 끝난 후 시작\n        count += 1\n        last_end = end\n\nprint(count)\n```\n\n**왜 끝시간 기준 정렬이 최적인가?**\n\n직관적 설명:\n- 회의 A(1~10)와 회의 B(1~3) 중 하나를 선택해야 한다면?\n- B를 선택하면 3 이후 시간이 남아요\n- A를 선택하면 10 이후밖에 못해요\n- B가 더 유리!\n\n**증명 아이디어**: 최적 해에서 첫 번째 회의를 가장 일찍 끝나는 회의로 교체해도 결과가 나빠지지 않아요.\n\n이것이 그리디(탐욕) 알고리즘의 본질이에요:\n**현재 최선의 선택이 전체 최선으로 이어지는** 문제!\n\n**활동 선택 문제(Activity Selection)**는 CS 고전 문제예요."
+}

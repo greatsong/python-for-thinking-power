@@ -1,0 +1,25 @@
+{
+  "id": "lv4-22-decode",
+  "title": "숫자 문자열 디코딩 방법의 수",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 🔢 숫자를 문자로 해독하기!\n\n숫자를 문자로 바꾸는 규칙이 있어요:\n```\n1=A, 2=B, 3=C, ..., 26=Z\n```\n\n숫자 문자열을 이 규칙으로 해독할 때 **몇 가지 방법**이 있을까요?\n\n```\n\"12\"를 해독하는 방법:\n- \"1\",\"2\" → A,B\n- \"12\" → L\n총 2가지!\n\n\"226\"을 해독하는 방법:\n- \"2\",\"2\",\"6\" → B,B,F\n- \"22\",\"6\" → V,F\n- \"2\",\"26\" → B,Z\n총 3가지!\n```\n\n### 생각 방법\n마지막 글자부터 거꾸로 생각해보세요!\n- 마지막 1자리로 끊기: 나머지 앞부분의 방법의 수\n- 마지막 2자리로 끊기: 10~26이면 그 앞부분의 방법의 수\n두 가지를 더하면 돼요!\n\n---\n\n## 문제\n\n숫자 문자열을 입력받아 해독 방법의 수를 출력하세요. (0이 포함된 경우 처리 필요)\n\n### 예시\n```\n입력: 12\n출력: 2\n\n입력: 226\n출력: 3\n\n입력: 06\n출력: 0\n```",
+  "starter_code": "s = input()\n\n# 숫자 문자열을 해독하는 방법의 수를 출력하세요\n",
+  "test_cases": [
+    { "input": "12", "expected_output": "2", "description": "AB 또는 L" },
+    { "input": "226", "expected_output": "3", "description": "BBF, VF, BZ" },
+    { "input": "06", "expected_output": "0", "description": "0으로 시작 = 불가능" },
+    { "input": "1", "expected_output": "1", "description": "한 글자" },
+    { "input": "10", "expected_output": "1", "description": "J만 가능 (1,0은 불가)" }
+  ],
+  "hints": [
+    "dp[i] = s[0:i]를 해독하는 방법의 수",
+    "dp[0] = 1 (빈 문자열), dp[1] = 1 if s[0]!='0' else 0",
+    "dp[i] += dp[i-1] if s[i-1]!='0' (1자리로 끊기)",
+    "dp[i] += dp[i-2] if 10 <= int(s[i-2:i]) <= 26 (2자리로 끊기)"
+  ],
+  "expected_approaches": [
+    { "tag": "DP(점화식)", "description": "dp[i] = 마지막 1자리 방법수 + 마지막 2자리 방법수 (조건 만족 시)" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\ns = input()\nn = len(s)\n\nif not s or s[0] == '0':\n    print(0)\nelse:\n    dp = [0] * (n + 1)\n    dp[0] = 1  # 빈 문자열: 1가지\n    dp[1] = 1  # 첫 글자 (0이 아님 확인했으므로)\n    \n    for i in range(2, n + 1):\n        one = int(s[i-1])       # 마지막 1자리\n        two = int(s[i-2:i])     # 마지막 2자리\n        \n        if one != 0:            # 1자리로 끊기 가능\n            dp[i] += dp[i-1]\n        if 10 <= two <= 26:     # 2자리로 끊기 가능 (10~26)\n            dp[i] += dp[i-2]\n    \n    print(dp[n])\n```\n\n**점화식 이해**:\n\n`\"226\"` 처리:\n```\ndp[0]=1 (빈)\ndp[1]=1 (\"2\"→B: 1가지)\ndp[2]: \"22\"\n  - one=2 (≠0) → dp[2] += dp[1] = 1  (\"2\",\"2\")\n  - two=22 (10~26) → dp[2] += dp[0] = 1  (\"22\")\n  dp[2] = 2\ndp[3]: \"226\"\n  - one=6 (≠0) → dp[3] += dp[2] = 2\n  - two=26 (10~26) → dp[3] += dp[1] = 1\n  dp[3] = 3 ✓\n```\n\n**핵심 통찰**: 큰 문제를 작은 문제로 분해!\n마지막 1~2자리만 결정하면 나머지는 이미 계산된 결과 활용.\n이것이 **동적 프로그래밍(DP)**의 본질이에요."
+}

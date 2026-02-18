@@ -1,0 +1,21 @@
+{
+  "id": "lv5-17-floydWarshall",
+  "title": "모든 쌍 최단 경로 (플로이드-워셜)",
+  "difficulty": 5,
+  "category": "graph",
+  "description": "## 🌐 모든 도시 사이의 최단 경로! (플로이드-워셜)\n\n다익스트라는 **한 출발점**에서의 최단 거리를 구해요.\n플로이드-워셜은 **모든 쌍**의 최단 거리를 한 번에!\n\n```\n도시 4개:\n1→2: 3\n1→4: 7\n2→3: 2\n3→4: 1\n4→2: 5\n\n1→3 최단: 1→2→3 = 5\n1→4 최단: 1→2→3→4 = 6 (7보다 작음!)\n```\n\n### 3중 반복의 마법\n```\nfor k in range(n):      # 경유지 k를 거쳐가면?\n  for i in range(n):\n    for j in range(n):\n      dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])\n```\n\n---\n\n## 문제\n\nn개의 도시와 간선을 입력받아 모든 쌍 최단 거리를 출력하세요. (INF=도달불가)\n\n### 입력\n- 첫째 줄: n m\n- 이후 m줄: a b 거리 (방향 있음)\n\n### 예시\n```\n입력:\n4 5\n1 2 3\n1 4 7\n2 3 2\n3 4 1\n4 2 5\n출력:\n0 3 5 6\nINF 0 2 3\nINF INF 0 1\nINF 5 7 0\n```",
+  "starter_code": "INF = float('inf')\nn, m = map(int, input().split())\n\ndist = [[INF]*n for _ in range(n)]\nfor i in range(n):\n    dist[i][i] = 0\n\nfor _ in range(m):\n    a, b, c = map(int, input().split())\n    dist[a-1][b-1] = c\n\n# 플로이드-워셜 알고리즘으로 모든 쌍 최단 거리를 출력하세요\n",
+  "test_cases": [
+    { "input": "4 5\n1 2 3\n1 4 7\n2 3 2\n3 4 1\n4 2 5", "expected_output": "0 3 5 6\nINF 0 2 3\nINF INF 0 1\nINF 5 7 0", "description": "기본 플로이드-워셜" },
+    { "input": "3 3\n1 2 1\n2 3 1\n1 3 10", "expected_output": "0 1 2\nINF 0 1\nINF INF 0", "description": "직접 vs 우회" }
+  ],
+  "hints": [
+    "3중 for문: for k in range(n): for i in range(n): for j in range(n):",
+    "dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])",
+    "출력 시 dist[i][j] == INF이면 'INF', 아니면 숫자"
+  ],
+  "expected_approaches": [
+    { "tag": "플로이드-워셜 O(n³)", "description": "3중 루프로 경유지 k를 통한 경로 갱신" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nINF = float('inf')\nn, m = map(int, input().split())\n\ndist = [[INF]*n for _ in range(n)]\nfor i in range(n):\n    dist[i][i] = 0\n\nfor _ in range(m):\n    a, b, c = map(int, input().split())\n    dist[a-1][b-1] = c\n\n# 플로이드-워셜 핵심: 경유지 k를 통한 경로 갱신\nfor k in range(n):\n    for i in range(n):\n        for j in range(n):\n            if dist[i][k] + dist[k][j] < dist[i][j]:\n                dist[i][j] = dist[i][k] + dist[k][j]\n\nfor row in dist:\n    print(' '.join('INF' if x == INF else str(x) for x in row))\n```\n\n**왜 k가 가장 바깥 루프인가?**\n\n`k`를 경유지로 쓸 수 있다고 결정하는 순서가 중요해요!\n\n`k=0`이 바깥이면: 0번 노드를 경유하는 경로를 먼저 최적화\n`k=1`: 0번과 1번을 경유하는 경로 최적화\n...\n\n안쪽에 k가 있으면 아직 최적화 안 된 경로를 사용할 수 있어요!\n\n**다익스트라 vs 플로이드-워셜**:\n- 다익스트라: O((n+m)log n), 한 출발점\n- 플로이드: O(n³), 모든 쌍 → n이 작을 때 유리"
+}

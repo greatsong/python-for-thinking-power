@@ -1,0 +1,22 @@
+{
+  "id": "lv3-24-scheduler",
+  "title": "일정 충돌 감지기",
+  "difficulty": 3,
+  "category": "algorithm",
+  "description": "## 📆 일정이 겹치는지 확인해요!\n\n여러 일정이 있을 때 시간이 겹치는 쌍을 찾아요.\n\n**겹침 조건**: 두 일정 [s1, e1], [s2, e2]가 겹치려면\n- `s1 < e2` AND `s2 < e1`\n- (시작 시간이 다른 쪽 종료 시간보다 이전이면 겹침)\n\n```\n[9, 11]과 [10, 12] → 겹침 (10~11 구간)\n[9, 10]과 [10, 12] → 안 겹침 (딱 맞닿음)\n```\n\n---\n\n## 문제\n\n일정 수와 각 일정의 시작/종료 시간을 입력받아 충돌하는 일정 쌍을 모두 출력하세요.\n\n### 입력\n- 첫째 줄: 일정 수 n\n- 이후 n줄: `시작 종료 이름` 형식\n\n### 예시\n```\n입력:\n3\n9 11 회의\n10 12 면접\n13 15 점심\n출력: 회의 - 면접\n```",
+  "starter_code": "n = int(input())\nschedules = []\nfor _ in range(n):\n    parts = input().split()\n    s, e, name = int(parts[0]), int(parts[1]), parts[2]\n    schedules.append((s, e, name))\n\n# 충돌하는 일정 쌍을 출력하세요\n",
+  "test_cases": [
+    { "input": "3\n9 11 회의\n10 12 면접\n13 15 점심", "expected_output": "회의 - 면접", "description": "회의와 면접 충돌" },
+    { "input": "2\n9 10 A\n10 11 B", "expected_output": "", "description": "딱 맞닿은 것은 충돌 아님" },
+    { "input": "3\n1 5 A\n3 7 B\n6 9 C", "expected_output": "A - B\nB - C", "description": "A-B 충돌, B-C 충돌" }
+  ],
+  "hints": [
+    "모든 (i, j) 쌍을 확인하세요: for i in range(n): for j in range(i+1, n):",
+    "겹침 조건: s1 < e2 and s2 < e1",
+    "충돌 없으면 아무것도 출력하지 않아요."
+  ],
+  "expected_approaches": [
+    { "tag": "완전 탐색 + 겹침 조건", "description": "모든 쌍에 대해 s1<e2 and s2<e1 확인" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nschedules = []\nfor _ in range(n):\n    parts = input().split()\n    s, e, name = int(parts[0]), int(parts[1]), parts[2]\n    schedules.append((s, e, name))\n\nfor i in range(n):\n    for j in range(i + 1, n):\n        s1, e1, name1 = schedules[i]\n        s2, e2, name2 = schedules[j]\n        # 겹침 조건: 서로 시작이 상대방 종료 전이면 겹침\n        if s1 < e2 and s2 < e1:\n            print(f\"{name1} - {name2}\")\n```\n\n**겹침 조건 이해**:\n겹치지 않는 조건: `e1 <= s2` (A가 B보다 먼저 끝남) OR `e2 <= s1` (B가 A보다 먼저 끝남)\n드모르간 법칙으로 반전: `s1 < e2` AND `s2 < e1`\n\n**경계값 처리**: 딱 맞닿은 경우 (`e1 == s2`)는 충돌 아니에요. `<` (엄격한 부등호) 사용!"
+}

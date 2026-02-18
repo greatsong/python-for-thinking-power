@@ -1,0 +1,22 @@
+{
+  "id": "lv1-13-promise",
+  "title": "비밀 서약문",
+  "difficulty": 1,
+  "category": "string",
+  "description": "## 📜 비밀 서약문을 완성해요!\n\n동아리 가입 서약문이에요. 이름을 입력하면 서약문이 완성돼요.\n\n```python\nname = input()\nprint(f\"나 {name}은(는) 파이썬 동아리 회원임을 선서합니다!\")\n```\n\nf-string 안에 `{변수}`를 넣으면 자동으로 값이 채워져요.\n\n---\n\n## 문제\n\n이름을 입력받아 서약문을 완성해서 출력하세요.\n\n**출력 형식:** `나 [이름]은(는) 파이썬 동아리 회원임을 선서합니다!`\n\n### 예시\n```\n입력: 지민\n출력: 나 지민은(는) 파이썬 동아리 회원임을 선서합니다!\n```",
+  "starter_code": "name = input()\n\n# 서약문을 완성해서 출력하세요\n",
+  "test_cases": [
+    { "input": "지민", "expected_output": "나 지민은(는) 파이썬 동아리 회원임을 선서합니다!", "description": "지민 서약문" },
+    { "input": "Alex", "expected_output": "나 Alex은(는) 파이썬 동아리 회원임을 선서합니다!", "description": "Alex 서약문" },
+    { "input": "클로드", "expected_output": "나 클로드은(는) 파이썬 동아리 회원임을 선서합니다!", "description": "클로드 서약문" }
+  ],
+  "hints": [
+    "f-string은 f\"...\" 형태예요. 중괄호 {} 안에 변수 이름을 넣으면 돼요.",
+    "print(f\"나 {name}은(는) 파이썬 동아리 회원임을 선서합니다!\") 처럼 작성하세요."
+  ],
+  "expected_approaches": [
+    { "tag": "f-string 활용", "description": "print(f\"나 {name}은(는) 파이썬 동아리 회원임을 선서합니다!\")" },
+    { "tag": "문자열 연결 (+)", "description": "print(\"나 \" + name + \"은(는) 파이썬 동아리 회원임을 선서합니다!\")" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nname = input()\nprint(f\"나 {name}은(는) 파이썬 동아리 회원임을 선서합니다!\")\n```\n\nf-string에서 `{name}`이 자동으로 변수 값으로 바뀌어요!\n`+` 연결 방식과 비교하면 f-string이 훨씬 읽기 편하죠?"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "lv5-22-treeDp",
+  "title": "트리 독립 집합 최대화 (트리 DP)",
+  "difficulty": 5,
+  "category": "dp",
+  "description": "## 🌲 트리에서 최대 파티를! (트리 DP)\n\n나무 구조의 조직에서 파티를 열어요.\n**상사와 부하가 같은 파티에 있을 수 없어요!**\n각 직원에게는 파티 참여 점수가 있어요.\n\n**최대 파티 점수 합**을 구하세요!\n\n```\n조직도:\n      1(3점)\n     / \\\n  2(2점) 3(5점)\n  |\n  4(1점)\n\n선택 가능한 조합:\n- 1,4 선택: 3+1=4\n- 2,3 선택: 2+5=7\n- 1 선택: 3\n- 3,2 선택: 7\n→ 최대: 7\n```\n\n### 트리 DP\n`dp[node][0]` = 이 노드를 **안 고를 때** 서브트리 최대\n`dp[node][1]` = 이 노드를 **고를 때** 서브트리 최대\n\n---\n\n## 문제\n\nn명의 직원 점수와 조직도를 입력받아 최대 파티 점수를 출력하세요.\n루트는 1번.\n\n### 입력\n- 첫째 줄: n\n- 둘째 줄: 각 직원 점수\n- 이후 n-1줄: 상사-부하 관계\n\n### 예시\n```\n입력:\n4\n3 2 5 1\n1 2\n1 3\n2 4\n출력: 7\n```",
+  "starter_code": "import sys\nsys.setrecursionlimit(10000)\n\nn = int(input())\nvalues = [0] + list(map(int, input().split()))  # 1-indexed\ngraph = [[] for _ in range(n+1)]\nfor _ in range(n-1):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    graph[b].append(a)\n\n# 트리 DP로 최대 파티 점수를 출력하세요\n",
+  "test_cases": [
+    { "input": "4\n3 2 5 1\n1 2\n1 3\n2 4", "expected_output": "7", "description": "2+5=7" },
+    { "input": "1\n10", "expected_output": "10", "description": "혼자" },
+    { "input": "3\n1 10 10\n1 2\n1 3", "expected_output": "20", "description": "부하 둘 다 선택" }
+  ],
+  "hints": [
+    "dp = [[0,0] for _ in range(n+1)]",
+    "def dfs(node, parent): for child in graph[node]: if child!=parent: dfs(child, node)",
+    "dp[node][0] += max(dp[child][0], dp[child][1])  # 이 노드 안 고름: 자식은 둘 다 가능",
+    "dp[node][1] += dp[child][0]  # 이 노드 고름: 자식은 안 고름"
+  ],
+  "expected_approaches": [
+    { "tag": "트리 DP (DFS)", "description": "dp[node][선택여부]로 서브트리 최적값 계산, 리프부터 루트로" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nimport sys\nsys.setrecursionlimit(10000)\n\nn = int(input())\nvalues = [0] + list(map(int, input().split()))\ngraph = [[] for _ in range(n+1)]\nfor _ in range(n-1):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    graph[b].append(a)\n\ndp = [[0, 0] for _ in range(n+1)]  # [안 고를 때, 고를 때]\n\ndef dfs(node, parent):\n    dp[node][0] = 0           # 안 고름\n    dp[node][1] = values[node]  # 고름 → 내 점수 포함\n    \n    for child in graph[node]:\n        if child == parent:\n            continue  # 부모 방향은 건너뜀\n        dfs(child, node)  # 자식 먼저 처리\n        \n        # 내가 안 고르면: 자식은 고르거나 안 고르거나 (더 좋은 것)\n        dp[node][0] += max(dp[child][0], dp[child][1])\n        # 내가 고르면: 자식은 반드시 안 고름\n        dp[node][1] += dp[child][0]\n\ndfs(1, 0)\nprint(max(dp[1][0], dp[1][1]))\n```\n\n**점화식**:\n- `dp[v][0] = sum(max(dp[c][0], dp[c][1]))` for all children c\n- `dp[v][1] = values[v] + sum(dp[c][0])` for all children c\n\n**트리 DP의 핵심**: 리프(잎 노드)에서 위로!\n자식의 계산 결과를 부모가 활용해요.\n\n**DFS + DP**: 그래프 탐색 알고리즘과 동적 프로그래밍의 조합.\n이것이 알고리즘의 진짜 아름다움이에요!"
+}

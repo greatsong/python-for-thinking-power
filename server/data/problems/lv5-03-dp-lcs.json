@@ -1,0 +1,24 @@
+{
+  "id": "lv5-03-dp-lcs",
+  "title": "최장 공통 부분 수열 (LCS)",
+  "difficulty": 5,
+  "category": "dp",
+  "description": "## 🧬 공통된 부분을 찾아라! (LCS)\n\n두 문자열의 **최장 공통 부분 수열(LCS)** 길이를 구해요.\n\n부분 수열 = 순서는 유지하되 연속할 필요 없이 뽑은 문자들\n\n```\nA = \"ABCBDAB\"\nB = \"BDCAB\"\n\nLCS = \"BCAB\" 또는 \"BDAB\" → 길이 4\n```\n\n### 2D DP로 풀기\n`dp[i][j]` = A의 i번째까지, B의 j번째까지에서의 LCS 길이\n\n```\n      B  D  C  A  B\n  [0][0][0][0][0][0]\nA [0][1][1][1][1][1]\nB [0][1][1][1][1][2]\nC [0][1][1][2][2][2]\nB [0][1][1][2][2][3]\nD [0][1][2][2][2][3]\nA [0][1][2][2][3][3]\nB [0][1][2][2][3][4]  ← 답: 4\n```\n\n---\n\n## 문제\n\n두 문자열을 입력받아 LCS의 길이를 출력하세요.\n\n### 예시\n```\n입력:\nABCBDAB\nBDCAB\n출력: 4\n```",
+  "starter_code": "a = input()\nb = input()\n\n# 두 문자열의 LCS 길이를 출력하세요\n",
+  "test_cases": [
+    { "input": "ABCBDAB\nBDCAB", "expected_output": "4", "description": "BCAB" },
+    { "input": "AGGTAB\nGXTXAYB", "expected_output": "4", "description": "GTAB" },
+    { "input": "ABC\nABC", "expected_output": "3", "description": "같은 문자열" },
+    { "input": "ABC\nDEF", "expected_output": "0", "description": "공통 없음" }
+  ],
+  "hints": [
+    "dp = [[0]*(len(b)+1) for _ in range(len(a)+1)]",
+    "if a[i-1] == b[j-1]: dp[i][j] = dp[i-1][j-1] + 1",
+    "else: dp[i][j] = max(dp[i-1][j], dp[i][j-1])",
+    "답: dp[len(a)][len(b)]"
+  ],
+  "expected_approaches": [
+    { "tag": "2D DP", "description": "dp[i][j] = a[:i]와 b[:j]의 LCS 길이, 문자 같으면 +1, 다르면 max" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\na = input()\nb = input()\n\nla, lb = len(a), len(b)\ndp = [[0]*(lb+1) for _ in range(la+1)]\n\nfor i in range(1, la+1):\n    for j in range(1, lb+1):\n        if a[i-1] == b[j-1]:      # 문자가 같으면\n            dp[i][j] = dp[i-1][j-1] + 1  # 대각선 +1\n        else:                      # 다르면\n            dp[i][j] = max(dp[i-1][j], dp[i][j-1])  # 위 또는 왼쪽 최댓값\n\nprint(dp[la][lb])\n```\n\n**점화식 이해**\n\n`a[i-1] == b[j-1]`일 때:\n→ 두 문자가 같으니 LCS에 포함! 이전 상태(dp[i-1][j-1])에서 +1\n\n`a[i-1] != b[j-1]`일 때:\n→ 두 문자 중 하나를 무시. 더 좋은 것 선택\n- a[i-1] 무시: dp[i-1][j]\n- b[j-1] 무시: dp[i][j-1]\n\n**왜 2D 배열인가?**\nLCS는 두 문자열의 상태(i번째까지, j번째까지)를 동시에 추적해야 해서 2차원이 필요해요.\n\n**LCS의 응용**: DNA 서열 비교, 파일 diff, 자동 번역 등에서 핵심 알고리즘으로 사용돼요."
+}

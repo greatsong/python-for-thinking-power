@@ -1,0 +1,24 @@
+{
+  "id": "lv2-18-dice",
+  "title": "주사위 시뮬레이션",
+  "difficulty": 2,
+  "category": "logic",
+  "description": "## 🎲 주사위를 굴려봐요!\n\n두 개의 주사위를 굴렸을 때 나온 숫자의 합에 따라 결과가 달라져요.\n\n| 합계 | 결과 |\n|------|------|\n| 7 | 럭키! |\n| 2 또는 12 | 잭팟! |\n| 그 외 | 다시 도전 |\n\n---\n\n## 문제\n\n두 주사위의 눈(1~6)을 입력받아 합계에 따른 결과를 출력하세요.\n\n### 입력\n- 첫째 줄: 주사위 1 (1~6)\n- 둘째 줄: 주사위 2 (1~6)\n\n### 예시\n```\n입력:\n3\n4\n출력: 럭키!\n\n입력:\n6\n6\n출력: 잭팟!\n```",
+  "starter_code": "d1 = int(input())\nd2 = int(input())\n\n# 합계에 따른 결과를 출력하세요\n",
+  "test_cases": [
+    { "input": "3\n4", "expected_output": "럭키!", "description": "3+4=7 → 럭키!" },
+    { "input": "6\n6", "expected_output": "잭팟!", "description": "6+6=12 → 잭팟!" },
+    { "input": "1\n1", "expected_output": "잭팟!", "description": "1+1=2 → 잭팟!" },
+    { "input": "2\n3", "expected_output": "다시 도전", "description": "2+3=5 → 다시 도전" },
+    { "input": "4\n3", "expected_output": "럭키!", "description": "4+3=7 → 럭키!" }
+  ],
+  "hints": [
+    "total = d1 + d2 로 합계를 구하세요.",
+    "if total == 7 → 럭키!, elif total == 2 or total == 12 → 잭팟!"
+  ],
+  "expected_approaches": [
+    { "tag": "합산 후 if/elif/else", "description": "total=d1+d2; if total==7 또는 in [2,12]로 분기" },
+    { "tag": "in 연산자 활용", "description": "if total in [2, 12]: 잭팟!" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nd1 = int(input())\nd2 = int(input())\ntotal = d1 + d2\nif total == 7:\n    print(\"럭키!\")\nelif total == 2 or total == 12:\n    print(\"잭팟!\")\nelse:\n    print(\"다시 도전\")\n```\n\n`or`는 둘 중 하나라도 참이면 전체가 참이에요.\n또는 `elif total in [2, 12]:` 처럼 `in`을 써도 돼요!"
+}

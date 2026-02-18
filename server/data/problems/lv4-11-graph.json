@@ -1,0 +1,22 @@
+{
+  "id": "lv4-11-graph",
+  "title": "친구 관계 탐색 (BFS)",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 👥 몇 다리 건너면 친구?\n\n**BFS(너비 우선 탐색)**으로 두 사람 사이의 최단 거리를 구해요.\n\n```\n관계: 1-2, 1-3, 2-4, 3-5\n1과 4 사이: 1 → 2 → 4 = 2단계\n1과 5 사이: 1 → 3 → 5 = 2단계\n```\n\n**BFS 원리**:\n- 큐에서 노드를 꺼냄\n- 연결된 방문 안 한 노드를 큐에 추가\n- 레벨 단위로 탐색 → 최단 거리 보장!\n\n---\n\n## 문제\n\n관계 수와 관계 목록, 시작/목표 노드를 입력받아 최단 거리를 출력하세요.\n(연결 안 됨: -1 출력)\n\n### 입력\n- 첫째 줄: 사람 수 n, 관계 수 m\n- 이후 m줄: 관계 쌍\n- 마지막 줄: 시작 목표\n\n### 예시\n```\n입력:\n5 4\n1 2\n1 3\n2 4\n3 5\n1 4\n출력: 2\n```",
+  "starter_code": "from collections import deque\n\nn, m = map(int, input().split())\ngraph = [[] for _ in range(n + 1)]\nfor _ in range(m):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    graph[b].append(a)\nstart, target = map(int, input().split())\n\n# BFS로 최단 거리를 구하세요\n",
+  "test_cases": [
+    { "input": "5 4\n1 2\n1 3\n2 4\n3 5\n1 4", "expected_output": "2", "description": "1에서 4까지 2단계" },
+    { "input": "3 2\n1 2\n2 3\n1 3", "expected_output": "2", "description": "1에서 3까지 2단계" },
+    { "input": "4 2\n1 2\n3 4\n1 3", "expected_output": "-1", "description": "연결 안 됨" }
+  ],
+  "hints": [
+    "visited = [False]*(n+1); queue = deque([(start, 0)]); visited[start] = True",
+    "while queue: node, dist = queue.popleft(); if node==target: print(dist); break",
+    "for neighbor in graph[node]: if not visited[neighbor]: visited[neighbor]=True; queue.append((neighbor, dist+1))"
+  ],
+  "expected_approaches": [
+    { "tag": "BFS (너비 우선 탐색)", "description": "deque로 레벨별 탐색, 최단 거리 보장" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nfrom collections import deque\n\nn, m = map(int, input().split())\ngraph = [[] for _ in range(n + 1)]\nfor _ in range(m):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    graph[b].append(a)\nstart, target = map(int, input().split())\n\nvisited = [False] * (n + 1)\nqueue = deque([(start, 0)])\nvisited[start] = True\nresult = -1\n\nwhile queue:\n    node, dist = queue.popleft()\n    if node == target:\n        result = dist\n        break\n    for neighbor in graph[node]:\n        if not visited[neighbor]:\n            visited[neighbor] = True\n            queue.append((neighbor, dist + 1))\n\nprint(result)\n```\n\n**왜 BFS가 최단 거리를 보장하나?**\nBFS는 레벨(단계)별로 탐색해요.\n- 1단계 이웃 모두 탐색 → 2단계 이웃 모두 탐색 → ...\n- 목표를 처음 발견했을 때의 단계가 최단 거리!"
+}

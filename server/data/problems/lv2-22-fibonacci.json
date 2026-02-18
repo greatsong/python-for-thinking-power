@@ -1,0 +1,23 @@
+{
+  "id": "lv2-22-fibonacci",
+  "title": "피보나치 수열",
+  "difficulty": 2,
+  "category": "loop",
+  "description": "## 🌀 자연에서 발견되는 신기한 수열!\n\n피보나치 수열은 앞의 두 수를 더해서 다음 수를 만들어요.\n\n```\n0, 1, 1, 2, 3, 5, 8, 13, 21, ...\n```\n\n예: `0+1=1`, `1+1=2`, `1+2=3`, `2+3=5`...\n\n```python\nn = int(input())\na, b = 0, 1\nfor _ in range(n):\n    print(a)\n    a, b = b, a + b\n```\n\n---\n\n## 문제\n\nn을 입력받아 피보나치 수열의 처음 n개를 한 줄에 하나씩 출력하세요.\n\n### 예시\n```\n입력: 7\n출력:\n0\n1\n1\n2\n3\n5\n8\n```",
+  "starter_code": "n = int(input())\n\n# 피보나치 수열의 처음 n개를 출력하세요\n",
+  "test_cases": [
+    { "input": "7", "expected_output": "0\n1\n1\n2\n3\n5\n8", "description": "피보나치 7개" },
+    { "input": "1", "expected_output": "0", "description": "피보나치 1개" },
+    { "input": "5", "expected_output": "0\n1\n1\n2\n3", "description": "피보나치 5개" }
+  ],
+  "hints": [
+    "처음 두 수: a=0, b=1",
+    "매 단계마다: a가 출력할 수, 다음엔 a=b, b=a+b",
+    "a, b = b, a + b 는 파이썬의 동시 대입이에요!"
+  ],
+  "expected_approaches": [
+    { "tag": "동시 대입 a,b=b,a+b", "description": "a,b=0,1; for _ in range(n): print(a); a,b=b,a+b" },
+    { "tag": "리스트로 저장 후 출력", "description": "fib=[0,1]; for _ in range(n-2): fib.append(fib[-1]+fib[-2])" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\na, b = 0, 1\nfor _ in range(n):\n    print(a)\n    a, b = b, a + b\n```\n\n`a, b = b, a + b` 는 동시에 두 변수를 바꿔요!\n오른쪽을 먼저 계산한 후 왼쪽에 대입하기 때문에 임시 변수 없이도 교환할 수 있어요.\n\n리스트로:\n```python\nn = int(input())\nfib = [0, 1]\nwhile len(fib) < n:\n    fib.append(fib[-1] + fib[-2])\nfor x in fib[:n]:\n    print(x)\n```"
+}

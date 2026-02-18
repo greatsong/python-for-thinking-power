@@ -1,0 +1,23 @@
+{
+  "id": "lv3-20-duplicates",
+  "title": "중복 항목 찾기",
+  "difficulty": 3,
+  "category": "list",
+  "description": "## 🔍 중복된 값을 찾아라!\n\n출석 명단에서 실수로 같은 이름이 두 번 이상 들어갔어요.\n중복된 이름만 뽑아내야 해요!\n\n### 접근 방법\n1. 각 이름의 등장 횟수를 세기\n2. 2번 이상 나온 이름을 골라내기\n3. 알파벳 순으로 정렬해서 출력\n\n---\n\n## 문제\n\n이름 목록을 입력받아 중복된 이름을 오름차순으로 출력하세요.\n\n### 입력\n- 첫째 줄: 이름 수 n\n- 이후 n줄: 이름 (하나씩)\n\n### 예시\n```\n입력:\n7\nAlice\nBob\nAlice\nCharlie\nBob\nAlice\nDave\n출력:\nAlice\nBob\n```",
+  "starter_code": "n = int(input())\nnames = [input() for _ in range(n)]\n\n# 중복된 이름을 오름차순으로 출력하세요\n",
+  "test_cases": [
+    { "input": "7\nAlice\nBob\nAlice\nCharlie\nBob\nAlice\nDave", "expected_output": "Alice\nBob", "description": "Alice 3번, Bob 2번" },
+    { "input": "3\nA\nB\nC", "expected_output": "", "description": "중복 없음" },
+    { "input": "4\nZ\nZ\nZ\nZ", "expected_output": "Z", "description": "하나만 중복" }
+  ],
+  "hints": [
+    "딕셔너리로 빈도 세기: freq = {}; for name in names: freq[name] = freq.get(name, 0) + 1",
+    "빈도가 2 이상인 것만 골라내기: [name for name, count in freq.items() if count >= 2]",
+    "정렬: sorted()로 오름차순 정렬"
+  ],
+  "expected_approaches": [
+    { "tag": "딕셔너리 빈도 → 필터링", "description": "freq 구축 후 count>=2 필터링 → sorted 출력" },
+    { "tag": "Counter.most_common 활용", "description": "Counter(names)에서 count>=2 필터링" }
+  ],
+  "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nnames = [input() for _ in range(n)]\n\n# 빈도 계산\nfreq = {}\nfor name in names:\n    freq[name] = freq.get(name, 0) + 1\n\n# 중복만 골라 정렬\nduplicates = sorted([name for name, count in freq.items() if count >= 2])\n\nfor name in duplicates:\n    print(name)\n```\n\n**3단계 문제 분해**:\n1. 빈도 계산 (딕셔너리)\n2. 필터링 (컴프리헨션)\n3. 정렬 후 출력\n\n**Counter 활용**:\n```python\nfrom collections import Counter\nfreq = Counter(names)\nduplicates = sorted(name for name, cnt in freq.items() if cnt >= 2)\n```\n\n중복이 없으면 아무것도 출력하지 않아요 (`print(\"\")` 아님)!"
+}
