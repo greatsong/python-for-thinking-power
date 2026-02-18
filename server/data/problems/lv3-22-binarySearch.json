@@ -7,9 +7,9 @@
   "starter_code": "n = int(input())\ntarget = int(input())\n\n# 이분 탐색으로 target을 찾는 횟수를 출력하세요\n",
   "test_cases": [
     { "input": "100\n50", "expected_output": "1", "description": "딱 중간이라 1번만에 성공" },
-    { "input": "100\n1", "expected_output": "7", "description": "1을 찾는 데 7번" },
+    { "input": "100\n1", "expected_output": "6", "description": "1을 찾는 데 6번" },
     { "input": "10\n5", "expected_output": "1", "description": "10의 중간인 5, 1번에 성공" },
-    { "input": "8\n3", "expected_output": "2", "description": "8의 중간 4→작음→2와4중간=3, 2번" }
+    { "input": "8\n3", "expected_output": "3", "description": "mid=4→작음→mid=2→큼→mid=3, 3번" }
   ],
   "hints": [
     "low, high = 1, n 에서 시작",

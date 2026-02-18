@@ -8,7 +8,7 @@
   "test_cases": [
     { "input": "4", "expected_output": "   1\n  222\n 33333\n4444444", "description": "4층 피라미드" },
     { "input": "1", "expected_output": "1", "description": "1층 피라미드" },
-    { "input": "3", "expected_output": "  1\n 333\n55555", "description": "3층 피라미드" }
+    { "input": "3", "expected_output": "  1\n 222\n33333", "description": "3층 피라미드" }
   ],
   "hints": [
     "i번째 층: \" \" * (n-i) + str(i) * (2*i-1)",

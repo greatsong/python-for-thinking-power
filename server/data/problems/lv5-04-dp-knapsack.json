@@ -7,7 +7,7 @@
   "starter_code": "n, W = map(int, input().split())\nitems = []\nfor _ in range(n):\n    w, v = map(int, input().split())\n    items.append((w, v))\n\n# 배낭에 넣을 수 있는 최대 가치를 출력하세요\n",
   "test_cases": [
     { "input": "3 50\n15 200\n30 300\n20 500", "expected_output": "700", "description": "기타+노트북" },
-    { "input": "4 10\n5 10\n4 40\n3 30\n2 50", "expected_output": "90", "description": "무게 2짜리+무게 4짜리" },
+    { "input": "4 10\n5 10\n4 40\n3 30\n2 50", "expected_output": "120", "description": "무게4+무게3+무게2 = 9 ≤ 10, 가치 120" },
     { "input": "2 3\n4 5\n5 6", "expected_output": "0", "description": "아무것도 못 넣음" }
   ],
   "hints": [
@@ -20,5 +20,5 @@
     { "tag": "2D DP", "description": "dp[i][j] = i번 물건까지 무게 j이하에서 최대 가치" },
     { "tag": "1D DP (공간 최적화)", "description": "dp[w] 배열, 역순으로 업데이트하여 공간 O(W)로 줄이기" }
   ],
-  "explanation": "## 풀이 해설\n\n### 방법 1: 2D DP\n```python\nn, W = map(int, input().split())\nitems = []\nfor _ in range(n):\n    w, v = map(int, input().split())\n    items.append((w, v))\n\ndp = [[0]*(W+1) for _ in range(n+1)]\n\nfor i in range(1, n+1):\n    w, v = items[i-1]\n    for j in range(W+1):\n        if w <= j:  # 이 물건을 넣을 수 있으면\n            dp[i][j] = max(dp[i-1][j],        # 안 넣기\n                          dp[i-1][j-w] + v)    # 넣기\n        else:       # 무게 초과\n            dp[i][j] = dp[i-1][j]\n\nprint(dp[n][W])\n```\n\n### 방법 2: 1D DP (공간 절약)\n```python\ndp = [0] * (W+1)\nfor w, v in items:\n    for j in range(W, w-1, -1):  # 역순!\n        dp[j] = max(dp[j], dp[j-w] + v)\nprint(dp[W])\n```\n\n**핵심 점화식 이해**:\n- 물건 i를 **안 넣으면**: 이전 상태 `dp[i-1][j]` 그대로\n- 물건 i를 **넣으면**: 무게 w 뺀 나머지 공간의 최적값 + 이 물건의 가치 `dp[i-1][j-w] + v`\n- 두 경우 중 더 큰 것!\n\n**1D DP에서 역순 이유**: 순방향이면 같은 물건을 두 번 넣는 오류 발생!\n역순으로 업데이트하면 이전 상태 값을 그대로 사용 가능."
+  "explanation": "## 풀이 해설\n\n```mermaid\nflowchart TD\n    A[\"물건 i = 1~n 순회\"] --> B[\"무게 j = 0~W 순회\"]\n    B --> C{\"물건 i의 무게 w <= j?\"}\n    C -->|\"넣을 수 있다\"| D[\"dp[i][j] = max(\\n  dp[i-1][j],\\n  dp[i-1][j-w] + v\\n)\"]\n    C -->|\"무게 초과\"| E[\"dp[i][j] = dp[i-1][j]\\n(이 물건 건너뜀)\"]\n    D --> F{\"모든 칸 완료?\"}\n    E --> F\n    F -->|\"아니오\"| B\n    F -->|\"예\"| G[\"dp[n][W] = 최대 가치\"]\n```\n\n### 방법 1: 2D DP\n```python\nn, W = map(int, input().split())\nitems = []\nfor _ in range(n):\n    w, v = map(int, input().split())\n    items.append((w, v))\n\ndp = [[0]*(W+1) for _ in range(n+1)]\n\nfor i in range(1, n+1):\n    w, v = items[i-1]\n    for j in range(W+1):\n        if w <= j:  # 이 물건을 넣을 수 있으면\n            dp[i][j] = max(dp[i-1][j],        # 안 넣기\n                          dp[i-1][j-w] + v)    # 넣기\n        else:       # 무게 초과\n            dp[i][j] = dp[i-1][j]\n\nprint(dp[n][W])\n```\n\n### 방법 2: 1D DP (공간 절약)\n```python\ndp = [0] * (W+1)\nfor w, v in items:\n    for j in range(W, w-1, -1):  # 역순!\n        dp[j] = max(dp[j], dp[j-w] + v)\nprint(dp[W])\n```\n\n**핵심 점화식 이해**:\n- 물건 i를 **안 넣으면**: 이전 상태 `dp[i-1][j]` 그대로\n- 물건 i를 **넣으면**: 무게 w 뺀 나머지 공간의 최적값 + 이 물건의 가치 `dp[i-1][j-w] + v`\n- 두 경우 중 더 큰 것!\n\n**1D DP에서 역순 이유**: 순방향이면 같은 물건을 두 번 넣는 오류 발생!\n역순으로 업데이트하면 이전 상태 값을 그대로 사용 가능."
 }

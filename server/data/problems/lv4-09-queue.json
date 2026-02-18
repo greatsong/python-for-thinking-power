@@ -8,7 +8,7 @@
   "test_cases": [
     { "input": "6 0\n1 1 9 1 1 1", "expected_output": "5", "description": "0번 문서는 5번째 출력" },
     { "input": "1 0\n5", "expected_output": "1", "description": "문서 1개 → 1번째" },
-    { "input": "4 2\n1 2 3 2", "expected_output": "2", "description": "2번 문서는 2번째 출력" }
+    { "input": "4 2\n1 2 3 2", "expected_output": "1", "description": "2번 문서(우선순위 3)는 1번째 출력" }
   ],
   "hints": [
     "from collections import deque를 사용하면 큐를 효율적으로 구현해요.",
@@ -19,5 +19,5 @@
     { "tag": "deque 시뮬레이션", "description": "(priority, index) 쌍을 deque로 관리" },
     { "tag": "리스트 시뮬레이션", "description": "pop(0)와 append()로 구현 (느리지만 가능)" }
   ],
-  "explanation": "## 풀이 해설\n\n```python\nfrom collections import deque\n\nn, m = map(int, input().split())\nprior = list(map(int, input().split()))\n\n# (우선순위, 원래 인덱스) 쌍으로 큐 구성\nqueue = deque([(p, i) for i, p in enumerate(prior)])\norder = 0\n\nwhile queue:\n    p, idx = queue.popleft()  # 앞에서 꺼내기\n    # 대기 중에 더 높은 우선순위가 있나?\n    if any(q[0] > p for q in queue):\n        queue.append((p, idx))  # 뒤로 보내기\n    else:\n        order += 1\n        if idx == m:  # 우리가 찾는 문서!\n            print(order)\n            break\n```\n\n**deque(덱)**: 양쪽 끝에서 O(1)로 삽입/삭제 가능한 자료구조\n- `popleft()` → 앞에서 꺼내기 (큐의 dequeue)\n- `append()` → 뒤에 넣기 (큐의 enqueue)\n\n리스트의 `pop(0)`은 O(n)이지만 deque는 O(1)이에요!"
+  "explanation": "## 풀이 해설\n\n**프린터 큐 시뮬레이션 흐름:**\n\n```mermaid\nflowchart TD\n    A[\"큐 앞에서 문서 꺼내기\\npopleft\"] --> B{\"대기 큐에 더 높은\\n우선순위가 있나?\"}\n    B -->|\"Yes\"| C[\"뒤로 다시 넣기\\nappend\"]\n    C --> A\n    B -->|\"No\"| D[\"출력! order += 1\"]\n    D --> E{\"찾는 문서인가?\"}\n    E -->|\"Yes\"| F[\"order 출력 후 종료\"]\n    E -->|\"No\"| A\n    style F fill:#90EE90\n    style C fill:#FFD700\n    style D fill:#87CEEB\n```\n\n> 우선순위가 가장 높은 문서만 출력하고, 나머지는 뒤로 보내요!\n\n```python\nfrom collections import deque\n\nn, m = map(int, input().split())\nprior = list(map(int, input().split()))\n\n# (우선순위, 원래 인덱스) 쌍으로 큐 구성\nqueue = deque([(p, i) for i, p in enumerate(prior)])\norder = 0\n\nwhile queue:\n    p, idx = queue.popleft()  # 앞에서 꺼내기\n    # 대기 중에 더 높은 우선순위가 있나?\n    if any(q[0] > p for q in queue):\n        queue.append((p, idx))  # 뒤로 보내기\n    else:\n        order += 1\n        if idx == m:  # 우리가 찾는 문서!\n            print(order)\n            break\n```\n\n**deque(덱)**: 양쪽 끝에서 O(1)로 삽입/삭제 가능한 자료구조\n- `popleft()` → 앞에서 꺼내기 (큐의 dequeue)\n- `append()` → 뒤에 넣기 (큐의 enqueue)\n\n리스트의 `pop(0)`은 O(n)이지만 deque는 O(1)이에요!"
 }

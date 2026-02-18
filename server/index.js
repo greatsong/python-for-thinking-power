@@ -74,13 +74,9 @@ initDatabase()
     try {
       const problemCount = queryOne('SELECT COUNT(*) as cnt FROM problems');
       console.log('[PyThink] DB 연결 확인 — 문제 수:', problemCount?.cnt ?? 0);
-      if (!problemCount?.cnt) {
-        console.log('[PyThink] 빈 데이터베이스 감지 — 자동 시드 실행 중...');
-        await seed(true);
-        console.log('[PyThink] 자동 시드 완료');
-      } else {
-        seedProblemSets();
-      }
+      // 항상 시드 실행 (기존 문제도 JSON 변경사항 반영)
+      await seed(true);
+      console.log('[PyThink] 시드 완료');
     } catch (err) {
       // 시드 실패해도 서버는 계속 실행 (헬스체크 유지)
       console.error('[PyThink] 시드/쿼리 오류 (서버 계속 실행):', err.message);

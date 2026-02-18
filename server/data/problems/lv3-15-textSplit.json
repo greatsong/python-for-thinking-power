@@ -7,7 +7,7 @@
   "starter_code": "msg = input()\nwords = msg.split()\n\n# 단어 수, 최빈 단어, 비아스키 문자 수를 출력하세요\n",
   "test_cases": [
     { "input": "hello world hello python hello", "expected_output": "단어 수: 5\n최빈 단어: hello (3회)\n특수문자: 0개", "description": "영어 메시지" },
-    { "input": "나는 파이썬 파이썬 좋아", "expected_output": "단어 수: 4\n최빈 단어: 파이썬 (2회)\n특수문자: 8개", "description": "한글 메시지" },
+    { "input": "나는 파이썬 파이썬 좋아", "expected_output": "단어 수: 4\n최빈 단어: 파이썬 (2회)\n특수문자: 10개", "description": "한글 메시지" },
     { "input": "one", "expected_output": "단어 수: 1\n최빈 단어: one (1회)\n특수문자: 0개", "description": "단어 1개" }
   ],
   "hints": [
