@@ -4,7 +4,7 @@ import { BookOpen, ChevronRight, ChevronDown, Code2, Loader2, CheckCircle2, Circ
 import toast from 'react-hot-toast';
 import useProblemStore from '../../stores/problemStore.js';
 import useAuthStore from '../../stores/authStore.js';
-import CrestBadge from '../../components/CrestBadge.jsx';
+import CrestBadge, { CRESTS } from '../../components/CrestBadge.jsx';
 import { DIFFICULTY_LABELS, DIFFICULTY_COLORS, CATEGORY_LABELS } from 'shared/constants.js';
 
 const CATEGORY_EMOJI = {
@@ -24,6 +24,7 @@ export default function ProblemList() {
   const [openSetId, setOpenSetId] = useState(null);
   const [progressLoading, setProgressLoading] = useState(false);
   const [allProgress, setAllProgress] = useState({});
+  const [levelUpInfo, setLevelUpInfo] = useState(null); // { newLevel, newSetId }
 
   const userLevel = user?.currentLevel || 1;
 
@@ -56,11 +57,12 @@ export default function ProblemList() {
         if (myLevelSet && progressMap[myLevelSet.id]?.completed) {
           try {
             const result = await useAuthStore.getState().levelUp();
-            toast.success(result.message);
             // 새 문제집 목록 로드 후 다음 레벨 자동 오픈
             const newSets = await fetchProblemSets();
             const nextSet = newSets?.find(s => !s.locked && s.id !== myLevelSet.id);
             if (nextSet) setOpenSetId(nextSet.id);
+            // 축하 팝업 표시
+            setLevelUpInfo({ newLevel: result.currentLevel, newSetId: nextSet?.id });
           } catch { /* 이미 레벨업된 경우 무시 */ }
         }
       }
@@ -88,6 +90,54 @@ export default function ProblemList() {
     }
   };
 
+  // 레벨업 축하 팝업
+  const LevelUpModal = () => {
+    if (!levelUpInfo) return null;
+    const crest = CRESTS[levelUpInfo.newSetId] || {};
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-xs w-full mx-4 text-center animate-levelUpPop">
+          {/* 별 장식 */}
+          <div className="flex justify-center gap-3 mb-4">
+            {['⭐', '🌟', '✨'].map((s, i) => (
+              <span key={i} className="text-2xl animate-starFloat" style={{ animationDelay: `${i * 0.2}s` }}>{s}</span>
+            ))}
+          </div>
+
+          <p className="text-xs font-semibold text-blue-500 uppercase tracking-widest mb-1">Level Up!</p>
+          <h2 className="text-2xl font-black text-slate-800 mb-1">
+            Lv.{levelUpInfo.newLevel} 달성! 🎉
+          </h2>
+          <p className="text-slate-500 text-sm mb-5">
+            <span className="font-bold text-blue-600">{user?.name}</span>님,<br />
+            새로운 레벨에 도달했어요!
+          </p>
+
+          {/* 새 레벨 문장 뱃지 */}
+          <div className="flex justify-center mb-4">
+            <CrestBadge setId={levelUpInfo.newSetId} solved={1} total={1} size="lg" />
+          </div>
+
+          {/* 레벨 정보 */}
+          {crest.title && (
+            <div className="rounded-2xl px-4 py-3 mb-5" style={{ background: `${crest.shieldColor}15` }}>
+              <p className="font-bold text-slate-800">{crest.title}</p>
+              <p className="text-xs italic text-slate-500 mt-0.5">"{crest.motto}"</p>
+            </div>
+          )}
+
+          <button
+            onClick={() => setLevelUpInfo(null)}
+            className="w-full py-3 rounded-xl font-bold text-white text-sm shadow-lg transition-all hover:scale-105"
+            style={{ backgroundColor: crest.shieldColor || '#3b82f6' }}
+          >
+            🚀 도전 시작!
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   if (setsLoading && problemSets.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-3">
@@ -99,6 +149,7 @@ export default function ProblemList() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
+      <LevelUpModal />
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3">

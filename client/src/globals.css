@@ -278,3 +278,22 @@ body {
 .animate-slideUp {
   animation: slideUp 0.35s ease-out both;
 }
+
+@keyframes levelUpPop {
+  0%   { opacity: 0; transform: scale(0.7) translateY(20px); }
+  60%  { transform: scale(1.06) translateY(-4px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-levelUpPop {
+  animation: levelUpPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes starFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-8px) rotate(15deg); }
+}
+
+.animate-starFloat {
+  animation: starFloat 2s ease-in-out infinite;
+}
