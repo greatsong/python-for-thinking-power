@@ -17,6 +17,9 @@
     "start:local": "npm run build && npm run seed && npm start",
     "seed": "npm run seed --workspace=server"
   },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "devDependencies": {
     "concurrently": "^9.1.2"
   }

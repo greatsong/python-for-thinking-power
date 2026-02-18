@@ -152,7 +152,7 @@ export default function Landing() {
             {/* 교사 선택 시 안내 */}
             {role === 'teacher' && (
               <div className="mt-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 text-left">
-                교사 계정은 승인된 이메일만 등록됩니다.<br />
+                교사 계정은 신청서 제출 후 승인이 필요합니다.<br />
                 신청: <span className="font-semibold">greatsong21@gmail.com</span>
               </div>
             )}

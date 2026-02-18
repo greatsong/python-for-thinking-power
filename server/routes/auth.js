@@ -41,7 +41,7 @@ router.post('/google', asyncHandler(async (req, res) => {
       } else {
         const adminEmail = process.env.ADMIN_EMAIL || 'greatsong21@gmail.com';
         return res.status(403).json({
-          message: `교사 계정 신청은 ${adminEmail} 으로 이메일을 보내주세요.`,
+          message: `교사 계정은 신청서 제출 후 승인이 필요합니다. 신청: ${adminEmail}`,
         });
       }
     }
