@@ -2,6 +2,7 @@ import initSqlJs from 'sql.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH = path.resolve(__dirname, '..', 'data', 'pythink.db');
@@ -153,7 +154,7 @@ export function execute(sql, params = []) {
 
 // UUID 생성
 export function generateId() {
-  return crypto.randomUUID();
+  return randomUUID();
 }
 
 // 5자리 숫자 교실 코드 생성
