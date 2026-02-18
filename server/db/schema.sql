@@ -113,6 +113,19 @@ CREATE TABLE IF NOT EXISTS problem_set_items (
   PRIMARY KEY (set_id, problem_id)
 );
 
+-- 교사 계정 신청서
+CREATE TABLE IF NOT EXISTS teacher_applications (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  school TEXT NOT NULL,
+  region TEXT NOT NULL,
+  motivation TEXT NOT NULL,
+  privacy_consent INTEGER NOT NULL DEFAULT 0,
+  status TEXT DEFAULT 'pending',
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
 -- 인덱스
 CREATE INDEX IF NOT EXISTS idx_submissions_problem ON submissions(problem_id, classroom_id);
 CREATE INDEX IF NOT EXISTS idx_submissions_user ON submissions(user_id, problem_id);

@@ -147,6 +147,32 @@ router.post('/level-up', requireAuth, asyncHandler(async (req, res) => {
   res.json({ currentLevel: newLevel, message: `레벨 ${newLevel}로 올라갔어요! 🎉` });
 }));
 
+// 교사 계정 신청
+router.post('/teacher-apply', asyncHandler(async (req, res) => {
+  const { name, email, school, region, motivation, privacyConsent } = req.body;
+
+  if (!name || !email || !school || !region || !motivation) {
+    return res.status(400).json({ message: '모든 필수 항목을 입력해 주세요.' });
+  }
+  if (!privacyConsent) {
+    return res.status(400).json({ message: '개인정보 수집·이용에 동의해 주세요.' });
+  }
+
+  const existing = queryOne('SELECT id FROM teacher_applications WHERE email = ? AND status = ?', [email, 'pending']);
+  if (existing) {
+    return res.status(409).json({ message: '이미 접수된 신청서가 있습니다. 승인을 기다려 주세요.' });
+  }
+
+  const id = generateId();
+  execute(
+    `INSERT INTO teacher_applications (id, name, email, school, region, motivation, privacy_consent)
+     VALUES (?, ?, ?, ?, ?, ?, 1)`,
+    [id, name.trim(), email.trim(), school.trim(), region, motivation.trim()]
+  );
+
+  res.json({ message: '교사 계정 신청이 접수되었습니다. 검토 후 이메일로 안내드리겠습니다.' });
+}));
+
 // 데모 로그인 (체험용)
 router.post('/demo', asyncHandler(async (req, res) => {
   const { name, role } = req.body;

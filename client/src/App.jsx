@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Landing from './pages/Landing.jsx';
+import TeacherApply from './pages/TeacherApply.jsx';
 import JoinClassroom from './pages/JoinClassroom.jsx';
 import StudentLayout from './layouts/StudentLayout.jsx';
 import TeacherLayout from './layouts/TeacherLayout.jsx';
@@ -28,6 +29,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/apply" element={<TeacherApply />} />
       <Route path="/join" element={<JoinClassroom />} />
 
       {/* 학생 라우트 */}

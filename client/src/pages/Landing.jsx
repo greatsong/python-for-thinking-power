@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Code2, Brain, Users, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useAuthStore from '../stores/authStore.js';
@@ -9,7 +9,6 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '853390253196-
 export default function Landing() {
   const navigate = useNavigate();
   const { loginWithGoogle, loginDemo, loading } = useAuthStore();
-  const [role, setRole] = useState('student');
   const googleBtnRef = useRef(null);
 
   const [demoName, setDemoName] = useState('');
@@ -33,11 +32,11 @@ export default function Landing() {
         locale: 'ko',
       });
     }
-  }, [role]);
+  }, []);
 
   const handleGoogleCredential = async (response) => {
     try {
-      const user = await loginWithGoogle(response.credential, role);
+      const user = await loginWithGoogle(response.credential, 'student');
       toast.success(`${user.name}님, 환영합니다!`);
       if (user.role === 'teacher') {
         navigate('/teacher');
@@ -49,19 +48,15 @@ export default function Landing() {
     }
   };
 
-  const handleDemoLogin = async (demoRole) => {
+  const handleDemoLogin = async () => {
     if (!demoName.trim()) {
       toast.error('이름을 입력해 주세요');
       return;
     }
     try {
-      const user = await loginDemo(demoName.trim(), demoRole);
+      const user = await loginDemo(demoName.trim(), 'student');
       toast.success(`[데모] ${user.name}님, 환영합니다!`);
-      if (user.role === 'teacher') {
-        navigate('/teacher');
-      } else {
-        navigate('/join');
-      }
+      navigate('/join');
     } catch (err) {
       toast.error(err.message || '데모 로그인에 실패했습니다');
     }
@@ -84,30 +79,6 @@ export default function Landing() {
 
           {/* 로그인 카드 */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 max-w-sm mx-auto">
-            {/* 역할 선택 */}
-            <div className="flex gap-2 mb-6 bg-slate-100 p-1 rounded-xl">
-              <button
-                onClick={() => setRole('student')}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  role === 'student'
-                    ? 'bg-white text-blue-700 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                학생
-              </button>
-              <button
-                onClick={() => setRole('teacher')}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  role === 'teacher'
-                    ? 'bg-white text-slate-800 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                교사
-              </button>
-            </div>
-
             {/* 데모 체험 */}
             <div className="mb-5">
               <div className="px-3 py-2 bg-blue-50 rounded-lg text-xs text-blue-700 mb-3">
@@ -118,25 +89,16 @@ export default function Landing() {
                 placeholder="이름 입력 (예: 홍길동)"
                 value={demoName}
                 onChange={(e) => setDemoName(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleDemoLogin('student')}
+                onKeyDown={(e) => e.key === 'Enter' && handleDemoLogin()}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 mb-2"
               />
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleDemoLogin('student')}
-                  disabled={loading}
-                  className="flex-1 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 disabled:opacity-50 transition-colors"
-                >
-                  학생 체험
-                </button>
-                <button
-                  onClick={() => handleDemoLogin('teacher')}
-                  disabled={loading}
-                  className="flex-1 py-2 bg-slate-600 text-white rounded-lg text-sm font-medium hover:bg-slate-700 disabled:opacity-50 transition-colors"
-                >
-                  교사 체험
-                </button>
-              </div>
+              <button
+                onClick={handleDemoLogin}
+                disabled={loading}
+                className="w-full py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 disabled:opacity-50 transition-colors"
+              >
+                체험하기
+              </button>
             </div>
 
             {/* 구분선 */}
@@ -147,16 +109,16 @@ export default function Landing() {
             </div>
 
             {/* Google 로그인 버튼 */}
-            <div className="flex justify-center mb-2" ref={googleBtnRef} />
-
-            {/* 교사 선택 시 안내 */}
-            {role === 'teacher' && (
-              <div className="mt-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 text-left">
-                교사 계정은 신청서 제출 후 승인이 필요합니다.<br />
-                신청: <span className="font-semibold">greatsong21@gmail.com</span>
-              </div>
-            )}
+            <div className="flex justify-center" ref={googleBtnRef} />
           </div>
+
+          {/* 교사 링크 */}
+          <p className="mt-4 text-xs text-slate-400">
+            교사이신가요?{' '}
+            <Link to="/apply" className="text-blue-500 hover:text-blue-600 font-medium">
+              교사 계정 신청 →
+            </Link>
+          </p>
         </div>
 
         {/* 특징 카드 */}
