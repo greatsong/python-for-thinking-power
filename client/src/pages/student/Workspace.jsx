@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Play, FlaskConical, RotateCcw, ArrowLeft, Lightbulb, ChevronDown, ChevronUp, Loader2, Upload, Bot, Terminal, FileCode, Sparkles, PanelLeftClose, PanelLeftOpen, PartyPopper, Send, X } from 'lucide-react';
+import { Play, FlaskConical, RotateCcw, ArrowLeft, Lightbulb, ChevronDown, ChevronUp, Loader2, Upload, Bot, Terminal, FileCode, Sparkles, PanelLeftClose, PanelLeftOpen, Send, X } from 'lucide-react';
 import MarkdownRenderer from '../../components/MarkdownRenderer.jsx';
 import toast from 'react-hot-toast';
 import useProblemStore from '../../stores/problemStore.js';
@@ -74,27 +74,6 @@ export default function Workspace() {
     return () => { if (snapshotTimerRef.current) clearTimeout(snapshotTimerRef.current); };
   }, [code, saveSnapshot]);
 
-  // 키보드 단축키: Ctrl+Enter(실행), Ctrl+Shift+Enter(테스트)
-  const handleRunRef = useRef(handleRun);
-  const handleRunTestsRef = useRef(handleRunTests);
-  handleRunRef.current = handleRun;
-  handleRunTestsRef.current = handleRunTests;
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        e.preventDefault();
-        if (e.shiftKey) {
-          handleRunTestsRef.current();
-        } else {
-          handleRunRef.current();
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   const handleRun = async () => {
     if (!pyodideReady) {
       toast.error('파이썬 환경 로딩 중입니다. 잠시 기다려주세요.');
@@ -120,6 +99,27 @@ export default function Workspace() {
       toast.success('모든 테스트를 통과했습니다!');
     }
   };
+
+  // 키보드 단축키: Ctrl+Enter(실행), Ctrl+Shift+Enter(테스트)
+  const handleRunRef = useRef(handleRun);
+  const handleRunTestsRef = useRef(handleRunTests);
+  handleRunRef.current = handleRun;
+  handleRunTestsRef.current = handleRunTests;
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          handleRunTestsRef.current();
+        } else {
+          handleRunRef.current();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleSubmit = async () => {
     if (!code.trim()) {
@@ -440,7 +440,7 @@ export default function Workspace() {
       {/* 축하 모달 + 소감 입력 */}
       {showCelebration && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 animate-fadeIn">
+          <div className="relative bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 animate-fadeIn">
             <button
               onClick={() => setShowCelebration(false)}
               className="absolute top-4 right-4 p-1 text-slate-400 hover:text-slate-600 transition-colors"

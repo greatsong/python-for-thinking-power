@@ -15,8 +15,8 @@ router.post('/', requireAuth, asyncHandler(async (req, res) => {
 
   const id = generateId();
   execute(
-    `INSERT INTO submissions (id, user_id, problem_id, classroom_id, code, output, passed, test_results_json)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO submissions (id, user_id, problem_id, classroom_id, code, output, passed, test_results_json, is_final)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`,
     [id, req.user.id, problemId, classroomId || '', code, output || '', passed ? 1 : 0, JSON.stringify(testResults || [])]
   );
 

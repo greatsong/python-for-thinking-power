@@ -9,6 +9,12 @@ const router = Router();
 router.get('/overview/:classroomId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   const { classroomId } = req.params;
 
+  // 교실 소유권 확인
+  const classroom = queryOne('SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?', [classroomId, req.user.id]);
+  if (!classroom) {
+    return res.status(403).json({ message: '해당 교실에 대한 권한이 없습니다' });
+  }
+
   const totalStudents = queryOne(
     'SELECT COUNT(*) as count FROM classroom_members WHERE classroom_id = ?',
     [classroomId]
@@ -41,6 +47,11 @@ router.get('/overview/:classroomId', requireAuth, requireTeacher, asyncHandler(a
 router.get('/students/:classroomId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   const { classroomId } = req.params;
 
+  const classroom = queryOne('SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?', [classroomId, req.user.id]);
+  if (!classroom) {
+    return res.status(403).json({ message: '해당 교실에 대한 권한이 없습니다' });
+  }
+
   const students = queryAll(
     `SELECT u.id, u.name, u.email, cm.student_number,
             (SELECT COUNT(DISTINCT s.problem_id) FROM submissions s WHERE s.user_id = u.id AND s.classroom_id = ? AND s.passed = 1) as solved_count,
@@ -61,6 +72,11 @@ router.get('/students/:classroomId', requireAuth, requireTeacher, asyncHandler(a
 router.get('/ai-summaries/:classroomId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   const { classroomId } = req.params;
 
+  const classroom = queryOne('SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?', [classroomId, req.user.id]);
+  if (!classroom) {
+    return res.status(403).json({ message: '해당 교실에 대한 권한이 없습니다' });
+  }
+
   const conversations = queryAll(
     `SELECT ac.id, ac.user_id, u.name as student_name, ac.problem_id, p.title as problem_title,
             ac.summary, ac.message_count, ac.updated_at
@@ -79,6 +95,11 @@ router.get('/ai-summaries/:classroomId', requireAuth, requireTeacher, asyncHandl
 // 학생 × 문제 매트릭스 데이터
 router.get('/matrix/:classroomId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   const { classroomId } = req.params;
+
+  const classroom = queryOne('SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?', [classroomId, req.user.id]);
+  if (!classroom) {
+    return res.status(403).json({ message: '해당 교실에 대한 권한이 없습니다' });
+  }
 
   // 1) 교실에 배정된 문제 목록
   const problems = queryAll(

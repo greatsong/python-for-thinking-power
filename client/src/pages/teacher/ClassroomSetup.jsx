@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client.js';
-import useAuthStore from '../../stores/authStore.js';
-import { Plus, Copy, Users, Check, School, Hash, Key, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
+import { Plus, Copy, Users, Check, School, Hash, Key, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function ClassroomSetup() {
-  const { user } = useAuthStore();
   const [classrooms, setClassrooms] = useState([]);
   const [newName, setNewName] = useState('');
   const [creating, setCreating] = useState(false);

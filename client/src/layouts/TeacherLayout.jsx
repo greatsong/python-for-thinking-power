@@ -1,8 +1,10 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Wrench, ListChecks, MessageSquare, Settings, LogOut } from 'lucide-react';
+import useAuthStore from '../stores/authStore.js';
 
 export default function TeacherLayout() {
   const navigate = useNavigate();
+  const { logout } = useAuthStore();
 
   const navItems = [
     { to: '/teacher/dashboard', icon: LayoutDashboard, label: '교실 라이브' },
@@ -43,7 +45,7 @@ export default function TeacherLayout() {
         <div className="p-3 border-t border-slate-700">
           <button
             onClick={() => {
-              localStorage.clear();
+              logout();
               navigate('/');
             }}
             className="flex items-center gap-2 text-sm text-slate-400 hover:text-white w-full px-3 py-2"

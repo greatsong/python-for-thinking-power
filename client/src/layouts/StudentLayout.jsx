@@ -1,8 +1,10 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { BookOpen, Code2, Images, Route, LogOut } from 'lucide-react';
+import useAuthStore from '../stores/authStore.js';
 
 export default function StudentLayout() {
   const navigate = useNavigate();
+  const { logout } = useAuthStore();
 
   const navItems = [
     { to: '/student/problems', icon: BookOpen, label: '문제' },
@@ -40,7 +42,7 @@ export default function StudentLayout() {
         <div className="p-3 border-t border-slate-200">
           <button
             onClick={() => {
-              localStorage.clear();
+              logout();
               navigate('/');
             }}
             className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 w-full px-3 py-2"
