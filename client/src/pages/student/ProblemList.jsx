@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, ChevronDown, Code2, Loader2, CheckCircle2, Circle, Trophy, Lock, ArrowUp } from 'lucide-react';
+import { BookOpen, ChevronRight, ChevronDown, Code2, Loader2, CheckCircle2, Circle, Trophy, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useProblemStore from '../../stores/problemStore.js';
 import useAuthStore from '../../stores/authStore.js';
@@ -20,31 +20,23 @@ const CATEGORY_EMOJI = {
 export default function ProblemList() {
   const navigate = useNavigate();
   const { problemSets, setsLoading, fetchProblemSets, fetchSetProgress, currentSetProgress, clearSetProgress } = useProblemStore();
-  const { user, levelUp } = useAuthStore();
+  const { user } = useAuthStore();
   const [openSetId, setOpenSetId] = useState(null);
   const [progressLoading, setProgressLoading] = useState(false);
   const [allProgress, setAllProgress] = useState({});
-  const [levelingUp, setLevelingUp] = useState(false);
 
   const userLevel = user?.currentLevel || 1;
 
-  const handleLevelUp = async () => {
-    setLevelingUp(true);
-    try {
-      const result = await levelUp();
-      toast.success(result.message);
-      // 문제집 목록 새로고침
-      await fetchProblemSets();
-    } catch (err) {
-      toast.error(err.message || '레벨업에 실패했습니다');
-    } finally {
-      setLevelingUp(false);
-    }
-  };
-
   useEffect(() => {
     fetchProblemSets().then(async (sets) => {
-      if (!user || !sets?.length) return;
+      if (!sets?.length) return;
+
+      // 처음 진입 시 현재 레벨(잠금 해제된 첫 번째) 문제집 자동 오픈
+      const firstUnlocked = sets.find(s => !s.locked) ?? sets[0];
+      if (firstUnlocked) setOpenSetId(firstUnlocked.id);
+
+      if (!user) return;
+
       // 모든 문제집의 진행률을 미리 로드
       const progressMap = {};
       for (const s of sets) {
@@ -54,6 +46,24 @@ export default function ProblemList() {
         } catch { /* ignore */ }
       }
       setAllProgress(progressMap);
+
+      // 자동 레벨업: 현재 레벨 문제집 완료 시 자동으로 다음 레벨로 이동
+      const userLevelNow = useAuthStore.getState().user?.currentLevel || 1;
+      if (userLevelNow < 5) {
+        const myLevelSet = sets.find(
+          s => (s.set_level ?? s.sort_order + 1) === userLevelNow && !s.locked
+        );
+        if (myLevelSet && progressMap[myLevelSet.id]?.completed) {
+          try {
+            const result = await useAuthStore.getState().levelUp();
+            toast.success(result.message);
+            // 새 문제집 목록 로드 후 다음 레벨 자동 오픈
+            const newSets = await fetchProblemSets();
+            const nextSet = newSets?.find(s => !s.locked && s.id !== myLevelSet.id);
+            if (nextSet) setOpenSetId(nextSet.id);
+          } catch { /* 이미 레벨업된 경우 무시 */ }
+        }
+      }
     });
   }, []);
 
@@ -298,22 +308,13 @@ export default function ProblemList() {
 
                     {/* Completion Banner */}
                     {isCompleted && (
-                      <div className="px-5 py-3 bg-amber-50 border-t border-amber-100 flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <Trophy size={16} className="text-amber-500" />
-                          <span className="text-sm font-semibold text-amber-700">
-                            문제집 정복 완료!
-                          </span>
-                        </div>
+                      <div className="px-5 py-3 bg-amber-50 border-t border-amber-100 flex items-center gap-2">
+                        <Trophy size={16} className="text-amber-500" />
+                        <span className="text-sm font-semibold text-amber-700">
+                          문제집 정복 완료! 🎉
+                        </span>
                         {canLevelUp && (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleLevelUp(); }}
-                            disabled={levelingUp}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-semibold hover:bg-amber-600 disabled:opacity-50 transition-colors"
-                          >
-                            <ArrowUp size={13} />
-                            {levelingUp ? '레벨업 중...' : '레벨업!'}
-                          </button>
+                          <span className="text-xs text-amber-500 ml-1">다음 레벨로 이동 중...</span>
                         )}
                       </div>
                     )}
