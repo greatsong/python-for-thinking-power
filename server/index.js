@@ -68,19 +68,27 @@ app.listen(PORT, () => {
   }
 });
 
-// DB 초기화 + 시드는 백그라운드에서 비동기로 처리
-initDatabase().then(async () => {
-  // 문제가 없으면 자동 시드 (첫 배포 or 빈 DB)
-  const problemCount = queryOne('SELECT COUNT(*) as cnt FROM problems');
-  if (!problemCount?.cnt) {
-    console.log('[PyThink] 빈 데이터베이스 감지 — 자동 시드 실행 중...');
-    await seed(true); // skipInit=true (이미 initDatabase 완료)
-    console.log('[PyThink] 자동 시드 완료');
-  } else {
-    // 기존 DB에도 새 문제집 항목 업데이트 (신규 JSON 파일 반영)
-    seedProblemSets();
-  }
-}).catch(err => {
-  console.error('[PyThink] DB 초기화 실패:', err);
-  process.exit(1);
-});
+// DB 초기화 + 시드는 백그라운드에서 비동기로 처리 (서버는 이미 실행 중)
+initDatabase()
+  .then(async () => {
+    try {
+      const problemCount = queryOne('SELECT COUNT(*) as cnt FROM problems');
+      console.log('[PyThink] DB 연결 확인 — 문제 수:', problemCount?.cnt ?? 0);
+      if (!problemCount?.cnt) {
+        console.log('[PyThink] 빈 데이터베이스 감지 — 자동 시드 실행 중...');
+        await seed(true);
+        console.log('[PyThink] 자동 시드 완료');
+      } else {
+        seedProblemSets();
+      }
+    } catch (err) {
+      // 시드 실패해도 서버는 계속 실행 (헬스체크 유지)
+      console.error('[PyThink] 시드/쿼리 오류 (서버 계속 실행):', err.message);
+      console.error(err.stack);
+    }
+  })
+  .catch(err => {
+    // DB 초기화 실패해도 서버는 계속 실행
+    console.error('[PyThink] DB 초기화 실패 (서버 계속 실행):', err.message);
+    console.error(err.stack);
+  });
