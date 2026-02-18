@@ -8,10 +8,14 @@ const router = Router();
 
 // 교사 이메일 화이트리스트 확인
 function isTeacherAllowed(email) {
+  const adminEmail = process.env.ADMIN_EMAIL || '';
   const allowedEmails = (process.env.TEACHER_EMAILS || '')
     .split(',')
     .map((e) => e.trim())
     .filter(Boolean);
+  if (adminEmail && !allowedEmails.includes(adminEmail)) {
+    allowedEmails.push(adminEmail);
+  }
   return allowedEmails.includes(email);
 }
 
