@@ -60,7 +60,15 @@ if (isProduction) {
   });
 }
 
-// DB 초기화 후 서버 시작
+// 서버 먼저 시작 (Railway 헬스체크가 즉시 응답하도록)
+app.listen(PORT, () => {
+  console.log(`[PyThink] 서버 실행 중: http://localhost:${PORT}`);
+  if (isProduction) {
+    console.log(`[PyThink] 프로덕션 모드 — 클라이언트 정적 파일 서빙 활성화`);
+  }
+});
+
+// DB 초기화 + 시드는 백그라운드에서 비동기로 처리
 initDatabase().then(async () => {
   // 문제가 없으면 자동 시드 (첫 배포 or 빈 DB)
   const problemCount = queryOne('SELECT COUNT(*) as cnt FROM problems');
@@ -72,13 +80,6 @@ initDatabase().then(async () => {
     // 기존 DB에도 새 문제집 항목 업데이트 (신규 JSON 파일 반영)
     seedProblemSets();
   }
-
-  app.listen(PORT, () => {
-    console.log(`[PyThink] 서버 실행 중: http://localhost:${PORT}`);
-    if (isProduction) {
-      console.log(`[PyThink] 프로덕션 모드 — 클라이언트 정적 파일 서빙 활성화`);
-    }
-  });
 }).catch(err => {
   console.error('[PyThink] DB 초기화 실패:', err);
   process.exit(1);
