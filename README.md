@@ -1,0 +1,336 @@
+# 사고력을 위한 파이썬 (Python for Thinking Power)
+
+> 파이썬 문법 암기가 아닌, **코드로 생각하는 힘**을 기르는 교육 플랫폼
+
+**핵심 철학: "같은 문제, 다른 생각"** — 정답이 아니라 과정에 집중합니다.
+
+```
+[문제] 1부터 100까지 홀수의 합을 구하세요
+
+학생A: for + if문        → 2500 ✓
+학생B: range(1,101,2)    → 2500 ✓
+학생C: 수학공식 50*50    → 2500 ✓
+학생D: while + 누적      → 2500 ✓
+
+→ 4명 다 정답! 하지만 생각의 경로가 다르다.
+→ 이 비교 과정에서 사고력이 자란다.
+```
+
+---
+
+## 기술 스택
+
+| 영역 | 기술 |
+|------|------|
+| 프론트엔드 | React 19, Vite 6, Tailwind CSS 4, Zustand, React Router 7 |
+| 코드 에디터 | CodeMirror 6 (Python 지원) |
+| Python 실행 | Pyodide (WebAssembly, 브라우저에서 즉시 실행) |
+| 백엔드 | Express 5, SSE 스트리밍 |
+| AI | Claude API (`claude-sonnet-4-20250514`) |
+| 데이터베이스 | SQLite (sql.js, WASM 기반) |
+| 인증 | Google Sign-In + JWT |
+
+---
+
+## 주요 기능
+
+- **코드 워크스페이스**: CodeMirror 에디터 + Pyodide 즉시 실행 (서버 부하 없음)
+- **5단계 AI 코치**: 교사가 문제별로 AI 도움 수준을 제어 (0:비활성 ~ 4:코드예시)
+- **AI 문제 공방**: AI가 문제를 생성하고 교사가 검토/승인/수정
+- **풀이 갤러리**: AI가 학생 풀이의 접근법을 자동 분류, 비교 토론 유도
+- **코드 여정**: 코드 수정 이력을 타임라인으로 시각화
+- **교실 라이브 대시보드**: 학생 현황 실시간 모니터링
+- **교실 시스템**: 6자리 참여 코드로 학생 합류
+
+---
+
+## 로컬 실행 (개발 모드)
+
+### 1. 사전 요구사항
+
+- **Node.js** 18 이상
+- **npm** 9 이상
+- **Google Cloud Console**에서 OAuth 2.0 클라이언트 ID 발급
+
+### 2. 환경 변수 설정
+
+```bash
+cp .env.example .env
+```
+
+`.env` 파일을 열고 실제 값으로 수정:
+
+```env
+ANTHROPIC_API_KEY=sk-ant-your-actual-key
+GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+JWT_SECRET=your-random-secret-key-here
+PORT=4001
+CLIENT_URL=http://localhost:4000
+```
+
+| 변수 | 설명 | 필수 |
+|------|------|------|
+| `ANTHROPIC_API_KEY` | Anthropic Claude API 키 | O |
+| `GOOGLE_CLIENT_ID` | Google OAuth 클라이언트 ID | O |
+| `JWT_SECRET` | JWT 토큰 서명 비밀 키 (랜덤 문자열) | O |
+| `PORT` | 백엔드 서버 포트 (기본 4001) | - |
+| `CLIENT_URL` | 프론트엔드 URL, CORS 허용 (기본 http://localhost:4000) | - |
+
+### 3. 설치 및 실행
+
+```bash
+# 의존성 설치 (client + server + shared 모두 설치됨)
+npm install
+
+# 초기 문제 데이터 시딩
+npm run seed
+
+# 개발 서버 실행 (프론트엔드 + 백엔드 동시 실행)
+npm run dev
+```
+
+실행 후:
+- 프론트엔드: http://localhost:4000
+- 백엔드 API: http://localhost:4001
+- 헬스체크: http://localhost:4001/api/health
+
+### 4. 프로덕션 빌드 (로컬 테스트)
+
+```bash
+# 빌드 + 시딩 + 프로덕션 서버 실행 (한 번에)
+npm run start:local
+```
+
+`NODE_ENV=production`으로 Express가 `client/dist/`를 정적 서빙합니다.
+http://localhost:4001 에서 전체 앱을 확인할 수 있습니다.
+
+---
+
+## 배포 가이드
+
+프론트엔드는 **Vercel**, 백엔드는 **Railway**에 배포합니다.
+
+### Step 1: GitHub 리포지토리 준비
+
+```bash
+# 리포지토리 초기화 (아직 안 했다면)
+git init
+git add .
+git commit -m "Initial commit"
+
+# GitHub에 리포지토리 생성 후
+git remote add origin https://github.com/greatsong/python-for-thinking-power.git
+git push -u origin main
+```
+
+### Step 2: Railway 백엔드 배포
+
+1. [Railway](https://railway.app)에 로그인
+2. **New Project** → **Deploy from GitHub repo** 선택
+3. `greatsong/python-for-thinking-power` 리포지토리 연결
+4. **Settings** 탭에서:
+   - **Root Directory**: `/` (루트)
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npm start`
+5. **Variables** 탭에서 환경 변수 설정:
+
+   ```
+   ANTHROPIC_API_KEY=sk-ant-...
+   GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+   JWT_SECRET=your-production-secret
+   PORT=4001
+   NODE_ENV=production
+   CLIENT_URL=https://your-vercel-url.vercel.app
+   ```
+
+6. 배포가 완료되면 Railway가 생성한 URL을 복사 (예: `https://python-for-thinking-power-production.up.railway.app`)
+7. 헬스체크 확인:
+
+   ```bash
+   curl https://your-railway-url.up.railway.app/api/health
+   ```
+
+   응답 예시:
+   ```json
+   {"status":"ok","service":"사고력을 위한 파이썬","timestamp":"2026-02-17T..."}
+   ```
+
+> **중요**: Railway URL이 확정된 후 `CLIENT_URL` 환경변수를 Vercel 배포 URL로 업데이트해야 합니다.
+
+### Step 3: Vercel 프론트엔드 배포
+
+1. [Vercel](https://vercel.com)에 로그인
+2. **Add New** → **Project** → GitHub 리포지토리 연결
+3. **Framework Preset**: `Vite` 선택
+4. **Root Directory**: `client` 입력
+5. **Build & Output Settings**:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+6. 배포 실행
+
+#### Vercel API 프록시 설정
+
+`client/vercel.json`을 Railway URL로 업데이트:
+
+```json
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://your-railway-url.up.railway.app/api/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
+}
+```
+
+> `your-railway-url`을 Step 2에서 받은 실제 Railway URL로 교체하세요.
+
+변경 후 커밋 & 푸시하면 Vercel이 자동 재배포됩니다.
+
+### Step 4: Google OAuth 설정 업데이트
+
+[Google Cloud Console](https://console.cloud.google.com/apis/credentials) → OAuth 2.0 클라이언트에서:
+
+- **승인된 JavaScript 원본**에 추가:
+  - `https://your-vercel-url.vercel.app`
+- **승인된 리디렉션 URI**에 추가:
+  - `https://your-vercel-url.vercel.app`
+
+### Step 5: CORS 설정 확인
+
+Railway의 환경 변수 `CLIENT_URL`을 Vercel 배포 URL로 설정했는지 확인:
+
+```
+CLIENT_URL=https://your-vercel-url.vercel.app
+```
+
+### Step 6: 최종 확인 체크리스트
+
+- [ ] Railway 헬스체크 응답 확인 (`/api/health`)
+- [ ] Vercel에서 프론트엔드 로딩 확인
+- [ ] Google 로그인 동작 확인
+- [ ] API 호출 확인 (문제 목록 로드)
+- [ ] AI 코치 대화 동작 확인
+
+---
+
+## 배포 후 문제 해결
+
+### API 호출이 안 될 때
+
+`client/vercel.json`의 Railway URL이 정확한지 확인:
+
+```bash
+# Railway URL 직접 테스트
+curl https://your-railway-url.up.railway.app/api/problems
+```
+
+### CORS 에러가 날 때
+
+Railway 환경 변수 `CLIENT_URL`이 Vercel URL과 정확히 일치하는지 확인 (끝에 `/` 없이):
+
+```
+# 올바른 예
+CLIENT_URL=https://python-for-thinking-power.vercel.app
+
+# 잘못된 예
+CLIENT_URL=https://python-for-thinking-power.vercel.app/
+```
+
+### Google 로그인이 안 될 때
+
+1. Google Cloud Console에서 승인된 원본에 배포 URL이 추가되었는지 확인
+2. `GOOGLE_CLIENT_ID`가 Railway 환경변수에 설정되었는지 확인
+3. 프론트엔드의 Google 클라이언트 ID가 올바른지 확인
+
+### DB 데이터 초기화
+
+Railway 배포 후 초기 문제 데이터가 없으면:
+
+```bash
+# Railway CLI로 시드 실행
+railway run npm run seed
+```
+
+또는 Railway 대시보드에서 **Run Command** → `npm run seed`
+
+---
+
+## 프로젝트 구조
+
+```
+python-for-thinking-power/
+├── package.json              # npm workspaces (client, server, shared)
+├── .env.example              # 환경 변수 템플릿
+├── railway.json              # Railway 배포 설정
+│
+├── client/                   # React 프론트엔드
+│   ├── vercel.json           # Vercel 배포 설정
+│   ├── vite.config.js        # Vite 설정 (port 4000, proxy)
+│   └── src/
+│       ├── pages/
+│       │   ├── student/      # 학생 페이지 (문제목록, 워크스페이스, 갤러리, 코드여정)
+│       │   └── teacher/      # 교사 페이지 (교실설정, 문제공방, 대시보드, AI리포트)
+│       ├── components/       # 공용 컴포넌트 (CodeEditor, AICoach, SolutionGallery 등)
+│       ├── stores/           # Zustand 상태 (auth, classroom, problem, editor, chat, dashboard)
+│       └── lib/              # Pyodide 엔진, 테스트 러너
+│
+├── server/                   # Express 백엔드
+│   ├── routes/               # API 라우트 (auth, classrooms, problems, submissions, ai, dashboard, gallery)
+│   ├── services/             # AI 서비스 (코치, 문제생성, 대화요약, 접근법분석)
+│   ├── db/                   # SQLite 스키마, 초기화, 시드
+│   └── data/problems/        # 초기 문제 JSON
+│
+└── shared/                   # 공용 상수 (AI 레벨, 난이도, 카테고리)
+```
+
+---
+
+## npm 스크립트 요약
+
+| 명령어 | 설명 |
+|--------|------|
+| `npm run dev` | 개발 모드 실행 (client:4000 + server:4001 동시) |
+| `npm run dev:client` | 프론트엔드만 실행 |
+| `npm run dev:server` | 백엔드만 실행 |
+| `npm run build` | 프론트엔드 프로덕션 빌드 |
+| `npm run seed` | 초기 문제 데이터 시딩 |
+| `npm start` | 프로덕션 서버 실행 |
+| `npm run start:local` | 빌드 + 시딩 + 프로덕션 실행 (한 번에) |
+
+---
+
+## API 엔드포인트
+
+| Method | Path | 설명 |
+|--------|------|------|
+| GET | `/api/health` | 서버 상태 확인 |
+| POST | `/api/auth/google` | Google 로그인 검증 |
+| GET/POST | `/api/classrooms` | 교실 관리 |
+| POST | `/api/classrooms/:id/join` | 교실 참여 |
+| GET | `/api/problems` | 문제 목록 |
+| GET | `/api/problems/:id` | 문제 상세 |
+| GET | `/api/problems/library/all` | 교사 문제 라이브러리 |
+| POST | `/api/problems/generate` | AI 문제 생성 (SSE) |
+| POST | `/api/problems/:id/revise` | AI 문제 수정 |
+| PATCH | `/api/problems/:id/status` | 문제 상태 변경 |
+| POST | `/api/problems/:id/assign` | 교실에 문제 배정 |
+| POST | `/api/submissions` | 풀이 제출 |
+| GET | `/api/submissions/snapshots` | 코드 스냅샷 |
+| POST | `/api/ai/chat` | AI 코치 대화 (SSE) |
+| GET | `/api/ai/conversations` | AI 대화 이력 |
+| GET | `/api/dashboard/overview` | 교사 대시보드 |
+| GET | `/api/dashboard/students` | 학생 현황 |
+| GET | `/api/dashboard/ai-summaries` | AI 대화 요약 |
+| GET | `/api/gallery/:problemId` | 풀이 갤러리 |
+| POST | `/api/gallery/:problemId/analyze` | AI 접근법 분석 |
+
+---
+
+## 라이선스
+
+이 프로젝트는 교육 목적으로 개발되었습니다.
+
+---
+
+*Built with Claude Code*

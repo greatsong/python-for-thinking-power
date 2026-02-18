@@ -1,0 +1,70 @@
+{
+  "id": "beginner-06-grade",
+  "title": "성적표 만들기",
+  "difficulty": 2,
+  "category": "logic",
+  "description": "## if/elif/else — 여러 조건을 순서대로 확인하기\n\n### if만으로는 부족할 때\n\n짝홀 판별은 두 가지 경우뿐이라 `if/else`로 충분했어요.\n하지만 등급처럼 **여러 가지 경우**를 나눠야 할 때는 **`elif`**를 사용합니다!\n\n```python\nif 조건1:\n    # 조건1이 참이면 실행\nelif 조건2:\n    # 조건1은 거짓이고, 조건2가 참이면 실행\nelif 조건3:\n    # 조건1, 2 모두 거짓이고, 조건3이 참이면 실행\nelse:\n    # 위 조건이 모두 거짓이면 실행\n```\n\n### 흐름도\n\n```mermaid\ngraph TD\n    A[\"📝 점수 입력\"] --> B{\"90점 이상?\"}\n    B -->|\"Yes\"| GA[\"🅰️ A\"]\n    B -->|\"No\"| C{\"80점 이상?\"}\n    C -->|\"Yes\"| GB[\"🅱️ B\"]\n    C -->|\"No\"| D{\"70점 이상?\"}\n    D -->|\"Yes\"| GC[\"©️ C\"]\n    D -->|\"No\"| E{\"60점 이상?\"}\n    E -->|\"Yes\"| GD[\"🇩 D\"]\n    E -->|\"No\"| GF[\"🚫 F\"]\n    style B fill:#fef3c7,stroke:#f59e0b,color:#78350f\n    style C fill:#fef3c7,stroke:#f59e0b,color:#78350f\n    style D fill:#fef3c7,stroke:#f59e0b,color:#78350f\n    style E fill:#fef3c7,stroke:#f59e0b,color:#78350f\n    style GA fill:#dcfce7,stroke:#22c55e,color:#14532d\n    style GB fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f\n    style GC fill:#e0e7ff,stroke:#6366f1,color:#312e81\n    style GD fill:#fef9c3,stroke:#eab308,color:#713f12\n    style GF fill:#fee2e2,stroke:#ef4444,color:#7f1d1d\n```\n\n> **중요!** `elif`는 위의 조건이 모두 거짓일 때만 확인합니다.\n> 그래서 90이상을 먼저 확인하고, 다음에 80이상을 확인하는 **순서가 중요**해요!\n\n### 비교 연산자\n\n| 연산자 | 의미 | 예시 |\n|--------|------|------|\n| `>=` | 이상 (크거나 같다) | `score >= 90` |\n| `<=` | 이하 (작거나 같다) | `score <= 100` |\n| `>` | 초과 (크다) | `score > 89` |\n| `<` | 미만 (작다) | `score < 60` |\n| `==` | 같다 | `score == 100` |\n| `!=` | 같지 않다 | `score != 0` |\n\n---\n\n## 문제\n\n점수를 입력받아 등급을 출력하세요.\n\n| 점수 범위 | 등급 |\n|-----------|------|\n| 90점 이상 | A |\n| 80점 이상 | B |\n| 70점 이상 | C |\n| 60점 이상 | D |\n| 60점 미만 | F |\n\n### 입력\n- 정수 score (0 ~ 100)\n\n### 출력\n- 해당하는 등급 (A, B, C, D, F 중 하나)\n\n### 예시\n\n**예시 1:**\n```\n입력: 95\n출력: A\n```\n> 95 >= 90 → A\n\n**예시 2:**\n```\n입력: 73\n출력: C\n```\n> 73은 90 미만, 80 미만, 하지만 70 이상 → C\n\n**예시 3:**\n```\n입력: 42\n출력: F\n```\n> 42는 60 미만 → F",
+  "starter_code": "score = int(input())\n\n# 등급을 판별하여 출력하세요\n",
+  "test_cases": [
+    {
+      "input": "95",
+      "expected_output": "A",
+      "description": "A등급"
+    },
+    {
+      "input": "85",
+      "expected_output": "B",
+      "description": "B등급"
+    },
+    {
+      "input": "73",
+      "expected_output": "C",
+      "description": "C등급"
+    },
+    {
+      "input": "65",
+      "expected_output": "D",
+      "description": "D등급"
+    },
+    {
+      "input": "42",
+      "expected_output": "F",
+      "description": "F등급"
+    },
+    {
+      "input": "90",
+      "expected_output": "A",
+      "description": "경계값 90"
+    },
+    {
+      "input": "60",
+      "expected_output": "D",
+      "description": "경계값 60"
+    },
+    {
+      "input": "100",
+      "expected_output": "A",
+      "description": "만점"
+    },
+    {
+      "input": "0",
+      "expected_output": "F",
+      "description": "0점"
+    }
+  ],
+  "hints": [
+    "if score >= 90: 부터 시작해서 elif로 점점 낮은 점수를 확인하세요.",
+    "elif는 위의 조건이 거짓일 때만 실행되므로, 80이상 검사할 때 이미 90미만인 것이 보장됩니다!",
+    "마지막 else:는 60점 미만인 경우에 해당해요. 여기서 F를 출력하면 됩니다."
+  ],
+  "expected_approaches": [
+    {
+      "tag": "if/elif/else 체인",
+      "description": "90이상부터 순서대로 elif로 확인하고 else로 F 처리"
+    },
+    {
+      "tag": "중첩 if 사용",
+      "description": "if 안에 if를 넣어 범위를 좁혀가는 방법 (비추천이지만 가능)"
+    }
+  ]
+}

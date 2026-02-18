@@ -1,0 +1,25 @@
+{
+  "id": "beginner-10-reverse",
+  "title": "거꾸로 말하기",
+  "difficulty": 2,
+  "category": "string",
+  "description": "## 문자열 인덱싱과 슬라이싱\n\n### 문자열의 인덱스\n\n문자열의 각 글자에는 **번호(인덱스)**가 매겨져 있어요. **0번부터** 시작합니다!\n\n```\n문자열:  h   e   l   l   o\n인덱스:  0   1   2   3   4\n역인덱스: -5  -4  -3  -2  -1\n```\n\n```python\ns = \"hello\"\nprint(s[0])    # h  (첫 번째 글자)\nprint(s[1])    # e  (두 번째 글자)\nprint(s[-1])   # o  (마지막 글자)\n```\n\n### 슬라이싱 — 문자열 잘라내기\n\n`s[start:end]`로 문자열의 일부를 잘라낼 수 있어요.\n\n```python\ns = \"hello\"\nprint(s[1:4])   # ell  (1번~3번, end 전까지)\nprint(s[:3])    # hel  (처음~2번)\nprint(s[2:])    # llo  (2번~끝)\n```\n\n### 슬라이싱의 step\n\n`s[start:end:step]`에서 **step**은 몇 칸씩 건너뛸지를 정합니다.\n\n```python\ns = \"abcdefg\"\nprint(s[::2])    # aceg   (2칸씩 건너뛰기)\nprint(s[1::2])   # bdf    (1번부터 2칸씩)\n```\n\n### 문자열 뒤집기: s[::-1]\n\nstep에 **-1**을 넣으면? **거꾸로** 읽어요!\n\n```\n원본:     h  e  l  l  o\n         →→→→→→→→→→→→→→\n\n[::-1]:  o  l  l  e  h\n         ←←←←←←←←←←←←←\n```\n\n```python\ns = \"hello\"\nprint(s[::-1])   # olleh\n```\n\n한글도 가능해요!\n\n```python\ns = \"파이썬\"\nprint(s[::-1])   # 썬이파\n```\n\n---\n\n## 문제\n\n문자열을 입력받아 **뒤집어서** 출력하세요.\n\n### 입력\n- 문자열 한 줄\n\n### 출력\n- 뒤집힌 문자열\n\n### 예시\n\n**예시 1:**\n```\n입력: hello\n출력: olleh\n```\n> `h-e-l-l-o` → `o-l-l-e-h`\n\n**예시 2:**\n```\n입력: 파이썬\n출력: 썬이파\n```\n> 한글도 글자 단위로 뒤집어집니다!\n\n**예시 3:**\n```\n입력: 12345\n출력: 54321\n```\n> 숫자로 이루어진 문자열도 뒤집을 수 있어요.",
+  "starter_code": "s = input()\n\n# 문자열을 뒤집어서 출력하세요\n",
+  "test_cases": [
+    { "input": "hello", "expected_output": "olleh", "description": "영어 단어 뒤집기" },
+    { "input": "파이썬", "expected_output": "썬이파", "description": "한글 뒤집기" },
+    { "input": "12345", "expected_output": "54321", "description": "숫자 문자열 뒤집기" },
+    { "input": "a", "expected_output": "a", "description": "한 글자 (뒤집어도 같음)" },
+    { "input": "abba", "expected_output": "abba", "description": "회문 (뒤집어도 같음)" }
+  ],
+  "hints": [
+    "문자열을 뒤집는 가장 쉬운 방법은 슬라이싱을 사용하는 거예요: s[::-1]",
+    "[::-1]에서 -1은 '한 칸씩 뒤로 가며 읽어라'는 뜻입니다.",
+    "reversed() 함수와 join()을 사용하는 방법도 있어요: \"\".join(reversed(s))"
+  ],
+  "expected_approaches": [
+    { "tag": "슬라이싱 [::-1]", "description": "s[::-1]로 문자열을 뒤집어 출력" },
+    { "tag": "reversed() + join()", "description": "\"\".join(reversed(s))로 뒤집기" },
+    { "tag": "for문으로 직접 구성", "description": "빈 문자열에 뒤에서부터 한 글자씩 추가" }
+  ]
+}

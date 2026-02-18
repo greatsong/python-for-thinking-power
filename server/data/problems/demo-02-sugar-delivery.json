@@ -1,0 +1,59 @@
+{
+  "id": "demo-02-sugar-delivery",
+  "title": "설탕 배달",
+  "difficulty": 3,
+  "category": "logic",
+  "description": "## 설탕 배달\n\n정확히 **N킬로그램**의 설탕을 배달해야 합니다. 봉지는 **3kg짜리**와 **5kg짜리** 두 종류가 있습니다.\n\n봉지의 **최소 개수**를 구하세요. 정확히 N킬로그램을 맞출 수 없으면 `-1`을 출력하세요.\n\n### 핵심 아이디어\n\n봉지 수를 줄이려면 **5kg 봉지를 최대한 많이** 쓰는 게 좋겠죠?\n하지만 항상 5kg부터 쓰면 안 되는 경우도 있어요.\n\n5kg 봉지 수를 최대에서 하나씩 줄여가면서, 나머지가 3으로 나누어 떨어지는지 확인하는 방법이 효과적입니다.\n\n```\nN = 11인 경우:\n  5kg × 2 = 10, 나머지 1 → 3으로 안 나눠짐 ✗\n  5kg × 1 = 5,  나머지 6 → 3 × 2 = 6 ✓ → 총 3봉지\n```\n\n### 입력\n- 정수 N (1 이상 5000 이하)\n\n### 출력\n- 최소 봉지 수 또는 -1\n\n### 예시\n\n**예시 1:**\n```\n입력: 18\n출력: 4\n```\n> 5 + 5 + 5 + 3 = 18, 봉지 4개\n\n**예시 2:**\n```\n입력: 4\n출력: -1\n```\n> 3과 5로 4를 만들 수 없음\n\n**예시 3:**\n```\n입력: 11\n출력: 3\n```\n> 5 + 3 + 3 = 11, 봉지 3개",
+  "starter_code": "n = int(input())\n\n# 최소 봉지 수를 구하세요\n",
+  "test_cases": [
+    {
+      "input": "18",
+      "expected_output": "4",
+      "description": "5+5+5+3"
+    },
+    {
+      "input": "4",
+      "expected_output": "-1",
+      "description": "불가능한 경우"
+    },
+    {
+      "input": "11",
+      "expected_output": "3",
+      "description": "5+3+3"
+    },
+    {
+      "input": "15",
+      "expected_output": "3",
+      "description": "5+5+5"
+    },
+    {
+      "input": "3",
+      "expected_output": "1",
+      "description": "3 하나"
+    }
+  ],
+  "hints": [
+    "5kg 봉지를 최대한 많이 쓰는 게 좋을까요? 항상 그럴까요?",
+    "5kg 봉지 수를 하나씩 줄여가면서 나머지가 3으로 나누어 떨어지는지 확인해보세요.",
+    "전혀 다른 접근: 가능한 모든 (3kg 개수, 5kg 개수) 조합을 탐색할 수도 있어요."
+  ],
+  "expected_approaches": [
+    {
+      "tag": "그리디 (5부터 감소)",
+      "description": "5kg을 최대로 놓고 하나씩 줄이며 3으로 나누어지는지 확인"
+    },
+    {
+      "tag": "완전탐색",
+      "description": "이중 반복으로 모든 (i, j) 조합 시도"
+    },
+    {
+      "tag": "DP",
+      "description": "dp[i] = i kg을 만드는 최소 봉지 수"
+    },
+    {
+      "tag": "수학적 분석",
+      "description": "n%5에 따른 케이스 분석"
+    }
+  ],
+  "explanation": "## 풀이 해설\n\n### 핵심 개념\n이 문제는 **그리디(탐욕법)** 또는 **완전탐색**으로 풀 수 있어. 봉지 수를 최소화하려면 큰 봉지(5kg)를 최대한 많이 쓰는 게 유리하지. 하지만 무조건 5kg만 넣으면 나머지가 3으로 안 나눠질 수 있으니까, 5kg 봉지를 하나씩 줄여가면서 확인하는 전략이 필요해.\n\n### 대표 풀이: 그리디 (5kg부터 감소)\n5kg 봉지를 최대 개수에서 하나씩 줄이면서, 남은 무게가 3의 배수인지 확인하는 방법이야.\n\n```python\nn = int(input())\n\nresult = -1\nfor five in range(n // 5, -1, -1):\n    remain = n - 5 * five\n    if remain % 3 == 0:\n        result = five + remain // 3\n        break\nprint(result)\n```\n\n`range(n // 5, -1, -1)`은 5kg 봉지의 최대 개수부터 0까지 거꾸로 순회해. 처음으로 나머지가 3으로 나눠지는 경우를 찾으면, 그게 최소 봉지 수야!\n\n### 다른 풀이 방법\n\n**풀이 2: 완전탐색 (이중 반복문)**\n가능한 모든 (3kg 개수, 5kg 개수) 조합을 다 시도하는 방법이야.\n\n```python\nn = int(input())\n\nmin_bags = -1\nfor three in range(n // 3 + 1):\n    for five in range(n // 5 + 1):\n        if 3 * three + 5 * five == n:\n            total = three + five\n            if min_bags == -1 or total < min_bags:\n                min_bags = total\nprint(min_bags)\n```\n\n**풀이 3: DP (동적 프로그래밍)**\n동전 교환 문제와 같은 구조야! `dp[i]`를 i kg을 만드는 최소 봉지 수로 정의해.\n\n```python\nn = int(input())\n\ndp = [float('inf')] * (n + 1)\ndp[0] = 0\nfor i in range(1, n + 1):\n    if i >= 3 and dp[i - 3] != float('inf'):\n        dp[i] = min(dp[i], dp[i - 3] + 1)\n    if i >= 5 and dp[i - 5] != float('inf'):\n        dp[i] = min(dp[i], dp[i - 5] + 1)\nprint(dp[n] if dp[n] != float('inf') else -1)\n```\n\n**풀이 4: 수학적 분석 (n % 5 케이스 분석)**\nn을 5로 나눈 나머지에 따라 패턴이 있어.\n\n```python\nn = int(input())\n\nif n % 5 == 0:\n    print(n // 5)\nelif n % 5 == 1 and n >= 6:\n    print((n - 6) // 5 + 2)\nelif n % 5 == 2 and n >= 12:\n    print((n - 12) // 5 + 4)\nelif n % 5 == 3 and n >= 3:\n    print((n - 3) // 5 + 1)\nelif n % 5 == 4 and n >= 9:\n    print((n - 9) // 5 + 3)\nelse:\n    print(-1)\n```\n\n이건 좀 복잡하지만 O(1)으로 바로 답을 구할 수 있어!\n\n### 주의할 점\n- 불가능한 경우(-1)를 빼먹지 마! N=1, 2, 4, 7 같은 경우가 불가능해.\n- 그리디에서 5kg부터 줄여가는 이유는 **봉지 수 최소화**가 목적이기 때문이야. 큰 봉지를 많이 쓸수록 총 개수가 줄어들거든.\n- `break`를 빼먹으면 최소가 아니라 다른 값이 나올 수 있으니 주의!\n- N=0인 경우는 문제 범위(1 이상)에 없지만, 만약 있다면 0이 답이 되겠지."
+}

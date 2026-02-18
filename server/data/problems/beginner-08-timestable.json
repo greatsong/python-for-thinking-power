@@ -1,0 +1,49 @@
+{
+  "id": "beginner-08-timestable",
+  "title": "구구단 출력기",
+  "difficulty": 2,
+  "category": "loop",
+  "description": "## for문 활용 — 구구단 만들기\n\n### 복습: for문과 range()\n\n```python\nfor i in range(1, 10):   # i = 1, 2, 3, ..., 9\n    print(i)\n```\n\n### f-string 안에서 계산하기\n\nf-string의 `{}` 안에는 변수뿐 아니라 **수식(계산식)**도 넣을 수 있어요!\n\n```python\na = 3\nprint(f\"{a} x 2 = {a * 2}\")    # 3 x 2 = 6\nprint(f\"{a} + 5 = {a + 5}\")    # 3 + 5 = 8\n```\n\n### 구구단의 패턴\n\n3단을 예로 들면:\n\n```\n3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n  ...계속...\n3 x 9 = 27\n```\n\n패턴이 보이시나요?\n\n```\n  N x i = N*i\n```\n\n여기서 `N`은 고정(입력값)이고, `i`만 1부터 9까지 변합니다.\n이걸 for문으로 쓰면:\n\n```python\nn = 3\nfor i in range(1, 10):          # i = 1, 2, ..., 9\n    print(f\"{n} x {i} = {n * i}\")\n```\n\n| i | f-string 결과 |\n|---|---------------|\n| 1 | `3 x 1 = 3` |\n| 2 | `3 x 2 = 6` |\n| 3 | `3 x 3 = 9` |\n| ... | ... |\n| 9 | `3 x 9 = 27` |\n\n---\n\n## 문제\n\nN을 입력받아 **N단 구구단**을 출력하세요.\n\n### 입력\n- 정수 N (2 ~ 9)\n\n### 출력\n- `N x 1 = ?` 부터 `N x 9 = ?` 까지 9줄 출력\n- 형식: `N x i = 결과` (공백에 주의!)\n\n### 예시\n\n**예시 1:**\n```\n입력: 3\n출력:\n3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n```\n\n**예시 2:**\n```\n입력: 7\n출력:\n7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n```\n\n> `x` 앞뒤와 `=` 앞뒤에 공백이 있어야 해요!",
+  "starter_code": "n = int(input())\n\n# N단 구구단을 출력하세요\n",
+  "test_cases": [
+    {
+      "input": "3",
+      "expected_output": "3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27",
+      "description": "3단"
+    },
+    {
+      "input": "7",
+      "expected_output": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63",
+      "description": "7단"
+    },
+    {
+      "input": "2",
+      "expected_output": "2 x 1 = 2\n2 x 2 = 4\n2 x 3 = 6\n2 x 4 = 8\n2 x 5 = 10\n2 x 6 = 12\n2 x 7 = 14\n2 x 8 = 16\n2 x 9 = 18",
+      "description": "2단"
+    },
+    {
+      "input": "9",
+      "expected_output": "9 x 1 = 9\n9 x 2 = 18\n9 x 3 = 27\n9 x 4 = 36\n9 x 5 = 45\n9 x 6 = 54\n9 x 7 = 63\n9 x 8 = 72\n9 x 9 = 81",
+      "description": "9단"
+    }
+  ],
+  "hints": [
+    "for i in range(1, 10): 으로 1부터 9까지 반복하세요.",
+    "f\"{n} x {i} = {n * i}\" 처럼 f-string 안에 수식을 넣을 수 있어요!",
+    "x 앞뒤와 = 앞뒤에 공백(스페이스)을 넣는 것을 잊지 마세요."
+  ],
+  "expected_approaches": [
+    {
+      "tag": "for + f-string",
+      "description": "for i in range(1, 10): print(f\"{n} x {i} = {n*i}\")로 출력"
+    },
+    {
+      "tag": "for + format()",
+      "description": "\"{} x {} = {}\".format(n, i, n*i) 방식으로 포맷팅"
+    },
+    {
+      "tag": "while문 활용",
+      "description": "i = 1부터 시작하여 while i <= 9로 반복"
+    }
+  ]
+}

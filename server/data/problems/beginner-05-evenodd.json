@@ -1,0 +1,24 @@
+{
+  "id": "beginner-05-evenodd",
+  "title": "짝수일까? 홀수일까?",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "## if/else — 조건에 따라 다른 길로!\n\n### if/else란?\n\n일상에서도 조건에 따라 다르게 행동하죠?\n\n> \"비가 오면 우산을 쓰고, 안 오면 그냥 나간다\"\n\n파이썬의 `if/else`도 똑같아요!\n\n```python\nif 조건:\n    # 조건이 참(True)일 때 실행\nelse:\n    # 조건이 거짓(False)일 때 실행\n```\n\n### 흐름도로 보면...\n\n```mermaid\ngraph TD\n    A[\"숫자 입력\"] --> B{\"숫자 % 2 == 0?\"}\n    B -->|\"Yes\"| C[\"짝수!\"]\n    B -->|\"No\"| D[\"홀수!\"]\n    style B fill:#fef3c7,stroke:#f59e0b,color:#78350f\n    style C fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f\n    style D fill:#fce7f3,stroke:#ec4899,color:#831843\n```\n\n### 나머지 연산자 %\n\n`%` 연산자는 나눗셈의 **나머지**를 구합니다.\n\n```python\n10 % 2   # → 0  (10 ÷ 2 = 5 나머지 0)\n7 % 2    # → 1  (7 ÷ 2 = 3 나머지 1)\n15 % 2   # → 1  (15 ÷ 2 = 7 나머지 1)\n```\n\n**짝수**는 2로 나누어 떨어지니까 나머지가 **0**, **홀수**는 나머지가 **1**!\n\n```python\nif n % 2 == 0:\n    print(\"짝수\")\nelse:\n    print(\"홀수\")\n```\n\n### == 와 = 의 차이\n\n| 기호 | 의미 | 예시 |\n|------|------|------|\n| `=` | 값을 넣기(대입) | `n = 10` |\n| `==` | 같은지 비교 | `n == 10` → True 또는 False |\n\n---\n\n## 문제\n\n정수를 하나 입력받아 **짝수**이면 `짝수`, **홀수**이면 `홀수`를 출력하세요.\n\n### 입력\n- 정수 n\n\n### 출력\n- `짝수` 또는 `홀수`\n\n### 예시\n\n**예시 1:**\n```\n입력: 4\n출력: 짝수\n```\n> 4 ÷ 2 = 2 나머지 0 → 짝수!\n\n**예시 2:**\n```\n입력: 7\n출력: 홀수\n```\n> 7 ÷ 2 = 3 나머지 1 → 홀수!\n\n**예시 3:**\n```\n입력: 0\n출력: 짝수\n```\n> 0 ÷ 2 = 0 나머지 0 → 0도 짝수입니다!",
+  "starter_code": "n = int(input())\n\n# 짝수인지 홀수인지 판별하세요\n",
+  "test_cases": [
+    { "input": "4", "expected_output": "짝수", "description": "짝수 테스트" },
+    { "input": "7", "expected_output": "홀수", "description": "홀수 테스트" },
+    { "input": "0", "expected_output": "짝수", "description": "0은 짝수" },
+    { "input": "-3", "expected_output": "홀수", "description": "음수 홀수" },
+    { "input": "100", "expected_output": "짝수", "description": "큰 짝수" }
+  ],
+  "hints": [
+    "% 연산자는 나머지를 구합니다. n % 2의 결과가 0이면 짝수예요!",
+    "if n % 2 == 0: 으로 조건을 쓸 수 있어요. = 가 아니라 == (등호 두 개)를 써야 합니다!",
+    "else: 는 if의 조건이 거짓일 때 실행돼요. 짝수가 아니면 홀수겠죠?"
+  ],
+  "expected_approaches": [
+    { "tag": "if/else + % 연산", "description": "n % 2 == 0이면 짝수, 아니면 홀수 출력" },
+    { "tag": "조건식(삼항 연산자)", "description": "print(\"짝수\" if n % 2 == 0 else \"홀수\")로 한 줄 처리" }
+  ]
+}

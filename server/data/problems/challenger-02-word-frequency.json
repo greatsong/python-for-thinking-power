@@ -1,0 +1,44 @@
+{
+  "id": "challenger-02-word-frequency",
+  "title": "인기 단어 TOP 3",
+  "difficulty": 4,
+  "category": "string",
+  "description": "## 인기 단어 TOP 3\n\n문장에서 가장 많이 등장한 단어 TOP 3를 찾아봅시다!\n\n### 규칙\n\n1. **대소문자 구분 없음**: \"Hello\"와 \"hello\"는 같은 단어입니다.\n2. **구두점 제거**: 단어에 붙어있는 `.` `,` `!` `?`는 제거합니다.\n3. **빈도순 정렬**: 많이 등장한 순서대로 출력합니다.\n4. **동일 빈도 시**: 알파벳(사전) 순서가 빠른 단어를 먼저 출력합니다.\n5. 결과는 정확히 **3줄** 출력하며, 각 줄은 `단어 횟수` 형식입니다.\n\n### 처리 순서\n\n```mermaid\ngraph LR\n    A[\"원본 텍스트\"] --> B[\"소문자 변환\"]\n    B --> C[\"구두점 제거\"]\n    C --> D[\"단어 분리\"]\n    D --> E[\"빈도 카운트\"]\n    E --> F[\"정렬: 빈도 내림차순, 알파벳 오름차순\"]\n    F --> G[\"상위 3개 출력\"]\n```\n\n### 입력\n- 한 줄의 영어 텍스트 (단어가 3종류 이상 보장)\n\n### 출력\n- 3줄, 각 줄에 `단어 횟수` (공백 구분)\n\n### 예시\n\n**예시 1:**\n```\n입력: hello world hello python hello world\n출력:\nhello 3\nworld 2\npython 1\n```\n> hello(3회) > world(2회) > python(1회)\n\n**예시 2:**\n```\n입력: I love love love coding and I love Python\n출력:\nlove 4\ni 2\nand 1\n```\n> love(4회) > i(2회) > and, coding, python 모두 1회인데 알파벳순으로 and가 먼저\n\n**예시 3:**\n```\n입력: The cat sat on the mat. The cat is fat!\n출력:\nthe 3\ncat 2\nfat 1\n```\n> the(3회) > cat(2회) > fat, is, mat, on, sat 모두 1회인데 알파벳순으로 fat이 먼저",
+  "starter_code": "text = input()\n\n# 1. 소문자로 변환하세요\n# 2. 구두점(. , ! ?)을 제거하세요\n# 3. 단어별 빈도를 세세요\n# 4. 빈도 내림차순, 같으면 알파벳순으로 정렬하세요\n# 5. 상위 3개를 출력하세요\n",
+  "test_cases": [
+    {
+      "input": "hello world hello python hello world",
+      "expected_output": "hello 3\nworld 2\npython 1",
+      "description": "기본 테스트 — 빈도순 정렬"
+    },
+    {
+      "input": "I love love love coding and I love Python",
+      "expected_output": "love 4\ni 2\nand 1",
+      "description": "대소문자 무시 + 동일 빈도 알파벳순"
+    },
+    {
+      "input": "The cat sat on the mat. The cat is fat!",
+      "expected_output": "the 3\ncat 2\nfat 1",
+      "description": "구두점 제거 + 동일 빈도 알파벳순"
+    }
+  ],
+  "hints": [
+    "text.lower()로 소문자 변환 후, for c in '.,!?': text = text.replace(c, '')로 구두점을 제거하세요.",
+    "딕셔너리로 빈도를 셀 수 있어요: words = text.split() 후 for문으로 각 단어를 카운트하세요.",
+    "정렬할 때 sorted(items, key=lambda x: (-x[1], x[0]))을 쓰면 빈도 내림차순, 같으면 알파벳 오름차순으로 정렬돼요."
+  ],
+  "expected_approaches": [
+    {
+      "tag": "딕셔너리 직접 카운트",
+      "description": "빈 딕셔너리를 만들고 for문으로 각 단어의 등장 횟수를 세는 방법"
+    },
+    {
+      "tag": "collections.Counter",
+      "description": "Counter 클래스를 사용해 단어 빈도를 자동으로 세고 most_common() 활용"
+    },
+    {
+      "tag": "sorted + 커스텀 키",
+      "description": "sorted()에 lambda 키를 사용해 빈도 내림차순, 알파벳 오름차순으로 정렬"
+    }
+  ]
+}

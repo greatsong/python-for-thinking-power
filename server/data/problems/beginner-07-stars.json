@@ -1,0 +1,49 @@
+{
+  "id": "beginner-07-stars",
+  "title": "별 찍기",
+  "difficulty": 2,
+  "category": "loop",
+  "description": "## for문 — 같은 일을 반복하자!\n\n### 반복문이란?\n\n별을 5개 출력하고 싶다면, `print()`를 5번 쓸 수도 있지만...\n\n```python\nprint(\"*\")      # 비효율적!\nprint(\"**\")\nprint(\"***\")\nprint(\"****\")\nprint(\"*****\")\n```\n\n만약 100줄이라면? 1000줄이라면? 이럴 때 **for문**을 씁니다!\n\n### for문 기본 구조\n\n```python\nfor i in range(5):\n    print(i)\n```\n```\n0\n1\n2\n3\n4\n```\n\n`range(5)`는 **0, 1, 2, 3, 4** 총 5개의 숫자를 만들어줍니다.\n\n```mermaid\ngraph TD\n    A[\"range(5) → 0, 1, 2, 3, 4\"] --> B[\"i = 0\"]\n    B --> C[\"print(i) 실행\"]\n    C --> D{\"다음 값 있음?\"}\n    D -->|\"Yes\"| E[\"i = 다음 값\"]\n    E --> C\n    D -->|\"No\"| F[\"반복 종료\"]\n    style A fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f,stroke-width:2px\n    style C fill:#dcfce7,stroke:#22c55e,color:#14532d,stroke-width:2px\n    style D fill:#fef3c7,stroke:#f59e0b,color:#78350f\n    style F fill:#f3e8ff,stroke:#a855f7,color:#581c87,stroke-width:2px\n```\n\n### range() 다양한 사용법\n\n```python\nrange(5)       # 0, 1, 2, 3, 4       (0부터 4까지)\nrange(1, 5)    # 1, 2, 3, 4          (1부터 4까지)\nrange(1, 6)    # 1, 2, 3, 4, 5       (1부터 5까지)\n```\n\n### 문자열 반복: \"*\" * n\n\n파이썬에서는 문자열에 `*` 연산자를 쓰면 **반복**됩니다!\n\n```python\n\"*\" * 1    # \"*\"\n\"*\" * 3    # \"***\"\n\"*\" * 5    # \"*****\"\n\"하\" * 3   # \"하하하\"\n```\n\n### 이걸 합치면?\n\n```python\nfor i in range(1, 4):     # i = 1, 2, 3\n    print(\"*\" * i)\n```\n```\n*\n**\n***\n```\n\n이렇게 되는 과정을 표로 보면:\n\n| 반복 | i 값 | \"*\" * i | 출력 |\n|------|-------|---------|------|\n| 1번째 | 1 | \"*\" | `*` |\n| 2번째 | 2 | \"**\" | `**` |\n| 3번째 | 3 | \"***\" | `***` |\n\n---\n\n## 문제\n\nN을 입력받아 **별 삼각형**을 출력하세요.\n\n1번째 줄에는 별 1개, 2번째 줄에는 별 2개, ... N번째 줄에는 별 N개를 출력합니다.\n\n### 입력\n- 정수 N\n\n### 출력\n- N줄에 걸쳐 별을 1개부터 N개까지 출력\n\n### 예시\n\n**예시 1:**\n```\n입력: 4\n출력:\n*\n**\n***\n****\n```\n\n**예시 2:**\n```\n입력: 1\n출력:\n*\n```\n\n**예시 3:**\n```\n입력: 6\n출력:\n*\n**\n***\n****\n*****\n******\n```",
+  "starter_code": "n = int(input())\n\n# 별 삼각형을 출력하세요\n",
+  "test_cases": [
+    {
+      "input": "4",
+      "expected_output": "*\n**\n***\n****",
+      "description": "4줄 별"
+    },
+    {
+      "input": "1",
+      "expected_output": "*",
+      "description": "1줄 별"
+    },
+    {
+      "input": "6",
+      "expected_output": "*\n**\n***\n****\n*****\n******",
+      "description": "6줄 별"
+    },
+    {
+      "input": "3",
+      "expected_output": "*\n**\n***",
+      "description": "3줄 별"
+    }
+  ],
+  "hints": [
+    "for i in range(1, n+1): 을 쓰면 i가 1부터 n까지 변합니다.",
+    "\"*\" * i 로 별을 i개 반복할 수 있어요!",
+    "전체 코드는 딱 2줄이면 충분합니다: for문 한 줄 + print 한 줄!"
+  ],
+  "expected_approaches": [
+    {
+      "tag": "for + 문자열 반복",
+      "description": "for i in range(1, n+1): print(\"*\" * i)로 간결하게 출력"
+    },
+    {
+      "tag": "중첩 for문",
+      "description": "바깥 for로 줄, 안쪽 for로 별 개수를 제어 (print(end=\"\") 활용)"
+    },
+    {
+      "tag": "while문 활용",
+      "description": "i = 1부터 시작하여 while i <= n: 으로 반복"
+    }
+  ]
+}

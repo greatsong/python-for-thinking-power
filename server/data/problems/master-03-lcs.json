@@ -1,0 +1,49 @@
+{
+  "id": "master-03-lcs",
+  "title": "공통 부분 수열 찾기",
+  "difficulty": 5,
+  "category": "algorithm",
+  "description": "## 공통 부분 수열 찾기\n\n두 명의 마법사가 각자 **마법 주문**을 외웠습니다. 두 주문에서 **공통으로 들어있는 가장 긴 부분 수열**을 찾으면, 그것이 바로 궁극의 마법이 됩니다!\n\n### 부분 수열(Subsequence)이란?\n\n원래 문자열에서 **순서를 유지하면서** 일부 문자를 골라낸 것입니다. 연속하지 않아도 됩니다!\n\n```\n\"ABCBDAB\"의 부분 수열 예시:\n  \"AB\"     ← A, B를 순서대로 골라냄 (O)\n  \"BCAB\"   ← B, C, A, B를 순서대로 골라냄 (O)\n  \"BA\"     ← B 다음에 A? 원래 순서에서 가능 (O, B는 인덱스1, A는 인덱스4)\n  \"DBCA\"   ← D 다음에 B? D(인덱스4) 이후에 B(인덱스6)... C? 순서 안 맞음 (X)\n```\n\n### LCS (Longest Common Subsequence)\n\n두 문자열의 **공통 부분 수열** 중 **가장 긴 것의 길이**를 구하세요.\n\n```\n문자열 1: \"ABCBDAB\"\n문자열 2: \"BDCAB\"\n\n공통 부분 수열들: \"B\", \"AB\", \"BCB\", \"BCAB\", ...\n가장 긴 공통 부분 수열: \"BCAB\" (길이 4)\n```\n\n### DP 테이블 개념\n\n```mermaid\nflowchart TD\n    A[두 문자열 비교] --> B{현재 글자가 같은가?}\n    B -->|같다| C[\"왼쪽 위 대각선 값 + 1\"]\n    B -->|다르다| D[\"왼쪽 값과 위쪽 값 중 큰 것\"]\n    C --> E[DP 테이블 다음 칸으로]\n    D --> E\n    E --> F{모든 칸을 채웠나?}\n    F -->|No| A\n    F -->|Yes| G[\"테이블 오른쪽 아래 값 = LCS 길이\"]\n```\n\n### DP 테이블 예시\n\n문자열 1: \"ABCB\", 문자열 2: \"BDC\"\n\n```\n      \"\"  B  D  C\n  \"\"   0  0  0  0\n  A    0  0  0  0\n  B    0  1  1  1\n  C    0  1  1  2\n  B    0  1  1  2\n```\n\n테이블의 마지막 값 **2**가 LCS의 길이입니다! (공통 부분 수열: \"BC\")\n\n### 입력\n- 첫째 줄: 문자열 1 (영문 대문자)\n- 둘째 줄: 문자열 2 (영문 대문자)\n- 각 문자열의 길이는 1 이상 100 이하\n\n### 출력\n- 가장 긴 공통 부분 수열의 길이 (정수)\n\n### 예시\n\n**예시 1:**\n```\n입력:\nABCBDAB\nBDCAB\n\n출력:\n4\n```\n> LCS는 \"BCAB\"으로 길이 4\n\n**예시 2:**\n```\n입력:\nABCD\nEFGH\n\n출력:\n0\n```\n> 공통 문자가 하나도 없으므로 LCS 길이는 0\n\n**예시 3:**\n```\n입력:\nAGGTAB\nGXTXAYB\n\n출력:\n4\n```\n> LCS는 \"GTAB\"으로 길이 4",
+  "starter_code": "s1 = input()\ns2 = input()\n\n# 2차원 DP 테이블을 만들어보세요\n# dp[i][j] = s1의 처음 i글자와 s2의 처음 j글자의 LCS 길이\n# 글자가 같으면? 다르면? 점화식을 생각해보세요\n",
+  "test_cases": [
+    {
+      "input": "ABCBDAB\nBDCAB",
+      "expected_output": "4",
+      "description": "기본 LCS 테스트 (BCAB, 길이 4)"
+    },
+    {
+      "input": "ABCD\nEFGH",
+      "expected_output": "0",
+      "description": "공통 문자 없음"
+    },
+    {
+      "input": "AAAA\nAA",
+      "expected_output": "2",
+      "description": "반복 문자 테스트"
+    },
+    {
+      "input": "AGGTAB\nGXTXAYB",
+      "expected_output": "4",
+      "description": "GTAB, 길이 4"
+    }
+  ],
+  "hints": [
+    "2차원 리스트 dp를 만드세요. dp[i][j]는 s1[:i]와 s2[:j]의 LCS 길이입니다. dp = [[0]*(len(s2)+1) for _ in range(len(s1)+1)]",
+    "점화식: s1[i-1] == s2[j-1]이면 dp[i][j] = dp[i-1][j-1] + 1, 아니면 dp[i][j] = max(dp[i-1][j], dp[i][j-1])",
+    "최종 답은 dp[len(s1)][len(s2)]에 들어있습니다. 이중 for 루프로 테이블을 채워보세요!"
+  ],
+  "expected_approaches": [
+    {
+      "tag": "2D DP 테이블",
+      "description": "(len(s1)+1) x (len(s2)+1) 크기의 2차원 테이블을 이중 for 루프로 채워서 해결. 가장 직관적인 풀이"
+    },
+    {
+      "tag": "공간 최적화 1D DP",
+      "description": "이전 행의 값만 필요하므로 1차원 배열 두 개(또는 하나)만 사용하여 메모리를 O(min(m,n))으로 줄이는 최적화"
+    },
+    {
+      "tag": "재귀 + 메모이제이션",
+      "description": "재귀적으로 LCS를 구하되, functools.lru_cache나 딕셔너리로 중복 계산을 방지하는 Top-down DP 방식"
+    }
+  ]
+}

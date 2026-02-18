@@ -1,0 +1,54 @@
+{
+  "id": "solver-01-compress",
+  "title": "문자열 압축기",
+  "difficulty": 4,
+  "category": "string",
+  "description": "## 문자열 압축기\n\n여러분은 비밀 조직의 **데이터 압축 전문가**입니다! 조직에서 보내는 메시지가 너무 길어서 적에게 들킬 위험이 있어요. 여러분의 임무는 메시지를 **Run-Length Encoding(RLE)** 방식으로 압축하는 것입니다.\n\n### RLE 압축이란?\n\n연속으로 반복되는 같은 문자를 **문자 + 반복 횟수**로 바꾸는 방식입니다.\n\n```\n\"aaabbbccca\" → \"a3b3c3a1\"\n\"aabba\"      → \"a2b2a1\"\n```\n\n### 주의! 압축의 함정\n\n압축한 결과가 원본보다 **더 길어지면** 압축하는 의미가 없겠죠? 그런 경우에는 **원본 문자열을 그대로** 출력합니다.\n\n```\n\"abc\" → 압축하면 \"a1b1c1\" (길이 6) > 원본 (길이 3) → \"abc\" 출력!\n\"aab\" → 압축하면 \"a2b1\" (길이 4) > 원본 (길이 3) → \"aab\" 출력!\n```\n\n```mermaid\nflowchart TD\n    A[입력 문자열] --> B[연속 반복 문자 그룹 찾기]\n    B --> C[각 그룹을 문자+횟수로 변환]\n    C --> D{압축 결과가 더 짧은가?}\n    D -->|Yes| E[압축 결과 출력]\n    D -->|No| F[원본 그대로 출력]\n```\n\n### 입력\n- 소문자 알파벳으로만 이루어진 문자열 (길이 1 이상 1000 이하)\n\n### 출력\n- 압축된 문자열 또는 원본 문자열 (더 짧은 쪽)\n- 길이가 같으면 압축된 문자열을 출력\n\n### 예시\n\n**예시 1:**\n```\n입력:\naaabbbccca\n\n출력:\na3b3c3a1\n```\n> 연속 반복: a(3), b(3), c(3), a(1) → \"a3b3c3a1\" (길이 8) < 원본 (길이 10) → 압축!\n\n**예시 2:**\n```\n입력:\nabc\n\n출력:\nabc\n```\n> 압축하면 \"a1b1c1\" (길이 6) > 원본 (길이 3) → 원본 출력!\n\n**예시 3:**\n```\n입력:\naaaaaa\n\n출력:\na6\n```\n> 모두 같은 문자! \"a6\" (길이 2) < 원본 (길이 6) → 압축!",
+  "starter_code": "s = input()\n\n# 연속 반복되는 문자를 세어서 압축하세요\n# 압축 결과가 원본보다 짧거나 같으면 압축 결과를, 아니면 원본을 출력하세요\n",
+  "test_cases": [
+    {
+      "input": "aaabbbccca",
+      "expected_output": "a3b3c3a1",
+      "description": "기본 테스트 - 여러 문자 반복"
+    },
+    {
+      "input": "abc",
+      "expected_output": "abc",
+      "description": "반복 없음 - 압축하면 더 길어지는 경우"
+    },
+    {
+      "input": "aaaaaa",
+      "expected_output": "a6",
+      "description": "모두 같은 문자"
+    },
+    {
+      "input": "a",
+      "expected_output": "a",
+      "description": "한 글자 - 압축하면 \"a1\"로 더 길어짐"
+    },
+    {
+      "input": "aabbaabb",
+      "expected_output": "a2b2a2b2",
+      "description": "반복 패턴 - 압축 길이 = 원본 길이 (같으면 압축 출력)"
+    }
+  ],
+  "hints": [
+    "for 루프로 문자열을 순회하면서, 이전 문자와 같으면 카운트를 증가시키고, 다르면 결과에 추가하는 방식을 생각해보세요.",
+    "마지막 문자 그룹을 처리하는 것을 잊지 마세요! 루프가 끝난 후에도 마지막 그룹을 결과에 추가해야 합니다.",
+    "itertools.groupby를 사용하면 연속된 같은 문자를 쉽게 그룹화할 수 있어요: from itertools import groupby"
+  ],
+  "expected_approaches": [
+    {
+      "tag": "for 루프 카운팅",
+      "description": "문자열을 순회하며 현재 문자와 이전 문자를 비교하고, 같으면 카운트 증가, 다르면 결과에 추가"
+    },
+    {
+      "tag": "itertools.groupby 활용",
+      "description": "groupby로 연속 동일 문자를 그룹화하고 각 그룹의 길이를 세서 압축 문자열 생성"
+    },
+    {
+      "tag": "정규표현식 (re 모듈)",
+      "description": "re.findall(r'(.)\\1*', s)로 연속 반복 패턴을 찾아 각 매치의 길이로 압축"
+    }
+  ]
+}

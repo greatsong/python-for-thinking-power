@@ -1,0 +1,25 @@
+{
+  "id": "beginner-09-sum",
+  "title": "1부터 N까지 합",
+  "difficulty": 2,
+  "category": "loop",
+  "description": "## 누적 변수 패턴 — 값을 차곡차곡 쌓기\n\n### 누적 변수란?\n\n1부터 5까지의 합을 구하고 싶다면, **변수 하나에 숫자를 계속 더해 나가면** 됩니다.\n\n```\ntotal = 0       # 시작값 (빈 통)\n\ntotal += 1      # 0 + 1 = 1\ntotal += 2      # 1 + 2 = 3\ntotal += 3      # 3 + 3 = 6\ntotal += 4      # 6 + 4 = 10\ntotal += 5      # 10 + 5 = 15 ← 최종 합!\n```\n\n이걸 그림으로 보면:\n\n```\n  total: [  0  ]  시작\n           + 1\n  total: [  1  ]\n           + 2\n  total: [  3  ]\n           + 3\n  total: [  6  ]\n           + 4\n  total: [ 10  ]\n           + 5\n  total: [ 15  ]  완성!\n```\n\n### for문으로 자동화하기\n\n```python\ntotal = 0                   # 1. 누적 변수 초기화\nfor i in range(1, 6):       # 2. 1부터 5까지 반복\n    total += i              # 3. 하나씩 더하기\nprint(total)                # 4. 결과 출력 → 15\n```\n\n> `+=`는 \"기존 값에 더해서 다시 저장\"하라는 뜻이에요.\n> `total += i`는 `total = total + i`와 같습니다.\n\n### 보너스: 가우스 공식\n\n어린 가우스가 발견한 공식! 반복문 없이도 한 번에 구할 수 있어요.\n\n```\n1 + 2 + 3 + ... + N = N × (N + 1) ÷ 2\n```\n\n```\n  1 +  2 +  3 + ... + N\n+ N + (N-1) + (N-2) + ... + 1\n──────────────────────────────\n  (N+1) + (N+1) + ... + (N+1)   ← N개\n\n합 × 2 = N × (N+1)\n합 = N × (N+1) / 2\n```\n\n```python\nresult = n * (n + 1) // 2    # 가우스 공식 (정수 나눗셈)\n```\n\n---\n\n## 문제\n\nN을 입력받아 **1부터 N까지의 합**을 출력하세요.\n\n### 입력\n- 정수 N (1 이상)\n\n### 출력\n- 1 + 2 + 3 + ... + N 의 합\n\n### 예시\n\n**예시 1:**\n```\n입력: 10\n출력: 55\n```\n> 1+2+3+4+5+6+7+8+9+10 = 55\n\n**예시 2:**\n```\n입력: 100\n출력: 5050\n```\n> 가우스가 어린 시절 풀었다는 바로 그 문제! 100 x 101 / 2 = 5050\n\n**예시 3:**\n```\n입력: 1\n출력: 1\n```\n> N이 1이면 합도 1!",
+  "starter_code": "n = int(input())\n\n# 1부터 n까지의 합을 구하세요\n",
+  "test_cases": [
+    { "input": "10", "expected_output": "55", "description": "1부터 10까지 합" },
+    { "input": "100", "expected_output": "5050", "description": "1부터 100까지 합 (가우스)" },
+    { "input": "1", "expected_output": "1", "description": "N이 1인 경우" },
+    { "input": "50", "expected_output": "1275", "description": "1부터 50까지 합" },
+    { "input": "1000", "expected_output": "500500", "description": "큰 수 테스트" }
+  ],
+  "hints": [
+    "total = 0 으로 시작해서 for문으로 1부터 n까지 더해보세요.",
+    "total += i 는 total = total + i 와 같은 뜻이에요.",
+    "for문 없이 공식으로도 풀 수 있어요: n * (n + 1) // 2"
+  ],
+  "expected_approaches": [
+    { "tag": "for문 + 누적", "description": "total = 0으로 시작, for i in range(1, n+1): total += i" },
+    { "tag": "가우스 공식", "description": "n * (n + 1) // 2 로 한 줄에 계산" },
+    { "tag": "sum() + range()", "description": "sum(range(1, n+1))으로 내장 함수 활용" }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "id": "novice-01-temperature",
+  "title": "오늘 뭐 입지?",
+  "difficulty": 3,
+  "category": "logic",
+  "description": "## 오늘 뭐 입지?\n\n아침마다 옷장 앞에서 고민하는 당신! 오늘 기온에 딱 맞는 옷을 추천해주는 프로그램을 만들어봅시다.\n\n### 옷 추천 기준\n\n| 기온 범위 | 추천 옷 |\n|-----------|----------|\n| 28도 이상 | 반팔 |\n| 23도 ~ 27도 | 긴팔 |\n| 15도 ~ 22도 | 자켓 |\n| 10도 ~ 14도 | 코트 |\n| 9도 이하 | 패딩 |\n\n### 흐름도\n\n```mermaid\ngraph TD\n    A[\"🌡️ 기온 입력\"] --> B{\"28도 이상?\"}\n    B -->|\"Yes\"| R1[\"👕 반팔\"]\n    B -->|\"No\"| C{\"23도 이상?\"}\n    C -->|\"Yes\"| R2[\"🧥 긴팔\"]\n    C -->|\"No\"| D{\"15도 이상?\"}\n    D -->|\"Yes\"| R3[\"🧥 자켓\"]\n    D -->|\"No\"| E{\"10도 이상?\"}\n    E -->|\"Yes\"| R4[\"🧥 코트\"]\n    E -->|\"No\"| R5[\"🧥 패딩\"]\n    style B fill:#fef3c7,stroke:#f59e0b,color:#78350f\n    style C fill:#fef3c7,stroke:#f59e0b,color:#78350f\n    style D fill:#fef3c7,stroke:#f59e0b,color:#78350f\n    style E fill:#fef3c7,stroke:#f59e0b,color:#78350f\n```\n\n### 입력\n- 정수 하나 (기온, 단위: 도)\n\n### 출력\n- 추천하는 옷 (반팔, 긴팔, 자켓, 코트, 패딩 중 하나)\n\n### 예시\n\n**예시 1:**\n```\n입력: 30\n출력: 반팔\n```\n> 30도는 28도 이상이므로 반팔!\n\n**예시 2:**\n```\n입력: 25\n출력: 긴팔\n```\n> 25도는 23~27도 사이이므로 긴팔!\n\n**예시 3:**\n```\n입력: 3\n출력: 패딩\n```\n> 3도는 9도 이하이므로 패딩!",
+  "starter_code": "temp = int(input())\n\n# 기온에 따라 옷을 추천하세요\n",
+  "test_cases": [
+    {
+      "input": "30",
+      "expected_output": "반팔",
+      "description": "28도 이상 — 반팔"
+    },
+    {
+      "input": "25",
+      "expected_output": "긴팔",
+      "description": "23~27도 — 긴팔"
+    },
+    {
+      "input": "18",
+      "expected_output": "자켓",
+      "description": "15~22도 — 자켓"
+    },
+    {
+      "input": "12",
+      "expected_output": "코트",
+      "description": "10~14도 — 코트"
+    },
+    {
+      "input": "3",
+      "expected_output": "패딩",
+      "description": "9도 이하 — 패딩"
+    },
+    {
+      "input": "28",
+      "expected_output": "반팔",
+      "description": "경계값 28도 — 반팔"
+    },
+    {
+      "input": "9",
+      "expected_output": "패딩",
+      "description": "경계값 9도 — 패딩"
+    }
+  ],
+  "hints": [
+    "가장 높은 온도 조건부터 if로 시작하고, elif로 내려가세요.",
+    "elif를 사용하면 위 조건이 거짓일 때만 검사하므로, 범위의 상한을 따로 쓸 필요가 없어요. 예: 28도 이상이 아니라면 이미 27도 이하인 것이 보장됩니다.",
+    "마지막 else로 9도 이하(패딩)를 처리하면 깔끔해요."
+  ],
+  "expected_approaches": [
+    {
+      "tag": "if/elif/else 체인",
+      "description": "28 이상부터 순서대로 elif로 확인하고 마지막 else로 패딩 처리"
+    },
+    {
+      "tag": "딕셔너리 범위 매핑",
+      "description": "온도 범위를 딕셔너리나 리스트로 정의하고 반복문으로 찾기"
+    },
+    {
+      "tag": "bisect 모듈",
+      "description": "bisect 모듈로 온도가 속하는 구간을 찾아 인덱스로 옷 이름 매핑"
+    }
+  ],
+  "explanation": "## 풀이 해설\n\n### 핵심 개념\n이 문제는 **조건 분기(if/elif/else)**의 기초를 연습하는 문제야! 기온이라는 하나의 숫자를 여러 범위와 비교해서 적절한 옷을 출력하면 돼. 핵심은 조건을 **높은 온도부터 순서대로** 검사하는 거야. 그러면 elif 덕분에 범위의 상한을 따로 체크할 필요가 없거든!\n\n### 대표 풀이: if/elif/else 체인\n가장 직관적이고 깔끔한 방법이야.\n```python\ntemp = int(input())\n\nif temp >= 28:\n    print(\"반팔\")\nelif temp >= 23:\n    print(\"긴팔\")\nelif temp >= 15:\n    print(\"자켓\")\nelif temp >= 10:\n    print(\"코트\")\nelse:\n    print(\"패딩\")\n```\n왜 이게 동작하냐면, `elif temp >= 23`에 도달했다는 건 이미 위의 `temp >= 28`이 거짓이라는 뜻이야. 그래서 자동으로 `23 <= temp < 28` 범위가 되는 거지!\n\n### 다른 풀이 방법\n\n**딕셔너리 범위 매핑**\n조건을 데이터로 분리해서 반복문으로 처리하는 방법이야. 조건이 많아질 때 유지보수가 쉬워져!\n```python\ntemp = int(input())\n\nclothes = [(28, \"반팔\"), (23, \"긴팔\"), (15, \"자켓\"), (10, \"코트\")]\nresult = \"패딩\"\nfor threshold, name in clothes:\n    if temp >= threshold:\n        result = name\n        break\nprint(result)\n```\n\n**bisect 모듈 활용**\n`bisect`는 정렬된 리스트에서 값이 들어갈 위치를 찾아주는 모듈이야. 고급 기법이지만 알아두면 유용해!\n```python\nimport bisect\n\ntemp = int(input())\nboundaries = [10, 15, 23, 28]\nclothes = [\"패딩\", \"코트\", \"자켓\", \"긴팔\", \"반팔\"]\nidx = bisect.bisect_right(boundaries, temp - 1)\nprint(clothes[idx])\n```\n여기서 `bisect_right`은 temp가 boundaries 리스트에서 어디에 위치하는지 인덱스를 알려줘. 그 인덱스를 clothes 리스트의 인덱스로 쓰면 돼!\n\n### 주의할 점\n- **경계값 테스트**를 꼭 해봐! 28도는 반팔이야, 긴팔이 아니야. 9도는 패딩이야, 코트가 아니야.\n- elif의 순서를 바꾸면 안 돼! 낮은 온도부터 검사하면 범위가 꼬일 수 있어.\n- `else`를 빼먹으면 9도 이하에서 아무것도 출력하지 않게 되니 주의!"
+}

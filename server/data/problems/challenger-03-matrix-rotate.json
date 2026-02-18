@@ -1,0 +1,44 @@
+{
+  "id": "challenger-03-matrix-rotate",
+  "title": "사진 돌리기 90도",
+  "difficulty": 4,
+  "category": "list",
+  "description": "## 사진 돌리기 90도\n\n스마트폰으로 사진을 찍었는데 방향이 잘못됐어요! NxN 크기의 숫자 행렬을 **시계 방향으로 90도** 회전시켜 봅시다.\n\n### 회전 원리\n\n3x3 행렬을 예로 들어볼게요:\n\n```\n원본:        90도 회전 후:\n1 2 3        7 4 1\n4 5 6   -->  8 5 2\n7 8 9        9 6 3\n```\n\n### 좌표 변환 규칙\n\n원래 위치 `(r, c)`에 있는 값은 회전 후 `(c, N-1-r)` 위치로 이동합니다.\n\n```mermaid\ngraph TD\n    A[\"원본 행렬\"] --> B[\"전치 (행과 열 교환)\"]\n    B --> C[\"각 행 뒤집기\"]\n    C --> D[\"회전 완료!\"]\n    \n    E[\"원본:\"] --> E1[\"1 2 3\"]\n    E1 --> E2[\"4 5 6\"]\n    E2 --> E3[\"7 8 9\"]\n    \n    F[\"전치:\"] --> F1[\"1 4 7\"]\n    F1 --> F2[\"2 5 8\"]\n    F2 --> F3[\"3 6 9\"]\n    \n    G[\"행 뒤집기:\"] --> G1[\"7 4 1\"]\n    G1 --> G2[\"8 5 2\"]\n    G2 --> G3[\"9 6 3\"]\n    \n    style B fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f\n    style C fill:#dcfce7,stroke:#22c55e,color:#14532d\n```\n\n### 입력\n- 첫 줄: 정수 N (행렬 크기)\n- 이후 N줄: 각 줄에 N개의 정수 (공백 구분)\n\n### 출력\n- 90도 회전된 행렬 (각 줄에 N개의 정수, 공백 구분)\n\n### 예시\n\n**예시 1 (2x2):**\n```\n입력:\n2\n1 2\n3 4\n\n출력:\n3 1\n4 2\n```\n\n**예시 2 (3x3):**\n```\n입력:\n3\n1 2 3\n4 5 6\n7 8 9\n\n출력:\n7 4 1\n8 5 2\n9 6 3\n```\n\n**예시 3 (4x4):**\n```\n입력:\n4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16\n\n출력:\n13 9 5 1\n14 10 6 2\n15 11 7 3\n16 12 8 4\n```",
+  "starter_code": "n = int(input())\nmatrix = []\nfor i in range(n):\n    row = list(map(int, input().split()))\n    matrix.append(row)\n\n# 행렬을 시계 방향 90도 회전하세요\n",
+  "test_cases": [
+    {
+      "input": "2\n1 2\n3 4",
+      "expected_output": "3 1\n4 2",
+      "description": "2x2 행렬 회전"
+    },
+    {
+      "input": "3\n1 2 3\n4 5 6\n7 8 9",
+      "expected_output": "7 4 1\n8 5 2\n9 6 3",
+      "description": "3x3 행렬 회전"
+    },
+    {
+      "input": "4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16",
+      "expected_output": "13 9 5 1\n14 10 6 2\n15 11 7 3\n16 12 8 4",
+      "description": "4x4 행렬 회전"
+    }
+  ],
+  "hints": [
+    "새로운 빈 행렬을 만들어 놓고, 원본의 (r, c)를 새 행렬의 (c, N-1-r)에 넣어보세요.",
+    "더 간단한 방법: 먼저 전치(행과 열 교환)한 다음, 각 행을 뒤집으면(reverse) 90도 회전이 됩니다!",
+    "파이썬스럽게: list(zip(*matrix))로 전치하고, 각 행을 reversed()로 뒤집으면 한 줄로도 가능해요."
+  ],
+  "expected_approaches": [
+    {
+      "tag": "zip + reversed",
+      "description": "zip(*matrix)로 전치한 뒤 각 행을 reversed()로 뒤집어 시계 방향 90도 회전 구현"
+    },
+    {
+      "tag": "인덱스 직접 교환",
+      "description": "새 행렬을 만들고 result[c][N-1-r] = matrix[r][c] 공식으로 직접 값을 배치"
+    },
+    {
+      "tag": "전치 + 행 뒤집기",
+      "description": "먼저 행과 열을 교환(전치)한 다음 각 행을 reverse()하는 두 단계 접근"
+    }
+  ]
+}

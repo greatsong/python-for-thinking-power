@@ -1,0 +1,45 @@
+{
+  "id": "demo-01-card-game",
+  "title": "카드 게임 전략",
+  "difficulty": 3,
+  "category": "logic",
+  "description": "## 카드 게임 전략\n\nN장의 카드에 숫자가 적혀 있습니다. 앨리스와 밥이 번갈아 카드를 한 장씩 가져갑니다 (앨리스 먼저). 둘 다 **자신의 점수를 최대화**하려고 합니다.\n\n### 핵심 아이디어\n\n둘 다 최선의 전략을 쓴다면, 매번 **남은 카드 중 가장 큰 카드**를 가져갈 거예요.\n\n즉, 카드를 **내림차순으로 정렬**한 뒤 번갈아 가져가면 됩니다!\n\n```\n카드: 3 1 4 1\n정렬: 4 3 1 1\n\n앨리스: 4, 1  (0번째, 2번째) → 합 = 5\n밥:     3, 1  (1번째, 3번째) → 합 = 4\n차이: 5 - 4 = 1\n```\n\n### 입력\n- 첫 줄: 카드 수 N\n- 둘째 줄: N개의 카드 숫자 (공백 구분)\n\n### 출력\n- 앨리스 점수 - 밥 점수\n\n### 예시\n\n**예시 1:**\n```\n입력:\n4\n3 1 4 1\n\n출력:\n1\n```\n> 정렬: [4, 3, 1, 1] → 앨리스: 4+1=5, 밥: 3+1=4, 차이: 1\n\n**예시 2:**\n```\n입력:\n3\n5 2 8\n\n출력:\n5\n```\n> 정렬: [8, 5, 2] → 앨리스: 8+2=10, 밥: 5, 차이: 5",
+  "starter_code": "n = int(input())\ncards = list(map(int, input().split()))\n\n# 앨리스와 밥의 점수 차이를 구하세요\n",
+  "test_cases": [
+    {
+      "input": "4\n3 1 4 1",
+      "expected_output": "1",
+      "description": "기본 테스트"
+    },
+    {
+      "input": "3\n5 2 8",
+      "expected_output": "5",
+      "description": "홀수 카드"
+    },
+    {
+      "input": "1\n10",
+      "expected_output": "10",
+      "description": "카드 1장"
+    }
+  ],
+  "hints": [
+    "둘 다 최선의 전략을 쓴다면, 어떤 카드를 먼저 가져갈까요?",
+    "카드를 내림차순으로 정렬하면 어떻게 될까요?",
+    "정렬 후 홀수 번째(0,2,4...)는 앨리스, 짝수 번째(1,3,5...)는 밥의 카드"
+  ],
+  "expected_approaches": [
+    {
+      "tag": "정렬 + 인덱스",
+      "description": "내림차순 정렬 후 인덱스 홀짝으로 분배"
+    },
+    {
+      "tag": "정렬 + 슬라이싱",
+      "description": "sorted()[::2]와 [1::2]로 분리"
+    },
+    {
+      "tag": "시뮬레이션",
+      "description": "매번 최대값을 찾아 제거하며 시뮬레이션"
+    }
+  ],
+  "explanation": "## 풀이 해설\n\n### 핵심 개념\n이 문제의 핵심은 **그리디(탐욕) 전략**이야. 앨리스와 밥 둘 다 자기 점수를 최대화하려 하니까, 매번 남은 카드 중 가장 큰 걸 가져가는 게 최선이지. 그래서 카드를 **내림차순 정렬**한 다음, 번갈아 가져가면 최적의 결과를 구할 수 있어!\n\n### 대표 풀이: 정렬 + 슬라이싱\n가장 파이썬다운 풀이야. 슬라이싱을 쓰면 짝수/홀수 인덱스를 깔끔하게 분리할 수 있거든.\n\n```python\nn = int(input())\ncards = list(map(int, input().split()))\n\ncards.sort(reverse=True)\nalice = sum(cards[::2])   # 0, 2, 4, ... 번째 (앨리스)\nbob = sum(cards[1::2])    # 1, 3, 5, ... 번째 (밥)\nprint(alice - bob)\n```\n\n`cards[::2]`는 인덱스 0부터 2칸씩 건너뛰며 선택하고, `cards[1::2]`는 인덱스 1부터 2칸씩 건너뛰어. 정렬 후 앨리스가 먼저 고르니까 0번째(가장 큰 카드)부터 시작하는 거지!\n\n### 다른 풀이 방법\n\n**풀이 2: 정렬 + 인덱스 반복문**\n슬라이싱 대신 반복문으로 직접 분배하는 방법이야.\n\n```python\nn = int(input())\ncards = list(map(int, input().split()))\n\ncards.sort(reverse=True)\nalice = 0\nbob = 0\nfor i in range(n):\n    if i % 2 == 0:\n        alice += cards[i]\n    else:\n        bob += cards[i]\nprint(alice - bob)\n```\n\n**풀이 3: 시뮬레이션 (매번 최대값 제거)**\n정렬 없이 실제 게임을 시뮬레이션하는 방법이야. 매 턴마다 `max()`로 최대 카드를 찾아 제거해.\n\n```python\nn = int(input())\ncards = list(map(int, input().split()))\n\nalice = 0\nbob = 0\nfor i in range(n):\n    biggest = max(cards)\n    cards.remove(biggest)\n    if i % 2 == 0:\n        alice += biggest\n    else:\n        bob += biggest\nprint(alice - bob)\n```\n\n이 방법은 직관적이지만 매번 `max()`와 `remove()`를 호출하니까 O(N^2)으로 느려. 정렬 방법은 O(N log N)이니까 카드가 많을 때는 정렬이 훨씬 효율적이야.\n\n### 주의할 점\n- **내림차순** 정렬이야! `sort(reverse=True)` 또는 `sorted(cards, reverse=True)`를 잊지 마.\n- 슬라이싱에서 `[::2]`가 앨리스(먼저 고르는 사람)라는 걸 헷갈리지 않도록 해.\n- 카드가 1장일 때도 잘 동작하는지 확인해봐. 이 경우 앨리스만 가져가니까 그 카드 값 자체가 답이야.\n- `sort()`는 원본 리스트를 변경하고, `sorted()`는 새 리스트를 반환한다는 차이도 기억해두면 좋아!"
+}

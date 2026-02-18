@@ -1,0 +1,336 @@
+import { useState, useEffect } from 'react';
+import { apiFetch } from '../../api/client.js';
+import useAuthStore from '../../stores/authStore.js';
+import { Plus, Copy, Users, Check, School, Hash, Key, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
+
+export default function ClassroomSetup() {
+  const { user } = useAuthStore();
+  const [classrooms, setClassrooms] = useState([]);
+  const [newName, setNewName] = useState('');
+  const [creating, setCreating] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [copiedId, setCopiedId] = useState(null);
+  const [selectedClassroom, setSelectedClassroom] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [studentsLoading, setStudentsLoading] = useState(false);
+
+  // API 키 관련 상태
+  const [apiKeyStatus, setApiKeyStatus] = useState({ configured: false, masked: '' });
+  const [apiKeyInput, setApiKeyInput] = useState('');
+  const [showKeyInput, setShowKeyInput] = useState(false);
+  const [savingKey, setSavingKey] = useState(false);
+
+  // 교실 목록 불러오기
+  const fetchClassrooms = async () => {
+    try {
+      const data = await apiFetch('/classrooms/my');
+      setClassrooms(data);
+    } catch (err) {
+      console.error('교실 목록 조회 실패:', err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // API 키 상태 확인
+  const fetchApiKeyStatus = async () => {
+    try {
+      const data = await apiFetch('/ai/status');
+      setApiKeyStatus(data);
+    } catch {
+      // 무시
+    }
+  };
+
+  useEffect(() => {
+    fetchClassrooms();
+    fetchApiKeyStatus();
+  }, []);
+
+  // 새 교실 생성
+  const handleCreate = async () => {
+    if (!newName.trim()) return;
+    setCreating(true);
+    try {
+      await apiFetch('/classrooms', {
+        method: 'POST',
+        body: JSON.stringify({ name: newName.trim() }),
+      });
+      setNewName('');
+      await fetchClassrooms();
+    } catch (err) {
+      alert('교실 생성 실패: ' + err.message);
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  // 참여 코드 복사
+  const handleCopyCode = async (joinCode, classroomId) => {
+    try {
+      await navigator.clipboard.writeText(joinCode);
+      setCopiedId(classroomId);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      const el = document.createElement('textarea');
+      el.value = joinCode;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      setCopiedId(classroomId);
+      setTimeout(() => setCopiedId(null), 2000);
+    }
+  };
+
+  // API 키 저장
+  const handleSaveApiKey = async () => {
+    if (!apiKeyInput.trim()) return;
+    setSavingKey(true);
+    try {
+      const result = await apiFetch('/ai/config', {
+        method: 'POST',
+        body: JSON.stringify({ apiKey: apiKeyInput.trim() }),
+      });
+      setApiKeyStatus({ configured: true, masked: result.masked });
+      setApiKeyInput('');
+      setShowKeyInput(false);
+    } catch (err) {
+      alert(err.message || 'API 키 저장 실패');
+    } finally {
+      setSavingKey(false);
+    }
+  };
+
+  // 학생 목록 조회
+  const handleShowStudents = async (classroom) => {
+    if (selectedClassroom?.id === classroom.id) {
+      setSelectedClassroom(null);
+      setStudents([]);
+      return;
+    }
+    setSelectedClassroom(classroom);
+    setStudentsLoading(true);
+    try {
+      const data = await apiFetch(`/classrooms/${classroom.id}/students`);
+      setStudents(data);
+    } catch (err) {
+      console.error('학생 목록 조회 실패:', err.message);
+      setStudents([]);
+    } finally {
+      setStudentsLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold text-slate-800 mb-6">교실 설정</h1>
+
+      {/* AI API 키 설정 */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+        <h2 className="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-2">
+          <Key size={20} />
+          AI 코치 설정
+        </h2>
+
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
+            apiKeyStatus.configured
+              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+              : 'bg-amber-50 text-amber-700 border border-amber-200'
+          }`}>
+            {apiKeyStatus.configured ? (
+              <>
+                <CheckCircle size={16} />
+                <span>API 키 설정됨: <code className="font-mono text-xs bg-white px-1 py-0.5 rounded">{apiKeyStatus.masked}</code></span>
+              </>
+            ) : (
+              <>
+                <AlertCircle size={16} />
+                <span>API 키가 설정되지 않았습니다</span>
+              </>
+            )}
+          </div>
+          <button
+            onClick={() => setShowKeyInput(!showKeyInput)}
+            className="text-sm text-blue-600 hover:text-blue-800 underline underline-offset-2"
+          >
+            {showKeyInput ? '닫기' : (apiKeyStatus.configured ? '변경' : '설정하기')}
+          </button>
+        </div>
+
+        {showKeyInput && (
+          <div className="flex gap-3 mt-3">
+            <div className="flex-1 relative">
+              <input
+                type="password"
+                value={apiKeyInput}
+                onChange={(e) => setApiKeyInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSaveApiKey()}
+                placeholder="sk-ant-api03-..."
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm pr-10"
+              />
+            </div>
+            <button
+              onClick={handleSaveApiKey}
+              disabled={savingKey || !apiKeyInput.trim()}
+              className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm"
+            >
+              {savingKey ? '저장 중...' : '저장'}
+            </button>
+          </div>
+        )}
+
+        <p className="text-xs text-slate-400 mt-2">
+          Anthropic Claude API 키가 필요합니다. AI 코치, 문제 생성, 대화 요약 등에 사용됩니다.
+        </p>
+      </div>
+
+      {/* 새 교실 생성 */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+        <h2 className="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-2">
+          <Plus size={20} />
+          새 교실 만들기
+        </h2>
+        <div className="flex gap-3">
+          <input
+            type="text"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
+            placeholder="교실 이름 (예: 1학년 3반 정보)"
+            className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <button
+            onClick={handleCreate}
+            disabled={creating || !newName.trim()}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+          >
+            {creating ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+            ) : (
+              <Plus size={18} />
+            )}
+            생성
+          </button>
+        </div>
+      </div>
+
+      {/* 교실 목록 */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
+          <School size={20} />
+          내 교실 목록
+          <span className="text-sm font-normal text-slate-400">({classrooms.length}개)</span>
+        </h2>
+
+        {classrooms.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center text-slate-400">
+            아직 생성된 교실이 없습니다. 위에서 새 교실을 만들어보세요.
+          </div>
+        ) : (
+          classrooms.map((classroom) => (
+            <div key={classroom.id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-slate-800">{classroom.name}</h3>
+                    <p className="text-sm text-slate-500 mt-1">
+                      생성일: {new Date(classroom.created_at).toLocaleDateString('ko-KR')}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {/* 참여 코드 */}
+                    <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">
+                      <Hash size={16} className="text-slate-400" />
+                      <span className="font-mono font-bold text-lg text-blue-600 tracking-wider">
+                        {classroom.join_code}
+                      </span>
+                      <button
+                        onClick={() => handleCopyCode(classroom.join_code, classroom.id)}
+                        className="ml-1 p-1 hover:bg-slate-200 rounded transition-colors"
+                        title="참여 코드 복사"
+                      >
+                        {copiedId === classroom.id ? (
+                          <Check size={16} className="text-green-600" />
+                        ) : (
+                          <Copy size={16} className="text-slate-500" />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* 학생 수 */}
+                    <button
+                      onClick={() => handleShowStudents(classroom)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
+                        selectedClassroom?.id === classroom.id
+                          ? 'bg-blue-50 border-blue-300 text-blue-700'
+                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
+                    >
+                      <Users size={16} />
+                      <span className="font-medium">{classroom.student_count || 0}명</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 학생 목록 (선택 시 펼침) */}
+              {selectedClassroom?.id === classroom.id && (
+                <div className="border-t border-slate-200 bg-slate-50 p-5">
+                  <h4 className="text-sm font-semibold text-slate-600 mb-3">학생 목록</h4>
+                  {studentsLoading ? (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600" />
+                    </div>
+                  ) : students.length === 0 ? (
+                    <p className="text-sm text-slate-400 py-2">아직 참여한 학생이 없습니다.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="text-left text-slate-500 border-b border-slate-200">
+                            <th className="pb-2 pr-4">번호</th>
+                            <th className="pb-2 pr-4">이름</th>
+                            <th className="pb-2 pr-4">이메일</th>
+                            <th className="pb-2">참여일</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {students.map((student) => (
+                            <tr key={student.id} className="border-b border-slate-100 last:border-0">
+                              <td className="py-2 pr-4 text-slate-600">
+                                {student.student_number || '-'}
+                              </td>
+                              <td className="py-2 pr-4 font-medium text-slate-800">
+                                {student.name}
+                              </td>
+                              <td className="py-2 pr-4 text-slate-500">
+                                {student.email}
+                              </td>
+                              <td className="py-2 text-slate-500">
+                                {new Date(student.joined_at).toLocaleDateString('ko-KR')}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}

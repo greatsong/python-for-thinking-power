@@ -1,0 +1,46 @@
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Landing from './pages/Landing.jsx';
+import JoinClassroom from './pages/JoinClassroom.jsx';
+import StudentLayout from './layouts/StudentLayout.jsx';
+import TeacherLayout from './layouts/TeacherLayout.jsx';
+import ProblemList from './pages/student/ProblemList.jsx';
+import Workspace from './pages/student/Workspace.jsx';
+import Gallery from './pages/student/Gallery.jsx';
+import MyJourney from './pages/student/MyJourney.jsx';
+import ClassroomSetup from './pages/teacher/ClassroomSetup.jsx';
+import ProblemWorkshop from './pages/teacher/ProblemWorkshop.jsx';
+import ProblemAssign from './pages/teacher/ProblemAssign.jsx';
+import LiveDashboard from './pages/teacher/LiveDashboard.jsx';
+import AIReports from './pages/teacher/AIReports.jsx';
+import ApproachAnalysis from './pages/teacher/ApproachAnalysis.jsx';
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/join" element={<JoinClassroom />} />
+
+      {/* 학생 라우트 */}
+      <Route path="/student" element={<StudentLayout />}>
+        <Route index element={<ProblemList />} />
+        <Route path="problems" element={<ProblemList />} />
+        <Route path="problems/:problemId" element={<Workspace />} />
+        <Route path="gallery/:problemId" element={<Gallery />} />
+        <Route path="journey" element={<MyJourney />} />
+      </Route>
+
+      {/* 교사 라우트 */}
+      <Route path="/teacher" element={<TeacherLayout />}>
+        <Route index element={<LiveDashboard />} />
+        <Route path="classroom" element={<ClassroomSetup />} />
+        <Route path="workshop" element={<ProblemWorkshop />} />
+        <Route path="assign" element={<ProblemAssign />} />
+        <Route path="dashboard" element={<LiveDashboard />} />
+        <Route path="ai-reports" element={<AIReports />} />
+        <Route path="analysis/:problemId" element={<ApproachAnalysis />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}

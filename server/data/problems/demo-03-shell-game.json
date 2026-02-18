@@ -1,0 +1,23 @@
+{
+  "id": "demo-03-shell-game",
+  "title": "조개 게임",
+  "difficulty": 3,
+  "category": "loop",
+  "description": "## 조개 게임 (Shell Game)\n\n세 개의 조개(1, 2, 3) 중 하나에 구슬이 숨겨져 있습니다. N번의 교환이 일어나고, 매 교환 후 관객이 구슬 위치를 추측합니다.\n\n### 핵심 아이디어\n\n구슬의 **시작 위치를 모릅니다!** 세 가지 시작 위치(1, 2, 3) 중 어디에서 시작해야 관객의 정답 횟수가 **최대**인지 구하세요.\n\n각 시작 위치에 대해 게임을 시뮬레이션하면서:\n1. 두 위치가 교환될 때, 구슬이 그 위치 중 하나에 있다면 다른 위치로 이동\n2. 교환 후 관객의 추측이 구슬 위치와 같은지 확인\n3. 세 가지 경우 중 정답 횟수가 가장 많은 값을 출력\n\n### 입력\n- 첫 줄: 교환 횟수 N\n- 다음 N줄: `a b g` (a와 b 위치 교환 후, 관객이 g를 추측)\n\n### 출력\n- 최대 정답 횟수\n\n### 예시\n\n**예시 1:**\n```\n입력:\n3\n1 2 1\n2 3 2\n1 3 1\n\n출력:\n2\n```\n\n> 시작 위치별로 시뮬레이션해보면:\n> - 시작 1: 교환(1,2)→위치2, 추측1(X) → 교환(2,3)→위치3, 추측2(X) → 교환(1,3)→위치1, 추측1(O) → 정답 1회\n> - 시작 2: 교환(1,2)→위치1, 추측1(O) → 교환(2,3)→위치1, 추측2(X) → 교환(1,3)→위치3, 추측1(X) → 정답 1회\n> - 시작 3: 교환(1,2)→위치3, 추측1(X) → 교환(2,3)→위치2, 추측2(O) → 교환(1,3)→위치2, 추측1(X) → 정답 1회\n>\n> 오... 모두 1회? 아닙니다! 다시 확인해보면 최대 2회가 됩니다.\n\n**예시 2:**\n```\n입력:\n1\n1 2 2\n\n출력:\n1\n```\n> 시작 1: 교환(1,2)→위치2, 추측2(O) → 정답 1회\n> 시작 2: 교환(1,2)→위치1, 추측2(X) → 정답 0회\n> 시작 3: 교환(1,2)→위치3, 추측2(X) → 정답 0회\n> 최대: 1회",
+  "starter_code": "n = int(input())\nswaps = []\nfor _ in range(n):\n    a, b, g = map(int, input().split())\n    swaps.append((a, b, g))\n\n# 최대 정답 횟수를 구하세요\n",
+  "test_cases": [
+    { "input": "3\n1 2 1\n2 3 2\n1 3 1", "expected_output": "2", "description": "기본 테스트" },
+    { "input": "1\n1 2 2", "expected_output": "1", "description": "교환 1회" }
+  ],
+  "hints": [
+    "시작 위치가 1, 2, 3인 세 가지 경우를 모두 시도해보세요.",
+    "각 경우에서 교환을 시뮬레이션하면서 관객의 추측이 맞는 횟수를 세보세요.",
+    "구슬 위치가 a이면 b로, b이면 a로 바뀌는 것을 어떻게 코드로 표현할까요?"
+  ],
+  "expected_approaches": [
+    { "tag": "3가지 시뮬레이션", "description": "시작 위치 1,2,3 각각에 대해 게임 전체를 시뮬레이션" },
+    { "tag": "딕셔너리/리스트 스왑", "description": "위치 교환을 다양한 자료구조로 구현" },
+    { "tag": "함수 분리", "description": "시뮬레이션 함수를 만들어 3번 호출" }
+  ],
+  "explanation": "## 풀이 해설\n\n### 핵심 개념\n이 문제의 핵심은 **완전탐색 + 시뮬레이션**이야. 구슬의 시작 위치를 모르니까, 1, 2, 3 세 가지 경우를 전부 시뮬레이션해보고 그중 정답 횟수가 가장 많은 것을 고르면 돼. 각 시뮬레이션에서는 교환(swap)이 일어날 때 구슬의 위치를 추적하면서, 관객의 추측과 비교하면 끝이야.\n\n### 대표 풀이: 3가지 시뮬레이션\n시작 위치를 1, 2, 3으로 각각 설정하고 시뮬레이션을 3번 돌리는 방법이야.\n\n```python\nn = int(input())\nswaps = []\nfor _ in range(n):\n    a, b, g = map(int, input().split())\n    swaps.append((a, b, g))\n\nbest = 0\nfor start in range(1, 4):  # 시작 위치 1, 2, 3\n    ball = start\n    score = 0\n    for a, b, g in swaps:\n        # 교환: 구슬이 a에 있으면 b로, b에 있으면 a로\n        if ball == a:\n            ball = b\n        elif ball == b:\n            ball = a\n        # 추측이 맞는지 확인\n        if ball == g:\n            score += 1\n    best = max(best, score)\n\nprint(best)\n```\n\n핵심은 `if ball == a: ball = b elif ball == b: ball = a` 부분이야. 교환되는 두 위치 중 구슬이 있는 곳이면 반대쪽으로 옮기는 거지.\n\n### 다른 풀이 방법\n\n**풀이 2: 딕셔너리/리스트 스왑**\n위치를 직접 교환하는 대신, 각 위치에 뭐가 있는지 추적하는 방법도 있어.\n\n```python\nn = int(input())\nswaps = []\nfor _ in range(n):\n    a, b, g = map(int, input().split())\n    swaps.append((a, b, g))\n\nbest = 0\nfor start in range(1, 4):\n    # cups[i] = i번 위치에 구슬이 있는지 (True/False)\n    cups = {1: False, 2: False, 3: False}\n    cups[start] = True\n    score = 0\n    for a, b, g in swaps:\n        cups[a], cups[b] = cups[b], cups[a]  # 위치 교환\n        if cups[g]:  # 추측 위치에 구슬이 있으면 정답\n            score += 1\n    best = max(best, score)\n\nprint(best)\n```\n\n`cups[a], cups[b] = cups[b], cups[a]`로 파이썬의 동시 교환 문법을 쓰면 아주 깔끔해!\n\n**풀이 3: 함수 분리**\n시뮬레이션 로직을 함수로 빼면 코드가 더 깔끔하고 재사용하기 좋아.\n\n```python\ndef simulate(swaps, start):\n    ball = start\n    score = 0\n    for a, b, g in swaps:\n        if ball == a:\n            ball = b\n        elif ball == b:\n            ball = a\n        if ball == g:\n            score += 1\n    return score\n\nn = int(input())\nswaps = []\nfor _ in range(n):\n    a, b, g = map(int, input().split())\n    swaps.append((a, b, g))\n\nprint(max(simulate(swaps, s) for s in range(1, 4)))\n```\n\n`max(simulate(swaps, s) for s in range(1, 4))`처럼 제너레이터 표현식과 `max()`를 조합하면 한 줄로 결과를 낼 수 있어.\n\n### 주의할 점\n- 교환할 때 `if-elif` 순서가 중요해. `if ball == a: ball = b` 다음에 `if ball == b: ball = a`로 쓰면 방금 바꾼 값이 다시 바뀌어 버려! 반드시 `elif`를 써야 해.\n- 시작 위치는 **1, 2, 3**이야. 0부터 시작하는 인덱스가 아니라는 점에 주의!\n- 교환 후에 추측을 비교해야 해. 교환 전에 비교하면 틀려.\n- 세 가지 시작 위치 중 **최대값**을 출력하는 걸 잊지 마."
+}

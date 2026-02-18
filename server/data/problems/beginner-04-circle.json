@@ -1,0 +1,24 @@
+{
+  "id": "beginner-04-circle",
+  "title": "원의 둘레와 넓이",
+  "difficulty": 1,
+  "category": "output",
+  "description": "## 실수 계산과 소수점 다루기\n\n### float()로 실수 입력받기\n\n`int()`가 정수로 바꾸는 것처럼, **`float()`는 실수(소수점이 있는 수)로 바꿔줍니다.**\n\n```python\nr = float(input())   # 5 입력 → 5.0 (실수)\nr = int(input())     # 5 입력 → 5   (정수)\n```\n\n### 원의 공식\n\n```\n        ╭─────────╮\n      ╱             ╲\n    ╱                 ╲\n   │        · ────── r │   r = 반지름\n    ╲                 ╱\n      ╲             ╱\n        ╰─────────╯\n\n  둘레 = 2 × π × r\n  넓이 = π × r × r  (= π × r²)\n```\n\n이 문제에서는 **π = 3.14**를 사용합니다.\n\n```python\npi = 3.14\ncircumference = 2 * pi * r    # 둘레\narea = pi * r * r              # 넓이 (r ** 2 도 가능)\n```\n\n### 소수점 자릿수 맞추기 — format()\n\n소수점 둘째 자리까지 출력하려면 **f-string의 포맷 지정**을 사용합니다.\n\n```python\nx = 78.5\nprint(f\"{x:.2f}\")   # 78.50  (소수점 2자리)\nprint(f\"{x:.1f}\")   # 78.5   (소수점 1자리)\nprint(f\"{x:.3f}\")   # 78.500 (소수점 3자리)\n```\n\n`.2f`의 의미: **소수점 아래 2자리까지** 표시하되, 부족하면 `0`으로 채움!\n\n---\n\n## 문제\n\n원의 반지름(정수)을 입력받아 **둘레**와 **넓이**를 소수점 둘째 자리까지 출력하세요.\n\n- π = 3.14를 사용하세요.\n\n### 입력\n- 정수 r (반지름)\n\n### 출력\n- 첫째 줄: 둘레 (소수점 둘째 자리)\n- 둘째 줄: 넓이 (소수점 둘째 자리)\n\n### 예시\n\n**예시 1:**\n```\n입력:\n5\n\n출력:\n31.40\n78.50\n```\n\n> 둘레 = 2 × 3.14 × 5 = 31.4 → 31.40\n> 넓이 = 3.14 × 5 × 5 = 78.5 → 78.50\n\n**예시 2:**\n```\n입력:\n10\n\n출력:\n62.80\n314.00\n```\n\n> 둘레 = 2 × 3.14 × 10 = 62.8 → 62.80\n> 넓이 = 3.14 × 10 × 10 = 314.0 → 314.00\n\n**예시 3:**\n```\n입력:\n1\n\n출력:\n6.28\n3.14\n```\n\n> 반지름이 1이면 둘레 = 6.28, 넓이 = 3.14",
+  "starter_code": "r = int(input())\npi = 3.14\n\n# 둘레와 넓이를 계산하고 소수점 둘째 자리까지 출력하세요\n",
+  "test_cases": [
+    { "input": "5", "expected_output": "31.40\n78.50", "description": "반지름 5" },
+    { "input": "10", "expected_output": "62.80\n314.00", "description": "반지름 10" },
+    { "input": "1", "expected_output": "6.28\n3.14", "description": "반지름 1" },
+    { "input": "7", "expected_output": "43.96\n153.86", "description": "반지름 7" }
+  ],
+  "hints": [
+    "둘레 공식: 2 * 3.14 * r, 넓이 공식: 3.14 * r * r 을 사용하세요.",
+    "소수점 둘째 자리까지 출력하려면 f\"{값:.2f}\"를 사용하세요.",
+    "r ** 2 는 r의 제곱(r × r)을 의미합니다. r * r 대신 쓸 수 있어요."
+  ],
+  "expected_approaches": [
+    { "tag": "f-string 포맷팅", "description": "f\"{circumference:.2f}\"로 소수점 자릿수를 지정하여 출력" },
+    { "tag": "format() 함수", "description": "format(circumference, '.2f')로 포맷팅" },
+    { "tag": "round() + 문자열", "description": "round()로 반올림 후 문자열로 변환하여 출력" }
+  ]
+}

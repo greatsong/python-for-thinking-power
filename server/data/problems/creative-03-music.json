@@ -1,0 +1,54 @@
+{
+  "id": "creative-03-music",
+  "title": "음악 플레이리스트",
+  "difficulty": 5,
+  "category": "list",
+  "description": "## 음악 플레이리스트\n\n여러분은 통학 버스에서 음악을 듣는 DJ입니다! 정확히 **K곡**을 골라서 총 재생 시간이 딱 **T분**이 되는 플레이리스트를 만들고 싶어요.\n\nN곡의 재생 시간 목록이 주어질 때, 정확히 K곡을 골라서 합이 T가 되는 조합이 **존재하는지** 판단하세요.\n\n### 핵심 아이디어\n\nN곡 중에서 K곡을 고르는 모든 조합을 확인해보면 됩니다. Python의 `itertools.combinations`를 쓰면 편리해요!\n\n```\n곡 목록: [3, 5, 7, 4, 6] (5곡)\nK=3, T=15\n\n가능한 3곡 조합 중:\n(3, 5, 7) → 합 15 ✓ → YES!\n```\n\n### 조합이란?\n\n5곡 중 3곡을 고르는 방법: C(5,3) = 10가지\n\n```mermaid\nflowchart TD\n    A[\"N곡의 재생 시간 목록\"] --> B[\"K곡 조합 생성\"]\n    B --> C{\"합 == T?\"}\n    C -->|하나라도 YES| D[\"YES 출력\"]\n    C -->|모두 NO| E[\"NO 출력\"]\n```\n\n### 입력\n- 첫 줄: N(곡 수), K(선택할 곡 수), T(목표 시간)\n- 둘째 줄: N개의 재생 시간 (분 단위, 공백 구분)\n\n### 출력\n- 조합이 존재하면 `YES`, 없으면 `NO`\n\n### 예시\n\n**예시 1:**\n```\n입력:\n5 3 15\n3 5 7 4 6\n\n출력:\nYES\n```\n> 3 + 5 + 7 = 15 ✓\n\n**예시 2:**\n```\n입력:\n4 2 10\n3 7 5 2\n\n출력:\nYES\n```\n> 3 + 7 = 10 ✓\n\n**예시 3:**\n```\n입력:\n4 2 11\n3 7 5 2\n\n출력:\nNO\n```\n> 어떤 2곡 조합도 합이 11이 되지 않음",
+  "starter_code": "n, k, t = map(int, input().split())\nsongs = list(map(int, input().split()))\n\n# 정확히 k곡을 골라 합이 t가 되는 조합이 있는지 확인하세요\n# 힌트: from itertools import combinations\n",
+  "test_cases": [
+    {
+      "input": "5 3 15\n3 5 7 4 6",
+      "expected_output": "YES",
+      "description": "3+5+7=15"
+    },
+    {
+      "input": "4 2 10\n3 7 5 2",
+      "expected_output": "YES",
+      "description": "3+7=10"
+    },
+    {
+      "input": "4 2 11\n3 7 5 2",
+      "expected_output": "NO",
+      "description": "합 11인 2곡 조합 없음"
+    },
+    {
+      "input": "6 3 20\n8 5 3 10 7 2",
+      "expected_output": "YES",
+      "description": "8+5+7=20"
+    },
+    {
+      "input": "3 3 10\n2 3 4",
+      "expected_output": "NO",
+      "description": "전부 골라도 합 9"
+    }
+  ],
+  "hints": [
+    "from itertools import combinations를 사용하면 N개 중 K개를 고르는 모든 조합을 쉽게 만들 수 있어요.",
+    "각 조합의 합(sum)이 T와 같은지 비교하세요. 하나라도 같으면 바로 YES!",
+    "itertools 없이도 할 수 있어요: 재귀 함수로 '이 곡을 포함할지/말지' 결정하며 탐색 (백트래킹)"
+  ],
+  "expected_approaches": [
+    {
+      "tag": "itertools.combinations",
+      "description": "combinations(songs, k)로 모든 K곡 조합을 생성하고 합 확인"
+    },
+    {
+      "tag": "DFS/백트래킹",
+      "description": "재귀적으로 곡을 선택/비선택하며 목표 합에 도달하는지 탐색"
+    },
+    {
+      "tag": "중첩 반복문 (K가 작을 때)",
+      "description": "K가 2~3이면 이중/삼중 반복문으로 직접 조합 확인"
+    }
+  ]
+}

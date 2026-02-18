@@ -1,0 +1,23 @@
+{
+  "name": "python-for-thinking-power",
+  "version": "1.0.0",
+  "private": true,
+  "description": "사고력을 위한 파이썬 — 고등학생 파이썬 사고력 교육 플랫폼",
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
+    "build": "npm run build --workspace=client",
+    "start": "NODE_ENV=production node server/index.js",
+    "start:local": "npm run build && npm run seed && npm start",
+    "seed": "npm run seed --workspace=server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
