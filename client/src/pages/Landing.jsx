@@ -1,76 +1,56 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Code2, Brain, Users, BarChart3, Sparkles } from 'lucide-react';
+import { Code2, Brain, Users, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useAuthStore from '../stores/authStore.js';
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
 export default function Landing() {
   const navigate = useNavigate();
-  const { loginDemo, joinClassroom, loading } = useAuthStore();
-  const [showDemo, setShowDemo] = useState(false);
-  const [demoName, setDemoName] = useState('');
-  const [demoRole, setDemoRole] = useState('student');
+  const { loginWithGoogle, loading } = useAuthStore();
+  const [role, setRole] = useState('student');
+  const googleBtnRef = useRef(null);
 
-  const handleDemoLogin = async () => {
-    if (!demoName.trim()) {
-      toast.error('이름을 입력하세요');
-      return;
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID || !window.google) return;
+
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCredential,
+    });
+
+    if (googleBtnRef.current) {
+      window.google.accounts.id.renderButton(googleBtnRef.current, {
+        type: 'standard',
+        shape: 'rectangular',
+        theme: 'outline',
+        text: 'signin_with',
+        size: 'large',
+        width: 280,
+        locale: 'ko',
+      });
     }
+  }, [role]);
+
+  const handleGoogleCredential = async (response) => {
     try {
-      await loginDemo(demoName.trim(), demoRole);
-      toast.success(`${demoName}님, 환영합니다!`);
-      if (demoRole === 'teacher') {
+      const user = await loginWithGoogle(response.credential, role);
+      toast.success(`${user.name}님, 환영합니다!`);
+      if (user.role === 'teacher') {
         navigate('/teacher');
       } else {
         navigate('/join');
       }
     } catch (err) {
-      toast.error(err.message);
-    }
-  };
-
-  // 1클릭 교사 데모
-  const handleQuickTeacher = async () => {
-    try {
-      await loginDemo('데모교사', 'teacher');
-      toast.success('교사 데모 — 교실 "2학년 3반 정보" 준비됨!');
-      navigate('/teacher');
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
-
-  // 1클릭 학생 데모
-  const handleQuickStudent = async () => {
-    try {
-      await loginDemo('데모학생', 'student');
-      try {
-        await joinClassroom('00000', '');
-        toast.success('데모 교실에 참여했습니다!');
-        navigate('/student/problems');
-      } catch {
-        toast.success('학생 데모 — 참여 코드: 00000');
-        navigate('/join');
-      }
-    } catch (err) {
-      toast.error(err.message);
+      toast.error(err.message || 'Google 로그인에 실패했습니다');
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col">
-      {/* 헤더 */}
-      <header className="p-6 flex justify-end gap-3">
-        <button
-          onClick={() => setShowDemo(true)}
-          className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-white rounded-lg transition-colors border border-slate-200"
-        >
-          직접 로그인
-        </button>
-      </header>
-
       {/* 히어로 */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 -mt-16">
+      <main className="flex-1 flex flex-col items-center justify-center px-6">
         <div className="text-center max-w-2xl">
           <div className="text-6xl mb-6">🐍</div>
           <h1 className="text-4xl font-bold text-slate-900 mb-4">
@@ -83,28 +63,41 @@ export default function Landing() {
             같은 문제, 다른 생각 — 다양한 풀이를 비교하며 성장하는 파이썬 수업
           </p>
 
-          {/* 1클릭 데모 버튼 */}
-          <div className="flex gap-4 justify-center mb-4">
-            <button
-              onClick={handleQuickStudent}
-              disabled={loading}
-              className="px-8 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 disabled:opacity-50 flex items-center gap-2"
-            >
-              <Sparkles size={18} />
-              학생 데모 체험
-            </button>
-            <button
-              onClick={handleQuickTeacher}
-              disabled={loading}
-              className="px-8 py-3 bg-slate-800 text-white rounded-xl font-medium hover:bg-slate-900 transition-colors shadow-lg shadow-slate-300 disabled:opacity-50 flex items-center gap-2"
-            >
-              <Sparkles size={18} />
-              교사 데모 체험
-            </button>
+          {/* 로그인 카드 */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 max-w-sm mx-auto">
+            {/* 역할 선택 */}
+            <div className="flex gap-2 mb-6 bg-slate-100 p-1 rounded-xl">
+              <button
+                onClick={() => setRole('student')}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  role === 'student'
+                    ? 'bg-white text-blue-700 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                학생
+              </button>
+              <button
+                onClick={() => setRole('teacher')}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  role === 'teacher'
+                    ? 'bg-white text-slate-800 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                교사
+              </button>
+            </div>
+
+            {/* Google 로그인 버튼 */}
+            <div className="flex justify-center mb-4" ref={googleBtnRef} />
+
+            {!GOOGLE_CLIENT_ID && (
+              <p className="text-xs text-center text-amber-600 bg-amber-50 rounded-lg px-3 py-2">
+                Google 로그인 설정이 필요합니다
+              </p>
+            )}
           </div>
-          <p className="text-xs text-slate-400">
-            데모 데이터가 포함된 체험 모드입니다 (학생 5명, 제출 15건, AI 대화 3건)
-          </p>
         </div>
 
         {/* 특징 카드 */}
@@ -123,59 +116,6 @@ export default function Landing() {
           ))}
         </div>
       </main>
-
-      {/* 커스텀 로그인 모달 */}
-      {showDemo && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setShowDemo(false)}>
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold text-slate-800 mb-4">
-              {demoRole === 'teacher' ? '교사 로그인' : '학생 로그인'}
-            </h3>
-            <p className="text-xs text-slate-500 mb-4">
-              이름을 입력하고 역할을 선택하세요. (데모 교실 참여 코드: <span className="font-mono font-bold text-blue-600">00000</span>)
-            </p>
-
-            <div className="space-y-3">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setDemoRole('student')}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    demoRole === 'student' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'
-                  }`}
-                >
-                  학생
-                </button>
-                <button
-                  onClick={() => setDemoRole('teacher')}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    demoRole === 'teacher' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-500'
-                  }`}
-                >
-                  교사
-                </button>
-              </div>
-
-              <input
-                type="text"
-                placeholder="이름을 입력하세요"
-                value={demoName}
-                onChange={e => setDemoName(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleDemoLogin()}
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                autoFocus
-              />
-
-              <button
-                onClick={handleDemoLogin}
-                disabled={loading}
-                className="w-full py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
-              >
-                {loading ? '로그인 중...' : '시작하기'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <footer className="p-6 text-center text-xs text-slate-400">
         사고력을 위한 파이썬 — 고등학교 정보 수업을 위한 교육 플랫폼

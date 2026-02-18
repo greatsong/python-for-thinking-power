@@ -23,8 +23,10 @@ export async function verifyGoogleToken(idToken) {
       avatarUrl: payload.picture,
     };
   } catch (err) {
-    // 개발 환경에서 GOOGLE_CLIENT_ID가 없으면 데모 모드
-    if (!process.env.GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID === 'your-google-client-id.apps.googleusercontent.com') {
+    // 개발 환경에서 GOOGLE_CLIENT_ID가 없거나 유효하지 않은 값이면 데모 모드
+    const clientId = process.env.GOOGLE_CLIENT_ID || '';
+    const isDemoMode = !clientId || clientId === 'demo-mode' || !clientId.endsWith('.apps.googleusercontent.com');
+    if (isDemoMode) {
       return parseDemoToken(idToken);
     }
     throw new Error('Google 토큰 검증 실패');
