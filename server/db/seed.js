@@ -323,13 +323,38 @@ async function seedDemoData() {
     );
   }
 
-  // 데모 학생 5명
+  // 데모 학생 30명 (다양하고 리얼한 고등학생)
   const demoStudents = [
-    { name: '김민수', num: '3' },
-    { name: '이서연', num: '7' },
-    { name: '박지호', num: '12' },
-    { name: '정하은', num: '15' },
-    { name: '최우진', num: '21' },
+    { name: '김서준', num: '1' },
+    { name: '이지원', num: '2' },
+    { name: '박민준', num: '3' },
+    { name: '최하은', num: '4' },
+    { name: '정도현', num: '5' },
+    { name: '강수아', num: '6' },
+    { name: '조예준', num: '7' },
+    { name: '윤지유', num: '8' },
+    { name: '장시우', num: '9' },
+    { name: '임예린', num: '10' },
+    { name: '한주원', num: '11' },
+    { name: '오수빈', num: '12' },
+    { name: '서건우', num: '13' },
+    { name: '신지아', num: '14' },
+    { name: '권재현', num: '15' },
+    { name: '황하린', num: '16' },
+    { name: '안현우', num: '17' },
+    { name: '송채원', num: '18' },
+    { name: '류이준', num: '19' },
+    { name: '전나연', num: '20' },
+    { name: '홍도윤', num: '21' },
+    { name: '고서영', num: '22' },
+    { name: '문재원', num: '23' },
+    { name: '양유진', num: '24' },
+    { name: '손민재', num: '25' },
+    { name: '배이서', num: '26' },
+    { name: '백현준', num: '27' },
+    { name: '허소영', num: '28' },
+    { name: '유승우', num: '29' },
+    { name: '남지현', num: '30' },
   ];
 
   const studentIds = [];
@@ -378,8 +403,8 @@ async function seedDemoData() {
 
     for (let si = 0; si < studentIds.length; si++) {
       const studentId = studentIds[si];
-      const code = codes[si];
-      const subTime = new Date(now.getTime() - (30 - si * 5 - pi * 2) * 60000);
+      const code = codes[si % codes.length]; // 30명을 코드 풀로 순환
+      const subTime = new Date(now.getTime() - (90 - si * 2 - pi * 3) * 60000);
 
       execute(
         `INSERT INTO submissions (id, user_id, problem_id, classroom_id, code, passed, approach_tag, is_final, submitted_at)
@@ -415,7 +440,7 @@ async function seedDemoData() {
       summary: 'for문과 조건문 기초 질문. 짝수 판별 방법까지 유도 완료.'
     },
     {
-      student: 2, problem: 1,
+      student: 14, problem: 1,
       messages: [
         { role: 'user', content: '설탕 배달이 너무 어려워요ㅠ' },
         { role: 'assistant', content: '괜찮아! 작은 수로 생각해보자 — 설탕 8kg을 3kg, 5kg 봉지로 나눈다면?' },
@@ -425,12 +450,22 @@ async function seedDemoData() {
       summary: '설탕 배달 문제에서 그리디 접근법 유도. 5kg 우선 사용 힌트 제공.'
     },
     {
-      student: 1, problem: 2,
+      student: 7, problem: 2,
       messages: [
         { role: 'user', content: '조개가 어디로 가는지 어떻게 추적해요?' },
         { role: 'assistant', content: '조개 위치를 변수 하나로 기억하면 돼! 컵이 바뀔 때마다 "내 조개가 거기에 있나?" 확인하면 끝!' },
       ],
       summary: '위치 추적 변수 사용법 질문. 단일 변수 추적 방법 유도.'
+    },
+    {
+      student: 22, problem: 0,
+      messages: [
+        { role: 'user', content: '리스트 컴프리헨션이 뭔가요?' },
+        { role: 'assistant', content: '리스트 컴프리헨션은 반복문을 한 줄로 압축하는 파이썬의 강력한 기능이야! [x for x in 리스트 if 조건] 형태야.' },
+        { role: 'user', content: '오 신기하다! 그럼 짝수만 골라내는 건요?' },
+        { role: 'assistant', content: '[c for c in cards if c % 2 == 0] — 이렇게! 2로 나눈 나머지가 0이면 짝수지.' },
+      ],
+      summary: '리스트 컴프리헨션 개념 질문. 짝수 필터링 예시로 이해 완료.'
     },
   ];
 
