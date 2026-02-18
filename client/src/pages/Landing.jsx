@@ -70,9 +70,9 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col">
-      <main className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="text-center max-w-2xl">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col overflow-y-auto">
+      <main className="flex-1 flex flex-col items-center justify-start py-12 px-6">
+        <div className="text-center max-w-2xl w-full">
           <div className="text-6xl mb-6">🐍</div>
           <h1 className="text-4xl font-bold text-slate-900 mb-4">
             사고력을 위한 파이썬
