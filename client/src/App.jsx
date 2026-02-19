@@ -30,6 +30,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/guide" element={<AIGuide />} />
       <Route path="/apply" element={<TeacherApply />} />
       <Route path="/join" element={<JoinClassroom />} />
 

@@ -112,13 +112,19 @@ export default function Landing() {
             <div className="flex justify-center" ref={googleBtnRef} />
           </div>
 
-          {/* 교사 링크 */}
-          <p className="mt-4 text-xs text-slate-400">
-            교사이신가요?{' '}
-            <Link to="/apply" className="text-blue-500 hover:text-blue-600 font-medium">
-              교사 계정 신청 →
+          {/* 하단 링크 */}
+          <div className="mt-4 flex items-center justify-center gap-3 text-xs text-slate-400">
+            <Link to="/guide" className="text-blue-500 hover:text-blue-600 font-medium">
+              서비스 안내 →
             </Link>
-          </p>
+            <span>·</span>
+            <span>
+              교사이신가요?{' '}
+              <Link to="/apply" className="text-blue-500 hover:text-blue-600 font-medium">
+                교사 계정 신청 →
+              </Link>
+            </span>
+          </div>
         </div>
 
         {/* 특징 카드 */}
