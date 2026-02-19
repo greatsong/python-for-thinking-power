@@ -4,8 +4,10 @@ import {
   BookOpen, Key, Shield, Users, AlertTriangle, CheckCircle, ExternalLink,
   ChevronDown, ChevronRight, ArrowRight, Zap, DollarSign, Lock, HelpCircle,
   LayoutDashboard, Wrench, ListChecks, MessageSquare, Settings, Hash,
-  Code, Bot, Eye, BarChart3, Sparkles, UserPlus, Play, Monitor
+  Code, Bot, Eye, BarChart3, Sparkles, UserPlus, Play, Monitor, Loader2
 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import useAuthStore from '../../stores/authStore.js';
 
 function Section({ icon: Icon, title, badge, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -73,6 +75,17 @@ function NavItem({ icon: Icon, label, desc }) {
 
 export default function AIGuide() {
   const navigate = useNavigate();
+  const { loginDemo, loading } = useAuthStore();
+  const [demoName, setDemoName] = useState('');
+
+  const handleDemo = async () => {
+    if (!demoName.trim()) { toast.error('이름을 입력해 주세요'); return; }
+    try {
+      const user = await loginDemo(demoName.trim(), 'student');
+      toast.success(`${user.name}님, 체험 모드로 입장합니다!`);
+      navigate('/join');
+    } catch (err) { toast.error(err.message || '데모 로그인에 실패했습니다'); }
+  };
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -109,6 +122,38 @@ export default function AIGuide() {
             <p className="text-[10px] text-blue-200 mt-0.5">선택사항</p>
           </div>
         </div>
+      </div>
+
+      {/* 데모 체험 */}
+      <div className="bg-white rounded-xl shadow-sm border border-emerald-200 p-6 mb-6">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+            <Play size={20} className="text-emerald-600" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-800">먼저 직접 체험해 보세요!</h3>
+            <p className="text-sm text-slate-500">설명보다 직접 써보는 게 빠릅니다.</p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="이름 입력 (예: 홍길동)"
+            value={demoName}
+            onChange={(e) => setDemoName(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleDemo()}
+            className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+          />
+          <button
+            onClick={handleDemo}
+            disabled={loading}
+            className="inline-flex items-center gap-1.5 px-5 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-50 transition-colors shrink-0"
+          >
+            {loading ? <Loader2 size={14} className="animate-spin" /> : <ArrowRight size={14} />}
+            체험하기
+          </button>
+        </div>
+        <p className="text-xs text-slate-400 mt-2">Google 로그인 없이 이름만으로 학생 화면을 바로 체험할 수 있어요.</p>
       </div>
 
       <div className="space-y-3">
@@ -634,7 +679,7 @@ export default function AIGuide() {
       <div className="mt-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 text-center text-white">
         <p className="font-bold text-lg mb-2">준비가 되셨나요?</p>
         <p className="text-blue-200 text-sm mb-4">교실을 만들고, 문제를 배정하고, 수업을 시작하세요!</p>
-        <div className="flex justify-center gap-3">
+        <div className="flex justify-center gap-3 flex-wrap">
           <button
             onClick={() => navigate('/teacher/classroom')}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-blue-700 rounded-lg font-medium hover:bg-blue-50 transition-colors text-sm"

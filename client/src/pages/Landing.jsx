@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Code2, Brain, Users, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -8,10 +8,8 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '853390253196-
 
 export default function Landing() {
   const navigate = useNavigate();
-  const { loginWithGoogle, loginDemo, loading } = useAuthStore();
+  const { loginWithGoogle } = useAuthStore();
   const googleBtnRef = useRef(null);
-
-  const [demoName, setDemoName] = useState('');
 
   useEffect(() => {
     if (!GOOGLE_CLIENT_ID || !window.google) return;
@@ -48,20 +46,6 @@ export default function Landing() {
     }
   };
 
-  const handleDemoLogin = async () => {
-    if (!demoName.trim()) {
-      toast.error('이름을 입력해 주세요');
-      return;
-    }
-    try {
-      const user = await loginDemo(demoName.trim(), 'student');
-      toast.success(`[데모] ${user.name}님, 환영합니다!`);
-      navigate('/join');
-    } catch (err) {
-      toast.error(err.message || '데모 로그인에 실패했습니다');
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col overflow-y-auto">
       {/* 상단 네비게이션 */}
@@ -88,36 +72,7 @@ export default function Landing() {
 
           {/* 로그인 카드 */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 max-w-sm mx-auto">
-            {/* 데모 체험 */}
-            <div className="mb-5">
-              <div className="px-3 py-2 bg-blue-50 rounded-lg text-xs text-blue-700 mb-3">
-                📋 이름만 입력하면 Google 로그인 없이 바로 체험!
-              </div>
-              <input
-                type="text"
-                placeholder="이름 입력 (예: 홍길동)"
-                value={demoName}
-                onChange={(e) => setDemoName(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleDemoLogin()}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 mb-2"
-              />
-              <button
-                onClick={handleDemoLogin}
-                disabled={loading}
-                className="w-full py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 disabled:opacity-50 transition-colors"
-              >
-                체험하기
-              </button>
-            </div>
-
-            {/* 구분선 */}
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex-1 h-px bg-slate-200" />
-              <span className="text-xs text-slate-400">또는 Google 로그인</span>
-              <div className="flex-1 h-px bg-slate-200" />
-            </div>
-
-            {/* Google 로그인 버튼 */}
+            <p className="text-sm text-slate-500 mb-4">Google 계정으로 로그인하세요</p>
             <div className="flex justify-center" ref={googleBtnRef} />
           </div>
 
