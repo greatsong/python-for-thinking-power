@@ -181,8 +181,9 @@ export default function Landing() {
                 <h3 className="font-semibold text-slate-800">교실 라이브 대시보드</h3>
               </div>
               <p className="text-sm text-slate-600 leading-relaxed">
-                교사는 학생별 문제 풀이 현황을 실시간 매트릭스로 확인합니다.
-                누가 어떤 문제에서 막혔는지 한눈에 파악하고, AI 사용량과 비용도 추적할 수 있습니다.
+                교사는 학생×문제 매트릭스로 실시간 현황을 확인합니다.
+                셀 클릭으로 학생 코드와 AI 대화를 열람하고, 점수·등급·코멘트 피드백을 남깁니다.
+                성적표 CSV 내보내기로 학교 시스템과도 연동 가능합니다.
               </p>
             </div>
           </div>

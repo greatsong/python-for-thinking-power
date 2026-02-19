@@ -187,8 +187,12 @@ export default function AIGuide() {
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>교실을 만들고 학생을 초대</li>
               <li>문제를 AI로 생성하거나 직접 만들기</li>
+              <li>다른 교사의 문제를 검색·복제·추천 (나눔터)</li>
               <li>교실에 문제를 배정하고, AI 도움 수준 조절</li>
-              <li>학생 풀이 진행도를 실시간 모니터링</li>
+              <li>학생 풀이 진행도를 실시간 매트릭스로 모니터링</li>
+              <li>매트릭스 셀 클릭으로 학생 코드·AI 대화 원문 열람</li>
+              <li>학생별 점수(0~100)·등급(A~F)·코멘트 피드백</li>
+              <li>성적표/진행 요약 CSV 내보내기 (엑셀 호환)</li>
               <li>AI 대화 리포트로 학생별 고충 파악</li>
             </ul>
           </div>
@@ -197,8 +201,9 @@ export default function AIGuide() {
         {/* ===== 교사 대시보드 메뉴 안내 ===== */}
         <Section icon={Monitor} title="교사 대시보드 메뉴 안내" badge="전체 메뉴">
           <div className="mt-4 space-y-1">
-            <NavItem icon={LayoutDashboard} label="교실 라이브" desc="학생별 문제 풀이 현황을 실시간 매트릭스로 확인 + AI 사용량 통계. 총 4개 탭: 현황, 학생 목록, AI 리포트, AI 사용량." />
+            <NavItem icon={LayoutDashboard} label="교실 라이브" desc="학생×문제 매트릭스로 실시간 현황 확인. 셀 클릭으로 코드·AI대화·피드백 슬라이드 패널 열기. 성적표/진행요약 CSV 내보내기. 총 4개 탭: 현황, 학생 목록, AI 리포트, AI 사용량." />
             <NavItem icon={Wrench} label="문제 공방" desc="AI에게 문제를 생성시키거나 직접 만들기. 생성된 문제를 검토·수정·승인하는 워크숍." />
+            <NavItem icon={Users} label="문제 나눔터" desc="다른 교사가 공유한 문제를 검색·복제·추천. 좋은 문제를 학교 간에 나눠 쓸 수 있는 커뮤니티." />
             <NavItem icon={ListChecks} label="문제 배정" desc="승인된 문제를 교실에 배정. 문제별로 AI 도움 레벨(0~4)과 갤러리 공개 여부를 설정." />
             <NavItem icon={MessageSquare} label="AI 리포트" desc="학생과 AI 코치의 대화 내역을 요약. 학생이 어디서 막혔는지, 교사 개입이 필요한지 파악." />
             <NavItem icon={Settings} label="교실 설정" desc="새 교실 생성, 참여 코드 확인, 학생 목록 관리, API 키 설정, AI 일일 사용 제한 설정." />
@@ -379,20 +384,39 @@ export default function AIGuide() {
                 <p className="font-medium text-slate-800 text-sm mb-1">현황 (매트릭스)</p>
                 <ul className="list-disc list-inside space-y-0.5 text-xs text-slate-600 ml-1">
                   <li><strong>행</strong> = 학생, <strong>열</strong> = 문제, 각 셀에 통과/진행중/미시도 상태 색상 표시</li>
+                  <li>문제별 <strong>통과율(%)</strong>이 헤더 아래에 표시됨</li>
+                  <li>평가 완료 셀에는 <strong>금색 등급 뱃지</strong>(A, B, C...)가 표시됨</li>
                   <li>수업 중 프로젝터에 띄워 놓으면 학생들에게 동기부여 효과</li>
+                </ul>
+              </div>
+              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                <p className="font-medium text-blue-800 text-sm mb-1">셀 클릭 → 슬라이드 패널 <span className="text-[10px] bg-blue-200 text-blue-700 px-1.5 py-0.5 rounded-full ml-1">NEW</span></p>
+                <ul className="list-disc list-inside space-y-0.5 text-xs text-blue-700 ml-1">
+                  <li><strong>코드 보기</strong>: 학생이 제출한 코드 + 테스트 결과 + 접근법 태그</li>
+                  <li><strong>AI 대화</strong>: 학생과 AI 코치의 대화 원문 전체 열람 (치팅 의심 키워드 빨간 하이라이팅)</li>
+                  <li><strong>피드백/평가</strong>: 점수(0~100), 등급(A~F), 코멘트를 입력하고 저장</li>
+                  <li><strong>코드 여정</strong>: 코드 스냅샷 타임라인으로 학생의 성장 과정 확인</li>
+                </ul>
+              </div>
+              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                <p className="font-medium text-blue-800 text-sm mb-1">데이터 내보내기 <span className="text-[10px] bg-blue-200 text-blue-700 px-1.5 py-0.5 rounded-full ml-1">NEW</span></p>
+                <ul className="list-disc list-inside space-y-0.5 text-xs text-blue-700 ml-1">
+                  <li><strong>성적표 CSV</strong>: 학생×문제 점수/등급 매트릭스 (학교 시스템에 업로드 가능)</li>
+                  <li><strong>진행 요약 CSV</strong>: 학생별 총제출수, 통과문제수, 통과율, 평균점수, AI사용횟수</li>
+                  <li>한글 엑셀에서 깨지지 않고 바로 열림 (UTF-8 BOM)</li>
                 </ul>
               </div>
               <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
                 <p className="font-medium text-slate-800 text-sm mb-1">학생 목록</p>
-                <p className="text-xs text-slate-600 ml-1">학생별 풀이 수, 제출 수, AI 대화 수, 최근 활동 확인</p>
+                <p className="text-xs text-slate-600 ml-1">학생별 풀이 수, 제출 수, AI 대화 수, 최근 활동 확인. 학생 클릭 시 전체 요약 패널 열기.</p>
               </div>
               <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
                 <p className="font-medium text-slate-800 text-sm mb-1">AI 리포트</p>
                 <p className="text-xs text-slate-600 ml-1">학생별 AI 대화 내역 요약 및 교사 개입 필요 여부 파악</p>
               </div>
-              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                <p className="font-medium text-blue-800 text-sm mb-1">AI 사용량 <span className="text-[10px] bg-blue-200 text-blue-700 px-1.5 py-0.5 rounded-full ml-1">NEW</span></p>
-                <ul className="list-disc list-inside space-y-0.5 text-xs text-blue-700 ml-1">
+              <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
+                <p className="font-medium text-slate-800 text-sm mb-1">AI 사용량</p>
+                <ul className="list-disc list-inside space-y-0.5 text-xs text-slate-600 ml-1">
                   <li>기간별(오늘/이번 주/이번 달) AI 호출 수 및 예상 비용</li>
                   <li>일별 사용량 바 차트로 추세 파악</li>
                   <li>학생별 사용량 랭킹으로 과다 사용자 확인</li>
@@ -538,8 +562,19 @@ export default function AIGuide() {
             </div>
 
             <div className="bg-violet-50 rounded-lg p-4 border border-violet-200">
-              <h3 className="font-semibold text-violet-800 mb-2">시나리오 3: AI 없이 수업</h3>
+              <h3 className="font-semibold text-violet-800 mb-2">시나리오 3: 평가 & 피드백 수업</h3>
               <ol className="list-decimal list-inside space-y-1 text-violet-700 text-xs">
+                <li><strong>수업 중</strong>: 학생들이 문제를 풀고 제출</li>
+                <li><strong>수업 후</strong>: 매트릭스 셀 클릭 → 학생 코드와 AI 대화 확인</li>
+                <li>피드백 탭에서 점수·등급·코멘트 입력 후 저장</li>
+                <li>성적표 CSV 내보내기로 학교 시스템에 업로드</li>
+                <li>매트릭스에서 금색 뱃지로 평가 완료 현황 한눈에 확인</li>
+              </ol>
+            </div>
+
+            <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+              <h3 className="font-semibold text-slate-800 mb-2">시나리오 4: AI 없이 수업</h3>
+              <ol className="list-decimal list-inside space-y-1 text-slate-700 text-xs">
                 <li>문제 배정 시 AI 레벨을 <strong>0</strong>으로 설정</li>
                 <li>학생들이 AI 도움 없이 순수하게 풀이</li>
                 <li>교사가 직접 순회하며 힌트 제공</li>
@@ -664,6 +699,18 @@ export default function AIGuide() {
             <div>
               <p className="font-semibold text-slate-800">Q. 키를 삭제하면 기존 AI 대화 기록도 삭제되나요?</p>
               <p className="mt-1">아닙니다. AI 대화 기록은 별도로 저장되어 있어, 키를 삭제해도 기존 대화 내용은 유지됩니다.</p>
+            </div>
+            <div>
+              <p className="font-semibold text-slate-800">Q. 학생에게 점수나 피드백을 줄 수 있나요?</p>
+              <p className="mt-1">네! 교실 라이브 매트릭스에서 셀을 클릭하면 슬라이드 패널이 열립니다. "피드백/평가" 탭에서 점수(0~100), 등급(A~F), 코멘트를 입력하고 저장할 수 있습니다. 평가가 완료된 셀에는 금색 등급 뱃지가 표시됩니다.</p>
+            </div>
+            <div>
+              <p className="font-semibold text-slate-800">Q. 성적을 엑셀로 내보낼 수 있나요?</p>
+              <p className="mt-1">교실 라이브 상단의 "내보내기" 버튼에서 성적표 CSV(학생×문제 점수/등급 매트릭스)와 진행 요약 CSV(학생별 통계)를 다운로드할 수 있습니다. 한글 엑셀에서 깨지지 않고 바로 열립니다.</p>
+            </div>
+            <div>
+              <p className="font-semibold text-slate-800">Q. 학생이 AI와 어떤 대화를 했는지 볼 수 있나요?</p>
+              <p className="mt-1">매트릭스 셀 클릭 → "AI 대화" 탭에서 학생과 AI 코치의 대화 원문 전체를 열람할 수 있습니다. "답 알려줘", "코드 줘" 같은 치팅 의심 키워드가 포함된 메시지는 빨간색으로 하이라이팅됩니다.</p>
             </div>
             <div>
               <p className="font-semibold text-slate-800">Q. 문의/건의는 어디에 하나요?</p>
