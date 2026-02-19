@@ -9,31 +9,23 @@ function PythinkLogo({ size = 64, className = '' }) {
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
       <defs>
         <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#3b82f6" />
-          <stop offset="100%" stopColor="#6366f1" />
+          <stop offset="0%" stopColor="#facc15" />
+          <stop offset="100%" stopColor="#22c55e" />
         </linearGradient>
       </defs>
       {/* 둥근 사각형 배경 */}
       <rect x="4" y="4" width="112" height="112" rx="28" fill="url(#logoGrad)" />
-      {/* 왼쪽 중괄호 { */}
+      {/* 전구 외곽 */}
       <path
-        d="M38 34 C32 34, 30 38, 30 44 L30 52 C30 56, 26 60, 26 60 C26 60, 30 64, 30 68 L30 76 C30 82, 32 86, 38 86"
-        stroke="white" strokeWidth="5" strokeLinecap="round" fill="none" opacity="0.9"
+        d="M60 20c-16.5 0-30 13.5-30 30 0 10.5 5.4 19.8 13.5 25.2V82c0 1.8 1.2 3 3 3h27c1.8 0 3-1.2 3-1.2V75.2C84.6 69.8 90 60.5 90 50c0-16.5-13.5-30-30-30z"
+        stroke="white" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" fill="rgba(255,255,255,0.1)"
       />
-      {/* 오른쪽 중괄호 } */}
-      <path
-        d="M82 34 C88 34, 90 38, 90 44 L90 52 C90 56, 94 60, 94 60 C94 60, 90 64, 90 68 L90 76 C90 82, 88 86, 82 86"
-        stroke="white" strokeWidth="5" strokeLinecap="round" fill="none" opacity="0.9"
-      />
-      {/* 전구 — 아이디어/사고력 */}
-      <circle cx="60" cy="52" r="14" stroke="white" strokeWidth="4.5" fill="none" />
-      <path d="M54 66 L54 72 C54 74, 56 76, 60 76 C64 76, 66 74, 66 72 L66 66" stroke="white" strokeWidth="4" strokeLinecap="round" fill="none" />
-      {/* 전구 빛 라인 */}
-      <line x1="60" y1="30" x2="60" y2="24" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.5" />
-      <line x1="44" y1="38" x2="40" y2="34" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.5" />
-      <line x1="76" y1="38" x2="80" y2="34" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.5" />
-      {/* 밑줄 커서 깜빡임 효과 */}
-      <rect x="52" y="84" width="16" height="3" rx="1.5" fill="white" opacity="0.6" />
+      {/* 코드 프롬프트 >_ (생각의 불꽃) */}
+      <path d="M47 44l10.5 9-10.5 9" stroke="white" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+      <line x1="63" y1="62" x2="73.5" y2="62" stroke="white" strokeWidth="6" strokeLinecap="round" />
+      {/* 전구 받침 */}
+      <line x1="46" y1="92" x2="74" y2="92" stroke="white" strokeWidth="4" strokeLinecap="round" opacity="0.7" />
+      <line x1="50" y1="100" x2="70" y2="100" stroke="white" strokeWidth="4" strokeLinecap="round" opacity="0.5" />
     </svg>
   );
 }
@@ -81,15 +73,15 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col overflow-y-auto">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-emerald-50 flex flex-col overflow-y-auto">
       {/* 상단 네비게이션 */}
       <nav className="flex items-center justify-between px-4 md:px-6 py-4 max-w-4xl mx-auto w-full">
         <span className="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
           <PythinkLogo size={22} /> 사고력을 위한 파이썬
         </span>
         <div className="flex items-center gap-3 md:gap-4">
-          <Link to="/guide" className="text-xs md:text-sm text-slate-500 hover:text-blue-600 transition-colors">서비스 안내</Link>
-          <Link to="/apply" className="text-xs md:text-sm text-slate-500 hover:text-blue-600 transition-colors">교사 신청</Link>
+          <Link to="/guide" className="text-xs md:text-sm text-slate-500 hover:text-emerald-600 transition-colors">서비스 안내</Link>
+          <Link to="/apply" className="text-xs md:text-sm text-slate-500 hover:text-emerald-600 transition-colors">교사 신청</Link>
         </div>
       </nav>
 
@@ -102,7 +94,7 @@ export default function Landing() {
             사고력을 위한 파이썬
           </h1>
           <p className="text-lg text-slate-600 mb-2">
-            코드를 배우는 게 아니라, <span className="font-semibold text-blue-600">생각하는 힘</span>을 키웁니다.
+            코드를 배우는 게 아니라, <span className="font-semibold text-emerald-600">생각하는 힘</span>을 키웁니다.
           </p>
           <p className="text-slate-500 mb-10">
             같은 문제, 다른 생각 — 다양한 풀이를 비교하며 성장하는 파이썬 수업
@@ -117,7 +109,7 @@ export default function Landing() {
           {/* 하단 링크 */}
           <p className="mt-4 text-xs text-slate-400">
             교사이신가요?{' '}
-            <Link to="/apply" className="text-blue-500 hover:text-blue-600 font-medium">교사 계정 신청 →</Link>
+            <Link to="/apply" className="text-emerald-500 hover:text-emerald-600 font-medium">교사 계정 신청 →</Link>
           </p>
         </div>
 
@@ -198,7 +190,7 @@ export default function Landing() {
 
         {/* 수업 흐름 */}
         <div className="mt-10 max-w-3xl w-full">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 md:p-8 text-white">
+          <div className="bg-gradient-to-r from-yellow-500 to-emerald-500 rounded-2xl p-5 md:p-8 text-white">
             <h2 className="text-base md:text-lg font-bold text-center mb-4 md:mb-6">수업 흐름 (50분 기준)</h2>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-2">
               {[
@@ -210,7 +202,7 @@ export default function Landing() {
                   <div className="text-xl sm:text-2xl font-bold sm:mb-1">{step.time}</div>
                   <div className="text-left sm:text-center">
                     <div className="text-sm font-medium sm:mb-1">{step.label}</div>
-                    <div className="text-xs text-blue-200">{step.desc}</div>
+                    <div className="text-xs text-yellow-100">{step.desc}</div>
                   </div>
                 </div>
               ))}
