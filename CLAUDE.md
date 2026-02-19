@@ -151,6 +151,108 @@ Lv3+ 문제의 테스트 케이스에는 **큰 입력**을 포함하여 성능 �
 - Python Runtime: Pyodide (WebAssembly, 브라우저 실행)
 - Auth: Google OAuth 2.0 + JWT
 
+## 배포
+
+- 프론트엔드: Vercel → https://pythink.vercel.app
+- 백엔드: Railway → https://pythink.up.railway.app
+- GitHub: https://github.com/greatsong/python-for-thinking-power
+- 로컬 포트: 프론트 `4000`, 백엔드 `4001`
+
+## 프로젝트 구조 (모노레포, npm workspaces)
+
+```
+python-for-thinking-power/
+├── client/                  # React 프론트엔드
+│   └── src/
+│       ├── pages/
+│       │   ├── Landing.jsx          # 랜딩 페이지
+│       │   ├── TeacherApply.jsx     # 교사 계정 신청
+│       │   ├── JoinClassroom.jsx    # 학생 교실 참여
+│       │   ├── student/
+│       │   │   ├── ProblemList.jsx   # 문제 목록
+│       │   │   ├── Workspace.jsx    # 코딩 환경 (에디터+실행+AI코치)
+│       │   │   ├── Gallery.jsx      # 풀이 갤러리
+│       │   │   └── MyJourney.jsx    # 코드 여정 타임라인
+│       │   └── teacher/
+│       │       ├── LiveDashboard.jsx    # 교실 라이브 모니터링 + 학생 피드백
+│       │       ├── ProblemWorkshop.jsx  # AI 문제 생성 공방
+│       │       ├── ProblemCommunity.jsx # 문제 나눔터 (공유/복제/추천)
+│       │       ├── ProblemAssign.jsx    # 교실별 문제 배정
+│       │       ├── AIReports.jsx       # AI 대화 리포트
+│       │       ├── ApproachAnalysis.jsx # 접근법 분석 상세
+│       │       ├── ClassroomSetup.jsx   # 교실 설정
+│       │       └── AIGuide.jsx         # 사용 안내
+│       ├── components/
+│       │   └── StudentDetailPanel.jsx  # 학생 상세 슬라이드 패널
+│       ├── layouts/
+│       │   ├── TeacherLayout.jsx   # 교사 사이드바 레이아웃
+│       │   └── StudentLayout.jsx   # 학생 레이아웃
+│       └── stores/
+│           ├── authStore.js        # 인증 상태 (Zustand)
+│           └── dashboardStore.js   # 대시보드 상태 (Zustand)
+├── server/                  # Express 백엔드
+│   ├── routes/
+│   │   ├── auth.js          # Google 로그인, JWT
+│   │   ├── classrooms.js    # 교실 CRUD, 참여 코드
+│   │   ├── problems.js      # 문제 CRUD, 나눔터, 스타, 복제
+│   │   ├── submissions.js   # 풀이 제출, 스냅샷
+│   │   ├── ai.js            # AI 코치 대화 (SSE)
+│   │   ├── dashboard.js     # 교사 대시보드, 학생 상세, 피드백
+│   │   └── gallery.js       # 풀이 갤러리, AI 분석
+│   ├── services/
+│   │   ├── problemGenerator.js   # AI 문제 생성 프롬프트
+│   │   ├── aiCoach.js            # AI 코칭 프롬프트
+│   │   └── approachAnalyzer.js   # 풀이 접근법 분석
+│   ├── db/
+│   │   ├── schema.sql       # DB 스키마 (12개 테이블)
+│   │   ├── database.js      # sql.js 초기화, 마이그레이션, 헬퍼
+│   │   └── seed.js          # 문제 시딩 (자동 발견 + 큐레이션)
+│   └── data/
+│       └── problems/        # 177개 문제 JSON 파일
+└── shared/                  # 클라이언트/서버 공유 상수
+    └── constants.js         # DIFFICULTY_LABELS, CATEGORY_LABELS 등
+```
+
+## DB 테이블 (12개)
+
+| 테이블 | 설명 | 주요 컬럼 |
+|--------|------|-----------|
+| `users` | 사용자 | google_id, role(student/teacher), anthropic_api_key |
+| `classrooms` | 교실 | teacher_id, join_code(5자리), daily_ai_limit |
+| `classroom_members` | 교실-학생 연결 | classroom_id, user_id, student_number |
+| `problems` | 문제 | difficulty(1-5), category, is_shared, cloned_from |
+| `classroom_problems` | 교실-문제 배정 | ai_level(0-4), gallery_enabled |
+| `submissions` | 풀이 제출 | code, passed, approach_tag, teacher_score/grade/feedback |
+| `code_snapshots` | 코드 스냅샷 | 자동 저장, 코드 여정용 |
+| `ai_conversations` | AI 대화 | messages_json, summary |
+| `problem_sets` | 문제집 | 레벨별 그룹 (Lv.1~Lv.5) |
+| `problem_set_items` | 문제집-문제 연결 | sort_order |
+| `teacher_applications` | 교사 신청서 | school, region, motivation |
+| `ai_usage_log` | AI 사용량 | 일일 제한 추적 |
+| `problem_stars` | 문제 추천 | user_id + problem_id 복합키 |
+
+## 주요 기능별 데이터 흐름
+
+### 문제 나눔터 (교사 간 공유)
+1. 교사가 문제 공방에서 문제 생성 → `approved` 상태
+2. 라이브러리에서 "공개" 토글 → `PATCH /problems/:id/share` → `is_shared=1`
+3. 다른 교사가 나눔터에서 검색 → `GET /problems/community`
+4. 복제 → `POST /problems/:id/clone` → 새 문제 생성 (독립 사본, `cloned_from` 추적)
+5. 추천(스타) → `POST /problems/:id/star` → 추천순 정렬 가능
+
+### 교사 피드백/평가
+1. 대시보드에서 학생 클릭 → `StudentDetailPanel` 슬라이드
+2. `GET /dashboard/student/:id` → 학생의 전체 문제별 현황
+3. 교사가 점수/등급/피드백 작성 → `POST /submissions/:id/feedback`
+4. submissions 테이블에 teacher_score, teacher_grade, teacher_feedback 저장
+
+### AI 코치 레벨 (교사 제어)
+- Lv.0: AI 비활성
+- Lv.1: 질문만 ("어떻게 생각하니?")
+- Lv.2: 개념 힌트 (방향 제시)
+- Lv.3: 수도코드 수준 안내
+- Lv.4: 코드 예시 포함
+
 ## 주요 서비스 파일 (AI 프롬프트)
 
 | 파일 | 역할 | 핵심 내용 |
