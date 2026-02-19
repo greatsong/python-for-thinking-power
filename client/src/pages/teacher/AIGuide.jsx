@@ -166,12 +166,12 @@ export default function AIGuide() {
             </p>
             <p>핵심 철학은 <strong>"같은 문제, 다른 생각"</strong>입니다:</p>
             <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 font-mono text-xs">
-              <p className="text-slate-500 mb-2">[게임] 1~100 사이의 숫자를 맞혀보세요 (높다/낮다 힌트)</p>
-              <p>학생A: 1부터 순서대로 시도 → 최악 100번</p>
-              <p>학생B: 반으로 쪼개기 50→25→... → 최대 7번!</p>
-              <p>학생C: 감으로 찍기 42→77→... → 운에 달림</p>
-              <p className="text-blue-600 mt-2">→ 같은 게임인데 전략이 전혀 다르다.</p>
-              <p className="text-blue-600">→ "반으로 나누면 7번이면 된다고?!" 이 발견의 순간이 사고력이다.</p>
+              <p className="text-slate-500 mb-2">[문제] [1, 2, 4, 5, 6] — 1부터 6까지 중 빠진 숫자를 찾으세요</p>
+              <p>학생A: 1부터 하나씩 확인 → "3이 없네!" (하나씩 찾기)</p>
+              <p>학생B: 옆 숫자와 차이가 2인 곳 → "2와 4 사이!" (패턴 발견)</p>
+              <p>학생C: 있어야 할 합 21 − 실제 합 18 → 3! (수학적 사고)</p>
+              <p className="text-blue-600 mt-2">→ 같은 답. 하지만 탐색, 패턴, 수학 — 머릿속 그림이 전혀 다르다.</p>
+              <p className="text-blue-600">→ 이 비교에서 사고력이 자란다.</p>
             </div>
 
             <p className="font-medium text-slate-700 mt-4">학생이 할 수 있는 것:</p>

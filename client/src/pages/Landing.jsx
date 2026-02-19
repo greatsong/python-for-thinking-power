@@ -89,13 +89,13 @@ export default function Landing() {
             <h2 className="text-xl font-bold text-slate-900 text-center mb-2">같은 문제, 다른 생각</h2>
             <p className="text-sm text-slate-500 text-center mb-6">정답은 하나가 아닙니다. 다양한 풀이를 비교하며 사고력을 키웁니다.</p>
             <div className="bg-slate-50 rounded-xl p-5 border border-slate-200 font-mono text-sm text-slate-700">
-              <p className="text-slate-400 mb-3 text-xs"># 숫자 맞추기: 1~100 사이의 숫자를 맞혀보세요 (높다/낮다 힌트)</p>
+              <p className="text-slate-400 mb-3 text-xs"># [1, 2, 4, 5, 6] — 1부터 6까지 중 빠진 숫자를 찾으세요</p>
               <div className="space-y-2">
-                <p><span className="text-blue-600 font-semibold">학생A</span>: 1부터 순서대로 시도 → <span className="text-slate-500">최악 100번</span></p>
-                <p><span className="text-violet-600 font-semibold">학생B</span>: 반으로 쪼개기 50→25→... → <span className="text-emerald-600 font-bold">최대 7번!</span></p>
-                <p><span className="text-amber-600 font-semibold">학생C</span>: 감으로 찍기 42→77→... → <span className="text-slate-500">운에 달림</span></p>
+                <p><span className="text-blue-600 font-semibold">학생A</span>: 1부터 하나씩 확인 → <span className="text-emerald-600 font-bold">"3이 없네!"</span> <span className="text-slate-400 text-xs">(하나씩 찾기)</span></p>
+                <p><span className="text-violet-600 font-semibold">학생B</span>: 옆 숫자와 차이가 2인 곳 → <span className="text-emerald-600 font-bold">"2와 4 사이!"</span> <span className="text-slate-400 text-xs">(패턴 발견)</span></p>
+                <p><span className="text-amber-600 font-semibold">학생C</span>: 있어야 할 합 21 − 실제 합 18 → <span className="text-emerald-600 font-bold">3!</span> <span className="text-slate-400 text-xs">(수학적 사고)</span></p>
               </div>
-              <p className="text-blue-600 mt-3 text-xs font-medium">→ 같은 게임인데 전략이 전혀 다르다. "반으로 나누면 7번이면 된다고?!" 이 발견의 순간이 사고력입니다.</p>
+              <p className="text-blue-600 mt-3 text-xs font-medium">→ 같은 답. 하지만 탐색, 패턴, 수학 — 머릿속 그림이 전혀 다르다. 이 비교에서 사고력이 자랍니다.</p>
             </div>
           </div>
         </div>
