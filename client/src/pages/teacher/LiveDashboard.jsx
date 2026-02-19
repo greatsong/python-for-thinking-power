@@ -17,9 +17,12 @@ export default function LiveDashboard() {
   const [selectedClassroom, setSelectedClassroom] = useState('');
   const [classroomLoading, setClassroomLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState('matrix'); // 'matrix' | 'list' | 'reflections'
+  const [activeTab, setActiveTab] = useState('matrix'); // 'matrix' | 'list' | 'reflections' | 'ai-usage'
   const [reflections, setReflections] = useState([]);
   const [reflectionsLoading, setReflectionsLoading] = useState(false);
+  const [aiUsage, setAiUsage] = useState(null);
+  const [aiUsageLoading, setAiUsageLoading] = useState(false);
+  const [usagePeriod, setUsagePeriod] = useState('day');
 
   // 매트릭스 필터/정렬
   const [sortBy, setSortBy] = useState('number'); // 'number' | 'name' | 'progress'
@@ -83,6 +86,20 @@ export default function LiveDashboard() {
     }
   }, [selectedClassroom]);
 
+  // AI 사용량 불러오기
+  const fetchAiUsage = useCallback(async (period) => {
+    if (!selectedClassroom) return;
+    setAiUsageLoading(true);
+    try {
+      const data = await apiFetch(`/dashboard/ai-usage/${selectedClassroom}?period=${period || usagePeriod}`);
+      setAiUsage(data);
+    } catch (err) {
+      console.error('AI 사용량 조회 실패:', err.message);
+    } finally {
+      setAiUsageLoading(false);
+    }
+  }, [selectedClassroom, usagePeriod]);
+
   // 교실 선택 시 데이터 불러오기
   const loadDashboardData = useCallback(async () => {
     if (!selectedClassroom) return;
@@ -91,8 +108,9 @@ export default function LiveDashboard() {
       fetchStudents(selectedClassroom),
       fetchMatrix(selectedClassroom),
       fetchReflections(),
+      fetchAiUsage(),
     ]);
-  }, [selectedClassroom, fetchOverview, fetchStudents, fetchMatrix, fetchReflections]);
+  }, [selectedClassroom, fetchOverview, fetchStudents, fetchMatrix, fetchReflections, fetchAiUsage]);
 
   useEffect(() => {
     loadDashboardData();
@@ -375,6 +393,17 @@ export default function LiveDashboard() {
                   {reflections.length}
                 </span>
               )}
+            </button>
+            <button
+              onClick={() => setActiveTab('ai-usage')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'ai-usage'
+                  ? 'bg-white text-slate-800 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              <Bot size={16} />
+              AI 사용량
             </button>
           </div>
 
@@ -668,6 +697,129 @@ export default function LiveDashboard() {
                     </div>
                   ))}
                 </div>
+              )}
+            </div>
+          )}
+
+          {/* AI 사용량 뷰 */}
+          {activeTab === 'ai-usage' && (
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h2 className="text-base font-semibold text-slate-700 flex items-center gap-2">
+                  <Bot size={18} className="text-violet-500" />
+                  AI 사용량
+                </h2>
+                <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-0.5">
+                  {[
+                    { value: 'day', label: '오늘' },
+                    { value: 'week', label: '이번 주' },
+                    { value: 'month', label: '이번 달' },
+                  ].map(({ value, label }) => (
+                    <button
+                      key={value}
+                      onClick={() => { setUsagePeriod(value); fetchAiUsage(value); }}
+                      className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+                        usagePeriod === value
+                          ? 'bg-white text-slate-800 shadow-sm'
+                          : 'text-slate-500 hover:text-slate-700'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {aiUsageLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
+                </div>
+              ) : !aiUsage ? (
+                <div className="py-12 text-center text-slate-400 text-sm">
+                  사용량 데이터를 불러올 수 없습니다.
+                </div>
+              ) : (
+                <>
+                  {/* 요약 카드 */}
+                  <div className="grid grid-cols-3 gap-4 p-5 border-b border-slate-100">
+                    <div className="bg-violet-50 rounded-lg p-4 border border-violet-200">
+                      <p className="text-xs text-violet-600 font-medium mb-1">총 호출 수</p>
+                      <p className="text-2xl font-bold text-violet-700">{aiUsage.total_calls}</p>
+                    </div>
+                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <p className="text-xs text-blue-600 font-medium mb-1">예상 비용</p>
+                      <p className="text-2xl font-bold text-blue-700">${aiUsage.estimated_cost}</p>
+                    </div>
+                    <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                      <p className="text-xs text-slate-600 font-medium mb-1">일일 제한</p>
+                      <p className="text-2xl font-bold text-slate-700">
+                        {aiUsage.daily_limit === 0 ? '무제한' : `${aiUsage.daily_limit}회`}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 일별 사용량 바 차트 */}
+                  {aiUsage.daily_breakdown?.length > 0 && (
+                    <div className="px-5 py-4 border-b border-slate-100">
+                      <h3 className="text-sm font-semibold text-slate-600 mb-3">최근 7일 사용량</h3>
+                      <div className="flex items-end gap-2 h-24">
+                        {aiUsage.daily_breakdown.map((d) => {
+                          const maxCount = Math.max(...aiUsage.daily_breakdown.map(x => x.call_count));
+                          const height = maxCount > 0 ? (d.call_count / maxCount) * 100 : 0;
+                          return (
+                            <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
+                              <span className="text-[10px] text-slate-500 font-medium">{d.call_count}</span>
+                              <div
+                                className="w-full bg-violet-400 rounded-t-sm min-h-[2px] transition-all"
+                                style={{ height: `${height}%` }}
+                              />
+                              <span className="text-[10px] text-slate-400">
+                                {new Date(d.date).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' })}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 학생별 사용량 랭킹 */}
+                  <div className="px-5 py-4">
+                    <h3 className="text-sm font-semibold text-slate-600 mb-3">학생별 사용량</h3>
+                    {aiUsage.per_student?.length === 0 ? (
+                      <p className="text-sm text-slate-400 py-4 text-center">해당 기간에 AI 사용 기록이 없습니다.</p>
+                    ) : (
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="text-left text-slate-500 border-b border-slate-200">
+                            <th className="pb-2 pr-4 w-10">#</th>
+                            <th className="pb-2 pr-4">번호</th>
+                            <th className="pb-2 pr-4">이름</th>
+                            <th className="pb-2 pr-4 text-center">호출 수</th>
+                            <th className="pb-2 text-right">예상 비용</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {aiUsage.per_student.map((s, i) => (
+                            <tr key={s.user_id} className="border-b border-slate-50 last:border-0">
+                              <td className="py-2 pr-4 text-slate-400 text-xs">{i + 1}</td>
+                              <td className="py-2 pr-4 font-mono text-slate-500 text-xs">{s.student_number || '-'}</td>
+                              <td className="py-2 pr-4 font-medium text-slate-800">{s.name}</td>
+                              <td className="py-2 pr-4 text-center">
+                                <span className="inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-full bg-violet-100 text-violet-700 font-medium text-xs">
+                                  {s.call_count}
+                                </span>
+                              </td>
+                              <td className="py-2 text-right text-slate-500 text-xs">
+                                ${(s.call_count * 0.015).toFixed(2)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                </>
               )}
             </div>
           )}

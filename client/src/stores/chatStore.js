@@ -8,6 +8,8 @@ const useChatStore = create((set, get) => ({
   streamingText: '',
   aiDisabled: false,
   aiNoKey: false,  // API 키 미설정
+  aiLimitReached: false,  // 일일 제한 도달
+  usageStatus: { limit: 0, used: 0, remaining: null },
 
   // 대화 초기화 (문제 변경 시)
   resetChat: () => set({
@@ -17,7 +19,24 @@ const useChatStore = create((set, get) => ({
     streamingText: '',
     aiDisabled: false,
     aiNoKey: false,
+    aiLimitReached: false,
+    usageStatus: { limit: 0, used: 0, remaining: null },
   }),
+
+  // AI 사용량 상태 조회
+  fetchUsageStatus: async (classroomId) => {
+    try {
+      if (!classroomId) return;
+      const params = new URLSearchParams({ classroomId });
+      const status = await apiFetch(`/ai/usage-status?${params}`);
+      set({ usageStatus: status });
+      if (status.limit > 0 && status.remaining <= 0) {
+        set({ aiLimitReached: true });
+      }
+    } catch {
+      // 무시
+    }
+  },
 
   // 기존 대화 로드
   loadConversation: async (problemId, classroomId) => {
@@ -75,18 +94,29 @@ const useChatStore = create((set, get) => ({
           set({ aiNoKey: true, isStreaming: false });
           return;
         }
+        if (errMsg?.includes('사용 횟수를 모두') || errMsg?.includes('사용했어요')) {
+          set({ aiLimitReached: true, isStreaming: false });
+          return;
+        }
         fullText = `오류가 발생했습니다: ${errMsg}`;
       },
     });
 
-    // AI 응답 메시지 추가
+    // AI 응답 메시지 추가 + 사용량 낙관적 업데이트
     const aiMsg = { role: 'assistant', content: fullText, timestamp: new Date().toISOString() };
-    set((state) => ({
-      messages: [...state.messages, aiMsg],
-      conversationId: newConvId,
-      isStreaming: false,
-      streamingText: '',
-    }));
+    set((state) => {
+      const usage = state.usageStatus;
+      const newUsed = usage.limit > 0 ? usage.used + 1 : usage.used;
+      const newRemaining = usage.limit > 0 ? Math.max(0, usage.limit - newUsed) : null;
+      return {
+        messages: [...state.messages, aiMsg],
+        conversationId: newConvId,
+        isStreaming: false,
+        streamingText: '',
+        usageStatus: { ...usage, used: newUsed, remaining: newRemaining },
+        aiLimitReached: usage.limit > 0 && newRemaining <= 0,
+      };
+    });
   },
 }));
 

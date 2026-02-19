@@ -127,6 +127,15 @@ CREATE TABLE IF NOT EXISTS teacher_applications (
   created_at TEXT DEFAULT (datetime('now'))
 );
 
+-- AI 사용량 로그 (일일 제한 추적용)
+CREATE TABLE IF NOT EXISTS ai_usage_log (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  classroom_id TEXT NOT NULL,
+  problem_id TEXT NOT NULL,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
 -- 인덱스
 CREATE INDEX IF NOT EXISTS idx_submissions_problem ON submissions(problem_id, classroom_id);
 CREATE INDEX IF NOT EXISTS idx_submissions_user ON submissions(user_id, problem_id);
@@ -134,3 +143,4 @@ CREATE INDEX IF NOT EXISTS idx_snapshots_user_problem ON code_snapshots(user_id,
 CREATE INDEX IF NOT EXISTS idx_ai_conv_classroom ON ai_conversations(classroom_id);
 CREATE INDEX IF NOT EXISTS idx_classroom_members ON classroom_members(classroom_id);
 CREATE INDEX IF NOT EXISTS idx_problem_set_items ON problem_set_items(set_id);
+CREATE INDEX IF NOT EXISTS idx_ai_usage_user_classroom_date ON ai_usage_log(user_id, classroom_id, created_at);

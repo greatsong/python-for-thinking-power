@@ -7,12 +7,13 @@ export default function AICoach({ problemId, classroomId, code }) {
   const [input, setInput] = useState('');
   const isComposingRef = useRef(false);
   const messagesEndRef = useRef(null);
-  const { messages, isStreaming, streamingText, aiDisabled, aiNoKey, sendMessage, loadConversation, resetChat } = useChatStore();
+  const { messages, isStreaming, streamingText, aiDisabled, aiNoKey, aiLimitReached, usageStatus, sendMessage, loadConversation, fetchUsageStatus, resetChat } = useChatStore();
 
   useEffect(() => {
     resetChat();
     if (problemId) {
       loadConversation(problemId, classroomId);
+      fetchUsageStatus(classroomId);
     }
   }, [problemId]);
 
@@ -50,6 +51,16 @@ export default function AICoach({ problemId, classroomId, code }) {
         <MessageCircleOff size={32} />
         <p className="text-sm">AI 코치를 사용할 수 없어요.</p>
         <p className="text-xs text-slate-500">선생님이 아직 API 키를 설정하지 않았어요.</p>
+      </div>
+    );
+  }
+
+  if (aiLimitReached && messages.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-slate-400 px-6 text-center gap-3">
+        <MessageCircleOff size={32} />
+        <p className="text-sm">오늘의 AI 코치 사용 횟수를 모두 사용했어요.</p>
+        <p className="text-xs text-slate-500">내일 다시 사용할 수 있어요!</p>
       </div>
     );
   }
@@ -135,6 +146,21 @@ export default function AICoach({ problemId, classroomId, code }) {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Usage Status */}
+      {usageStatus.limit > 0 && (
+        <div className="px-4 py-1.5 text-xs text-slate-500 flex items-center gap-1.5 border-t border-slate-800/50">
+          <Bot size={12} />
+          <span>
+            오늘 남은 횟수:{' '}
+            <span className={`font-bold ${usageStatus.remaining <= 2 ? 'text-amber-400' : 'text-violet-400'}`}>
+              {usageStatus.remaining}
+            </span>
+            /{usageStatus.limit}
+          </span>
+          {aiLimitReached && <span className="text-amber-400 ml-1">— 소진됨</span>}
+        </div>
+      )}
+
       {/* Input */}
       <div className="px-3 py-3 border-t border-slate-800">
         <div className="flex gap-2 items-end">
@@ -155,7 +181,7 @@ export default function AICoach({ problemId, classroomId, code }) {
           />
           <button
             onClick={handleSend}
-            disabled={!input.trim() || isStreaming}
+            disabled={!input.trim() || isStreaming || aiLimitReached}
             className="p-2.5 rounded-xl bg-violet-600 text-white hover:bg-violet-500 disabled:opacity-30 disabled:hover:bg-violet-600 transition-all shrink-0"
           >
             <Send size={16} />

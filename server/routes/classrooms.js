@@ -213,6 +213,27 @@ router.put('/:id/members/:userId', requireAuth, asyncHandler(async (req, res) =>
   res.json({ message: '학번이 수정되었습니다' });
 }));
 
+// 일일 AI 제한 설정 (교사 전용)
+router.put('/:id/ai-limit', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
+  const { dailyAiLimit } = req.body;
+  const limit = parseInt(dailyAiLimit, 10);
+
+  if (isNaN(limit) || limit < 0) {
+    return res.status(400).json({ message: '유효한 숫자를 입력하세요 (0 = 무제한)' });
+  }
+
+  const classroom = queryOne(
+    'SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?',
+    [req.params.id, req.user.id]
+  );
+  if (!classroom) {
+    return res.status(403).json({ message: '권한이 없습니다' });
+  }
+
+  execute('UPDATE classrooms SET daily_ai_limit = ? WHERE id = ?', [limit, req.params.id]);
+  res.json({ daily_ai_limit: limit });
+}));
+
 // 학생 내보내기 (교사 전용)
 router.delete('/:id/members/:userId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   execute(

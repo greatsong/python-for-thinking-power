@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../../api/client.js';
-import { Plus, Copy, Users, Check, School, Hash, Key, CheckCircle, AlertCircle, Trash2, Pencil, ChevronUp, ChevronDown as ChevronDownIcon } from 'lucide-react';
+import { Plus, Copy, Users, Check, School, Hash, Key, CheckCircle, AlertCircle, Trash2, Pencil, ChevronUp, ChevronDown as ChevronDownIcon, Bot } from 'lucide-react';
 
 export default function ClassroomSetup() {
   const [classrooms, setClassrooms] = useState([]);
@@ -407,6 +407,41 @@ export default function ClassroomSetup() {
                     </button>
                   </div>
                 </div>
+              </div>
+
+              {/* AI 일일 제한 설정 */}
+              <div className="px-5 pb-4 flex items-center gap-3 text-sm">
+                <Bot size={16} className="text-violet-500" />
+                <span className="text-slate-600">AI 일일 제한:</span>
+                <select
+                  value={classroom.daily_ai_limit || 0}
+                  onChange={async (e) => {
+                    const limit = parseInt(e.target.value, 10);
+                    try {
+                      await apiFetch(`/classrooms/${classroom.id}/ai-limit`, {
+                        method: 'PUT',
+                        body: JSON.stringify({ dailyAiLimit: limit }),
+                      });
+                      setClassrooms((prev) =>
+                        prev.map((c) => c.id === classroom.id ? { ...c, daily_ai_limit: limit } : c)
+                      );
+                    } catch (err) {
+                      alert('설정 실패: ' + err.message);
+                    }
+                  }}
+                  className="px-2 py-1 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
+                >
+                  <option value="0">무제한</option>
+                  <option value="3">3회</option>
+                  <option value="5">5회</option>
+                  <option value="10">10회</option>
+                  <option value="15">15회</option>
+                  <option value="20">20회</option>
+                  <option value="30">30회</option>
+                </select>
+                <span className="text-xs text-slate-400">
+                  {(classroom.daily_ai_limit || 0) === 0 ? '학생이 자유롭게 AI 코치 사용' : `학생 1인당 하루 ${classroom.daily_ai_limit}회`}
+                </span>
               </div>
 
               {/* 학생 목록 (펼침) */}

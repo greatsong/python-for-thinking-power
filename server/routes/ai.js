@@ -110,6 +110,31 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
     return res.status(403).json({ message: 'AI 코치를 사용하려면 교사가 API 키를 설정해야 합니다' });
   }
 
+  // 일일 AI 사용량 제한 확인
+  if (classroomId) {
+    const classroomSettings = queryOne(
+      'SELECT daily_ai_limit FROM classrooms WHERE id = ?',
+      [classroomId]
+    );
+    const dailyLimit = classroomSettings?.daily_ai_limit || 0;
+
+    if (dailyLimit > 0) {
+      const todayCount = queryOne(
+        `SELECT COUNT(*) as cnt FROM ai_usage_log
+         WHERE user_id = ? AND classroom_id = ? AND created_at >= date('now')`,
+        [req.user.id, classroomId]
+      )?.cnt || 0;
+
+      if (todayCount >= dailyLimit) {
+        return res.status(429).json({
+          message: '오늘의 AI 코치 사용 횟수를 모두 사용했어요. 내일 다시 시도해주세요!',
+          remaining: 0,
+          limit: dailyLimit,
+        });
+      }
+    }
+  }
+
   // 기존 대화 로드 또는 새 대화 생성
   let conversation;
   if (conversationId) {
@@ -166,6 +191,14 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
         );
       }
 
+      // AI 사용량 로그 기록
+      if (classroomId) {
+        execute(
+          'INSERT INTO ai_usage_log (id, user_id, classroom_id, problem_id) VALUES (?, ?, ?, ?)',
+          [generateId(), req.user.id, classroomId, problemId]
+        );
+      }
+
       res.write(`data: ${JSON.stringify({ type: 'done', conversationId: convId })}\n\n`);
       res.end();
     },
@@ -173,6 +206,37 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
       res.write(`data: ${JSON.stringify({ type: 'error', message: errMsg })}\n\n`);
       res.end();
     },
+  });
+}));
+
+// 학생 일일 AI 사용량 조회
+router.get('/usage-status', requireAuth, asyncHandler(async (req, res) => {
+  const { classroomId } = req.query;
+
+  if (!classroomId) {
+    return res.json({ limit: 0, used: 0, remaining: null });
+  }
+
+  const classroom = queryOne(
+    'SELECT daily_ai_limit FROM classrooms WHERE id = ?',
+    [classroomId]
+  );
+  const dailyLimit = classroom?.daily_ai_limit || 0;
+
+  if (dailyLimit === 0) {
+    return res.json({ limit: 0, used: 0, remaining: null });
+  }
+
+  const todayCount = queryOne(
+    `SELECT COUNT(*) as cnt FROM ai_usage_log
+     WHERE user_id = ? AND classroom_id = ? AND created_at >= date('now')`,
+    [req.user.id, classroomId]
+  )?.cnt || 0;
+
+  res.json({
+    limit: dailyLimit,
+    used: todayCount,
+    remaining: Math.max(0, dailyLimit - todayCount),
   });
 }));
 

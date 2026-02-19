@@ -178,4 +178,65 @@ router.get('/matrix/:classroomId', requireAuth, requireTeacher, asyncHandler(asy
   res.json({ problems, students, cells: cellMap });
 }));
 
+// AI 사용량 통계 (교사용)
+router.get('/ai-usage/:classroomId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
+  const { classroomId } = req.params;
+  const { period } = req.query; // 'day' | 'week' | 'month'
+
+  const classroom = queryOne(
+    'SELECT id, daily_ai_limit FROM classrooms WHERE id = ? AND teacher_id = ?',
+    [classroomId, req.user.id]
+  );
+  if (!classroom) {
+    return res.status(403).json({ message: '해당 교실에 대한 권한이 없습니다' });
+  }
+
+  // 기간 필터
+  let dateFilter;
+  if (period === 'week') {
+    dateFilter = "AND al.created_at >= date('now', '-7 days')";
+  } else if (period === 'month') {
+    dateFilter = "AND al.created_at >= date('now', '-30 days')";
+  } else {
+    dateFilter = "AND al.created_at >= date('now')";
+  }
+
+  // 전체 사용량
+  const totalUsage = queryOne(
+    `SELECT COUNT(*) as total_calls FROM ai_usage_log al
+     WHERE al.classroom_id = ? ${dateFilter}`,
+    [classroomId]
+  );
+
+  // 학생별 사용량 (상위 정렬)
+  const perStudent = queryAll(
+    `SELECT al.user_id, u.name, cm.student_number, COUNT(*) as call_count
+     FROM ai_usage_log al
+     JOIN users u ON u.id = al.user_id
+     LEFT JOIN classroom_members cm ON cm.classroom_id = al.classroom_id AND cm.user_id = al.user_id
+     WHERE al.classroom_id = ? ${dateFilter}
+     GROUP BY al.user_id
+     ORDER BY call_count DESC`,
+    [classroomId]
+  );
+
+  // 일자별 사용량 (최근 7일)
+  const dailyBreakdown = queryAll(
+    `SELECT date(al.created_at) as date, COUNT(*) as call_count
+     FROM ai_usage_log al
+     WHERE al.classroom_id = ? AND al.created_at >= date('now', '-7 days')
+     GROUP BY date(al.created_at)
+     ORDER BY date ASC`,
+    [classroomId]
+  );
+
+  res.json({
+    daily_limit: classroom.daily_ai_limit,
+    total_calls: totalUsage?.total_calls || 0,
+    estimated_cost: ((totalUsage?.total_calls || 0) * 0.015).toFixed(2),
+    per_student: perStudent,
+    daily_breakdown: dailyBreakdown,
+  });
+}));
+
 export default router;
