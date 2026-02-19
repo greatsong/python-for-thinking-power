@@ -166,12 +166,12 @@ export default function AIGuide() {
             </p>
             <p>핵심 철학은 <strong>"같은 문제, 다른 생각"</strong>입니다:</p>
             <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 font-mono text-xs">
-              <p className="text-slate-500 mb-2">[문제] [1, 2, 4, 5, 6] — 1부터 6까지 중 빠진 숫자를 찾으세요</p>
-              <p>학생A: 1부터 하나씩 확인 → "3이 없네!" (하나씩 찾기)</p>
-              <p>학생B: 옆 숫자와 차이가 2인 곳 → "2와 4 사이!" (패턴 발견)</p>
-              <p>학생C: 있어야 할 합 21 − 실제 합 18 → 3! (수학적 사고)</p>
-              <p className="text-blue-600 mt-2">→ 같은 답. 하지만 탐색, 패턴, 수학 — 머릿속 그림이 전혀 다르다.</p>
-              <p className="text-blue-600">→ 이 비교에서 사고력이 자란다.</p>
+              <p className="text-slate-500 mb-2">[문제] 1부터 10000까지의 소수를 모두 찾으세요</p>
+              <p>학생A: 2부터 하나씩 나눠보기 — 확실하지만 30초</p>
+              <p>학생B: √n까지만 나누면 충분! — "왜 제곱근이면 되지?" 0.5초</p>
+              <p>학생C: 소수의 배수를 지워나가기 — 찾지 말고 지운다! 0.01초</p>
+              <p className="text-blue-600 mt-2">→ 결과는 같은 1229개.</p>
+              <p className="text-blue-600">→ 생각의 차이가 3000배의 속도 차이를 만든다.</p>
             </div>
 
             <p className="font-medium text-slate-700 mt-4">학생이 할 수 있는 것:</p>
