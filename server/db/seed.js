@@ -306,19 +306,42 @@ function seedProblemSets() {
 
 async function seedDemoData() {
   // 이미 데모 교사가 있으면 스킵
-  const existingTeacher = queryOne("SELECT id FROM users WHERE google_id = 'demo-데모교사-teacher'");
+  const existingTeacher = queryOne("SELECT id, anthropic_api_key FROM users WHERE google_id = 'demo-데모교사-teacher'");
   if (existingTeacher) {
+    // 기존 데모 교사에 API 키 업데이트 (환경변수 있으면)
+    const envKey = process.env.ANTHROPIC_API_KEY;
+    if (envKey && !existingTeacher.anthropic_api_key) {
+      try {
+        const { encrypt } = await import('../services/crypto.js');
+        execute('UPDATE users SET anthropic_api_key = ? WHERE id = ?', [encrypt(envKey), existingTeacher.id]);
+        console.log('[Seed] 데모 교사 API 키 업데이트됨 (환경변수)');
+      } catch {
+        execute('UPDATE users SET anthropic_api_key = ? WHERE id = ?', [envKey, existingTeacher.id]);
+      }
+    }
     console.log('[Seed] 데모 데이터 이미 존재 — 스킵');
     return;
   }
 
   console.log('[Seed] 데모 데이터 생성 중...');
 
-  // 데모 교사
+  // 데모 교사 (환경변수 API 키가 있으면 자동 설정)
   const teacherId = generateId();
+  const envApiKey = process.env.ANTHROPIC_API_KEY || null;
+  let encryptedKey = null;
+  if (envApiKey) {
+    try {
+      const { encrypt } = await import('../services/crypto.js');
+      encryptedKey = encrypt(envApiKey);
+      console.log('[Seed] 데모 교사에 환경변수 API 키 설정됨');
+    } catch {
+      console.log('[Seed] API 키 암호화 실패 — 평문 저장');
+      encryptedKey = envApiKey;
+    }
+  }
   execute(
-    `INSERT INTO users (id, google_id, email, name, role) VALUES (?, ?, ?, ?, ?)`,
-    [teacherId, 'demo-데모교사-teacher', '데모교사@demo.local', '데모교사', 'teacher']
+    `INSERT INTO users (id, google_id, email, name, role, anthropic_api_key) VALUES (?, ?, ?, ?, ?, ?)`,
+    [teacherId, 'demo-데모교사-teacher', '데모교사@demo.local', '데모교사', 'teacher', encryptedKey]
   );
 
   // 데모 교실 (고정 참여 코드: 00000)
