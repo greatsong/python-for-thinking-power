@@ -5,9 +5,10 @@ import useAuthStore from '../stores/authStore.js';
 
 export default function JoinClassroom() {
   const navigate = useNavigate();
-  const { joinClassroom, classroom, user } = useAuthStore();
+  const { joinClassroom, updateProfile, classroom, user } = useAuthStore();
   const [joinCode, setJoinCode] = useState('');
   const [studentNumber, setStudentNumber] = useState('');
+  const [studentName, setStudentName] = useState('');
   const [loading, setLoading] = useState(false);
 
   // 이미 교실에 참여했으면 바로 이동
@@ -20,18 +21,27 @@ export default function JoinClassroom() {
       return;
     }
     if (!studentNumber.trim()) {
-      toast.error('출석번호와 이름을 입력하세요 (예: 23 홍길동)');
+      toast.error('학번을 입력하세요 (예: 1101)');
       return;
     }
-    // "23 홍길동" 형식 검증: 숫자 + 공백 + 이름
-    const parts = studentNumber.trim().split(' ');
-    if (parts.length < 2 || !/^\d+$/.test(parts[0]) || !parts[1]) {
-      toast.error('형식이 맞지 않습니다. 예: 23 홍길동');
+    // 학번 형식 검증: 4자리 숫자 (학년+반+번호)
+    if (!/^\d{4}$/.test(studentNumber.trim())) {
+      toast.error('학번은 4자리 숫자로 입력하세요 (예: 1101 = 1학년 1반 01번)');
       return;
     }
+    if (!studentName.trim()) {
+      toast.error('이름을 입력하세요');
+      return;
+    }
+
     setLoading(true);
     try {
+      // 학번(숫자)만 student_number로 저장
       const result = await joinClassroom(joinCode.trim(), studentNumber.trim());
+      // 입력된 이름으로 사용자 이름 업데이트
+      if (studentName.trim() && studentName.trim() !== user?.name) {
+        try { await updateProfile(studentName.trim()); } catch { /* 이름 업데이트 실패는 무시 */ }
+      }
       toast.success(`${result.name} 교실에 참여했습니다!`);
       navigate('/student/problems');
     } catch (err) {
@@ -70,17 +80,33 @@ export default function JoinClassroom() {
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              출석번호와 이름 <span className="text-red-500">*</span>
+              학번 <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              placeholder="예: 23 홍길동"
+              placeholder="예: 1101"
               value={studentNumber}
-              onChange={e => setStudentNumber(e.target.value)}
+              onChange={e => setStudentNumber(e.target.value.replace(/\D/g, ''))}
+              onKeyDown={e => e.key === 'Enter' && handleJoin()}
+              className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-center text-lg tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+              maxLength={4}
+              inputMode="numeric"
+            />
+            <p className="text-xs text-slate-400 mt-1">4자리 숫자: 학년(1) + 반(1) + 번호(01) = 1101</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              이름 <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              placeholder="예: 홍길동"
+              value={studentName}
+              onChange={e => setStudentName(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleJoin()}
               className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <p className="text-xs text-slate-400 mt-1">출석번호 + 공백 + 이름 순서로 입력하세요</p>
           </div>
 
           <button

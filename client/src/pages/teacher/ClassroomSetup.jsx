@@ -478,12 +478,15 @@ export default function ClassroomSetup() {
                                     <input
                                       type="text"
                                       value={editingNumber}
-                                      onChange={(e) => setEditingNumber(e.target.value)}
+                                      onChange={(e) => setEditingNumber(e.target.value.replace(/\D/g, ''))}
                                       onKeyDown={(e) => {
                                         if (e.key === 'Enter') handleSaveNumber(student);
                                         if (e.key === 'Escape') setEditingStudentId(null);
                                       }}
-                                      className="w-14 px-2 py-1 border border-blue-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
+                                      className="w-16 px-2 py-1 border border-blue-300 rounded text-xs font-mono focus:outline-none focus:ring-1 focus:ring-blue-400"
+                                      maxLength={4}
+                                      inputMode="numeric"
+                                      placeholder="1101"
                                       autoFocus
                                     />
                                     <button

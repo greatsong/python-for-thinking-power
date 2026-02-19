@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Play, FlaskConical, RotateCcw, ArrowLeft, Lightbulb, ChevronDown, ChevronUp, Loader2, Upload, Bot, Terminal, FileCode, Sparkles, PanelLeftClose, PanelLeftOpen, Send, X } from 'lucide-react';
+import { Play, FlaskConical, RotateCcw, ArrowLeft, Lightbulb, ChevronDown, ChevronUp, Loader2, Upload, Bot, Terminal, FileCode, Sparkles, PanelLeftClose, PanelLeftOpen, Send, X, GalleryHorizontalEnd } from 'lucide-react';
 import MarkdownRenderer from '../../components/MarkdownRenderer.jsx';
 import toast from 'react-hot-toast';
 import useProblemStore from '../../stores/problemStore.js';
@@ -478,6 +478,14 @@ export default function Workspace() {
                 건너뛰기
               </button>
             </div>
+
+            <button
+              onClick={() => { setShowCelebration(false); navigate(`/student/gallery/${problemId}`); }}
+              className="w-full mt-3 flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-violet-600 hover:bg-violet-50 rounded-xl transition-colors border border-violet-200"
+            >
+              <GalleryHorizontalEnd size={15} />
+              다른 친구들의 풀이 보기
+            </button>
           </div>
         </div>
       )}

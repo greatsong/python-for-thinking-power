@@ -137,6 +137,11 @@ router.delete('/:id', requireAuth, requireTeacher, asyncHandler(async (req, res)
     return res.status(404).json({ message: '교실을 찾을 수 없습니다' });
   }
 
+  // 관련 데이터 모두 삭제 (순서: 자식 → 부모)
+  execute('DELETE FROM ai_usage_log WHERE classroom_id = ?', [req.params.id]);
+  execute('DELETE FROM ai_conversations WHERE classroom_id = ?', [req.params.id]);
+  execute('DELETE FROM code_snapshots WHERE classroom_id = ?', [req.params.id]);
+  execute('DELETE FROM submissions WHERE classroom_id = ?', [req.params.id]);
   execute('DELETE FROM classroom_members WHERE classroom_id = ?', [req.params.id]);
   execute('DELETE FROM classroom_problems WHERE classroom_id = ?', [req.params.id]);
   execute('DELETE FROM classrooms WHERE id = ?', [req.params.id]);

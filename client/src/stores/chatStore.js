@@ -70,6 +70,7 @@ const useChatStore = create((set, get) => ({
 
     let fullText = '';
     let newConvId = conversationId;
+    let aborted = false; // AI 비활성화/키 없음/제한 초과 시 true
 
     await apiStreamPost('/ai/chat', {
       problemId,
@@ -87,20 +88,27 @@ const useChatStore = create((set, get) => ({
       },
       onError: (errMsg) => {
         if (errMsg?.includes('비활성화')) {
-          set({ aiDisabled: true, isStreaming: false });
+          aborted = true;
+          // 사용자 메시지도 제거 (빈 대화 방지)
+          set((state) => ({ aiDisabled: true, isStreaming: false, messages: state.messages.slice(0, -1) }));
           return;
         }
         if (errMsg?.includes('API 키를 설정해야') || errMsg?.includes('API 키가 설정되지')) {
-          set({ aiNoKey: true, isStreaming: false });
+          aborted = true;
+          set((state) => ({ aiNoKey: true, isStreaming: false, messages: state.messages.slice(0, -1) }));
           return;
         }
         if (errMsg?.includes('사용 횟수를 모두') || errMsg?.includes('사용했어요')) {
-          set({ aiLimitReached: true, isStreaming: false });
+          aborted = true;
+          set((state) => ({ aiLimitReached: true, isStreaming: false, messages: state.messages.slice(0, -1) }));
           return;
         }
         fullText = `오류가 발생했습니다: ${errMsg}`;
       },
     });
+
+    // AI 비활성화/키 없음/제한 초과 시에는 메시지 추가하지 않음
+    if (aborted) return;
 
     // AI 응답 메시지 추가 + 사용량 낙관적 업데이트
     const aiMsg = { role: 'assistant', content: fullText, timestamp: new Date().toISOString() };
