@@ -12,12 +12,15 @@ router.post('/', requireAuth, asyncHandler(async (req, res) => {
   if (!problemId || !code) {
     return res.status(400).json({ message: '문제 ID와 코드가 필요합니다' });
   }
+  if (!classroomId) {
+    return res.status(400).json({ message: '교실 ID가 필요합니다' });
+  }
 
   const id = generateId();
   execute(
     `INSERT INTO submissions (id, user_id, problem_id, classroom_id, code, output, passed, test_results_json, is_final)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`,
-    [id, req.user.id, problemId, classroomId || '', code, output || '', passed ? 1 : 0, JSON.stringify(testResults || [])]
+    [id, req.user.id, problemId, classroomId, code, output || '', passed ? 1 : 0, JSON.stringify(testResults || [])]
   );
 
   res.status(201).json({ id, message: '제출 완료' });
@@ -43,12 +46,15 @@ router.post('/snapshot', requireAuth, asyncHandler(async (req, res) => {
   if (!problemId || !code) {
     return res.status(400).json({ message: '문제 ID와 코드가 필요합니다' });
   }
+  if (!classroomId) {
+    return res.status(400).json({ message: '교실 ID가 필요합니다' });
+  }
 
   const id = generateId();
   execute(
     `INSERT INTO code_snapshots (id, user_id, problem_id, classroom_id, code)
      VALUES (?, ?, ?, ?, ?)`,
-    [id, req.user.id, problemId, classroomId || '', code]
+    [id, req.user.id, problemId, classroomId, code]
   );
 
   res.status(201).json({ id });

@@ -58,7 +58,7 @@ export default function Workspace() {
         method: 'POST',
         body: JSON.stringify({
           problemId,
-          classroomId: classroom?.id || '',
+          classroomId: classroom?.id,
           code: codeToSave,
         }),
       });
@@ -139,7 +139,7 @@ export default function Workspace() {
         method: 'POST',
         body: JSON.stringify({
           problemId,
-          classroomId: classroom?.id || '',
+          classroomId: classroom?.id,
           code,
           output: output || '',
           passed,

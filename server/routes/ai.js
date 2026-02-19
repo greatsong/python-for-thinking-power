@@ -73,6 +73,9 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
   if (!problemId || !message) {
     return res.status(400).json({ message: '문제 ID와 메시지가 필요합니다' });
   }
+  if (!classroomId) {
+    return res.status(400).json({ message: '교실 ID가 필요합니다' });
+  }
 
   // 문제 정보 가져오기
   const problem = queryOne('SELECT * FROM problems WHERE id = ?', [problemId]);
@@ -187,7 +190,7 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
         execute(
           `INSERT INTO ai_conversations (id, user_id, problem_id, classroom_id, messages_json, message_count)
            VALUES (?, ?, ?, ?, ?, ?)`,
-          [convId, req.user.id, problemId, classroomId || '', JSON.stringify(messages), messages.length]
+          [convId, req.user.id, problemId, classroomId, JSON.stringify(messages), messages.length]
         );
       }
 

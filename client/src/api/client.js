@@ -39,6 +39,7 @@ export async function apiStreamPost(path, body, { onText, onDone, onError }) {
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
+    let doneHandled = false;
 
     while (true) {
       const { done, value } = await reader.read();
@@ -52,20 +53,20 @@ export async function apiStreamPost(path, body, { onText, onDone, onError }) {
         if (!line.startsWith('data: ')) continue;
         const data = line.slice(6).trim();
         if (data === '[DONE]') {
-          onDone?.();
+          if (!doneHandled) { doneHandled = true; onDone?.(); }
           return;
         }
         try {
           const parsed = JSON.parse(data);
           if (parsed.type === 'text') onText?.(parsed.content);
           if (parsed.type === 'error') onError?.(parsed.message);
-          if (parsed.type === 'done') onDone?.(parsed);
+          if (parsed.type === 'done') { doneHandled = true; onDone?.(parsed); }
         } catch {
           // JSON이 아닌 경우 무시
         }
       }
     }
-    onDone?.();
+    if (!doneHandled) onDone?.();
   } catch (err) {
     onError?.(err.message);
   }
