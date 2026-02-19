@@ -152,11 +152,11 @@ export default function AIGuide() {
         {/* ===== 교사 대시보드 메뉴 안내 ===== */}
         <Section icon={Monitor} title="교사 대시보드 메뉴 안내" badge="전체 메뉴">
           <div className="mt-4 space-y-1">
-            <NavItem icon={LayoutDashboard} label="교실 라이브" desc="학생별 문제 풀이 현황을 실시간 매트릭스로 확인. 어떤 학생이 어떤 문제를 풀고 있는지, 통과 여부 한눈에 파악." />
+            <NavItem icon={LayoutDashboard} label="교실 라이브" desc="학생별 문제 풀이 현황을 실시간 매트릭스로 확인 + AI 사용량 통계. 총 4개 탭: 현황, 학생 목록, AI 리포트, AI 사용량." />
             <NavItem icon={Wrench} label="문제 공방" desc="AI에게 문제를 생성시키거나 직접 만들기. 생성된 문제를 검토·수정·승인하는 워크숍." />
             <NavItem icon={ListChecks} label="문제 배정" desc="승인된 문제를 교실에 배정. 문제별로 AI 도움 레벨(0~4)과 갤러리 공개 여부를 설정." />
             <NavItem icon={MessageSquare} label="AI 리포트" desc="학생과 AI 코치의 대화 내역을 요약. 학생이 어디서 막혔는지, 교사 개입이 필요한지 파악." />
-            <NavItem icon={Settings} label="교실 설정" desc="새 교실 생성, 참여 코드 확인, 학생 목록 관리, API 키 설정." />
+            <NavItem icon={Settings} label="교실 설정" desc="새 교실 생성, 참여 코드 확인, 학생 목록 관리, API 키 설정, AI 일일 사용 제한 설정." />
             <NavItem icon={BookOpen} label="사용 안내" desc="지금 보고 있는 이 페이지! 전체 서비스 매뉴얼." />
           </div>
         </Section>
@@ -199,6 +199,29 @@ export default function AIGuide() {
               <li>레벨 조정: Lv. 옆 화살표로 학생별 난이도 조절</li>
               <li>내보내기: 휴지통 아이콘으로 학생 교실에서 제거</li>
             </ul>
+          </Step>
+
+          <Step number={5} title="AI 일일 사용 제한 설정">
+            <p>교실 카드에서 <strong>AI 일일 제한</strong> 드롭다운으로 학생당 하루 AI 사용 횟수를 설정합니다.</p>
+            <div className="bg-slate-50 rounded-lg p-3 border border-slate-200 mt-2">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="text-left text-slate-500 border-b border-slate-200">
+                    <th className="pb-1.5 pr-3">설정값</th>
+                    <th className="pb-1.5">의미</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-slate-100"><td className="py-1 pr-3 font-medium">무제한</td><td>제한 없음 (기본값)</td></tr>
+                  <tr className="border-b border-slate-100"><td className="py-1 pr-3 font-medium">3~5회</td><td>한정적 사용, 스스로 고민을 유도</td></tr>
+                  <tr className="border-b border-slate-100"><td className="py-1 pr-3 font-medium">10~15회</td><td>적당한 사용, 비용 절감 효과</td></tr>
+                  <tr><td className="py-1 pr-3 font-medium">20~30회</td><td>자유로운 사용, 고급 문제 풀이에 적합</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <InfoBox type="info">
+              제한에 도달한 학생에게는 "오늘의 AI 코치 사용 횟수를 모두 사용했어요"라는 안내가 표시되며, 다음 날 자동으로 초기화됩니다.
+            </InfoBox>
           </Step>
         </Section>
 
@@ -304,13 +327,34 @@ export default function AIGuide() {
         {/* ===== 교실 라이브 대시보드 ===== */}
         <Section icon={LayoutDashboard} title="기능 안내: 교실 라이브 대시보드">
           <div className="text-sm text-slate-600 mt-4 space-y-3">
-            <p>학생들의 문제 풀이 현황을 <strong>실시간 매트릭스</strong>로 확인합니다.</p>
-            <ul className="list-disc list-inside space-y-1 ml-2">
-              <li><strong>행</strong> = 학생, <strong>열</strong> = 문제</li>
-              <li>각 셀에 통과/진행중/미시도 상태가 색상으로 표시</li>
-              <li>학생 이름을 클릭하면 상세 진도 확인</li>
-              <li>수업 중 프로젝터에 띄워 놓으면 학생들에게 동기부여 효과</li>
-            </ul>
+            <p>학생들의 문제 풀이 현황을 <strong>실시간 매트릭스</strong>로 확인합니다. 총 4개 탭으로 구성:</p>
+
+            <div className="space-y-2 mt-2">
+              <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
+                <p className="font-medium text-slate-800 text-sm mb-1">현황 (매트릭스)</p>
+                <ul className="list-disc list-inside space-y-0.5 text-xs text-slate-600 ml-1">
+                  <li><strong>행</strong> = 학생, <strong>열</strong> = 문제, 각 셀에 통과/진행중/미시도 상태 색상 표시</li>
+                  <li>수업 중 프로젝터에 띄워 놓으면 학생들에게 동기부여 효과</li>
+                </ul>
+              </div>
+              <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
+                <p className="font-medium text-slate-800 text-sm mb-1">학생 목록</p>
+                <p className="text-xs text-slate-600 ml-1">학생별 풀이 수, 제출 수, AI 대화 수, 최근 활동 확인</p>
+              </div>
+              <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
+                <p className="font-medium text-slate-800 text-sm mb-1">AI 리포트</p>
+                <p className="text-xs text-slate-600 ml-1">학생별 AI 대화 내역 요약 및 교사 개입 필요 여부 파악</p>
+              </div>
+              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                <p className="font-medium text-blue-800 text-sm mb-1">AI 사용량 <span className="text-[10px] bg-blue-200 text-blue-700 px-1.5 py-0.5 rounded-full ml-1">NEW</span></p>
+                <ul className="list-disc list-inside space-y-0.5 text-xs text-blue-700 ml-1">
+                  <li>기간별(오늘/이번 주/이번 달) AI 호출 수 및 예상 비용</li>
+                  <li>일별 사용량 바 차트로 추세 파악</li>
+                  <li>학생별 사용량 랭킹으로 과다 사용자 확인</li>
+                </ul>
+              </div>
+            </div>
+
             <button
               onClick={() => navigate('/teacher/dashboard')}
               className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm hover:bg-slate-200 transition-colors"
@@ -391,7 +435,7 @@ export default function AIGuide() {
                 <Bot size={18} className="text-violet-600 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-slate-800 text-sm">AI 코치</p>
-                  <p className="text-xs text-slate-500">우측 "AI 코치" 탭에서 대화. 정답은 절대 알려주지 않고, 교사가 설정한 레벨에 맞춰 힌트/질문으로 유도합니다.</p>
+                  <p className="text-xs text-slate-500">우측 "AI 코치" 탭에서 대화. 정답은 절대 알려주지 않고, 교사가 설정한 레벨에 맞춰 힌트/질문으로 유도합니다. 일일 제한이 설정된 경우 "오늘 남은 횟수: 7/10" 형태로 표시됩니다.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 bg-slate-50 rounded-lg p-3 border border-slate-200">
@@ -527,6 +571,11 @@ export default function AIGuide() {
               <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer"
                 className="text-blue-600 hover:underline ml-1">Anthropic Console</a>에서 실시간 사용량을 확인할 수 있습니다.
             </InfoBox>
+            <InfoBox type="success">
+              <strong>비용 절감 팁:</strong> 교실 설정에서 <strong>AI 일일 제한</strong>을 설정하면 학생당 하루 사용 횟수를 제한할 수 있습니다.
+              예를 들어 5회로 설정하면, 학생 30명 기준 하루 최대 150회(약 600~2,100원)로 비용 상한을 관리할 수 있습니다.
+              교실 라이브 &gt; AI 사용량 탭에서 실시간 사용 통계도 확인 가능합니다.
+            </InfoBox>
           </div>
         </Section>
 
@@ -551,7 +600,13 @@ export default function AIGuide() {
             </div>
             <div>
               <p className="font-semibold text-slate-800">Q. 학생이 AI를 너무 많이 쓰면 어떡하나요?</p>
-              <p className="mt-1">문제 배정 시 AI 레벨을 0으로 설정하면 해당 문제에서 AI 코치가 비활성화됩니다. 추후 일일 호출 제한 기능도 추가 예정입니다.</p>
+              <p className="mt-1">
+                두 가지 방법으로 조절할 수 있습니다:
+              </p>
+              <ul className="list-disc list-inside space-y-1 ml-2 mt-1">
+                <li><strong>AI 레벨 0</strong>: 문제 배정 시 AI 레벨을 0으로 설정하면 해당 문제에서 AI 코치가 비활성화됩니다.</li>
+                <li><strong>일일 사용 제한</strong>: 교실 설정에서 학생당 하루 AI 사용 횟수를 제한할 수 있습니다 (예: 5회, 10회). 제한에 도달하면 학생에게 "오늘의 사용 횟수를 모두 사용했어요"라고 표시됩니다.</li>
+              </ul>
             </div>
             <div>
               <p className="font-semibold text-slate-800">Q. AI가 학생에게 정답을 알려주지는 않나요?</p>
