@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Wrench, ListChecks, MessageSquare, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Wrench, ListChecks, MessageSquare, Settings, BookOpen, LogOut } from 'lucide-react';
 import useAuthStore from '../stores/authStore.js';
 
 export default function TeacherLayout() {
@@ -12,6 +12,7 @@ export default function TeacherLayout() {
     { to: '/teacher/assign', icon: ListChecks, label: '문제 배정' },
     { to: '/teacher/ai-reports', icon: MessageSquare, label: 'AI 리포트' },
     { to: '/teacher/classroom', icon: Settings, label: '교실 설정' },
+    { to: '/teacher/guide', icon: BookOpen, label: '사용 안내' },
   ];
 
   return (

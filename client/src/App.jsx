@@ -15,6 +15,7 @@ import ProblemAssign from './pages/teacher/ProblemAssign.jsx';
 import LiveDashboard from './pages/teacher/LiveDashboard.jsx';
 import AIReports from './pages/teacher/AIReports.jsx';
 import ApproachAnalysis from './pages/teacher/ApproachAnalysis.jsx';
+import AIGuide from './pages/teacher/AIGuide.jsx';
 import useAuthStore from './stores/authStore.js';
 
 export default function App() {
@@ -50,6 +51,7 @@ export default function App() {
         <Route path="dashboard" element={<LiveDashboard />} />
         <Route path="ai-reports" element={<AIReports />} />
         <Route path="analysis/:problemId" element={<ApproachAnalysis />} />
+        <Route path="guide" element={<AIGuide />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
