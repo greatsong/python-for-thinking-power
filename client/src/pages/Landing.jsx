@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Code2, Brain, Users, BarChart3 } from 'lucide-react';
+import { Code2, Brain, Users, BarChart3, BookOpen } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useAuthStore from '../stores/authStore.js';
 
@@ -127,20 +127,110 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* 특징 카드 */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-16 max-w-4xl w-full">
-          {[
-            { icon: Code2, title: '브라우저에서 바로 실행', desc: '설치 없이 파이썬 코딩' },
-            { icon: Brain, title: 'AI 코치', desc: '답이 아닌 생각을 유도' },
-            { icon: Users, title: '풀이 갤러리', desc: '다양한 접근법 비교' },
-            { icon: BarChart3, title: '교실 라이브', desc: '실시간 학습 현황' },
-          ].map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="bg-white/80 backdrop-blur rounded-xl p-5 border border-slate-100">
-              <Icon size={24} className="text-blue-500 mb-3" />
-              <h3 className="font-semibold text-slate-800 text-sm">{title}</h3>
-              <p className="text-xs text-slate-500 mt-1">{desc}</p>
+        {/* 핵심 철학 */}
+        <div className="mt-16 max-w-3xl w-full">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+            <h2 className="text-xl font-bold text-slate-900 text-center mb-2">같은 문제, 다른 생각</h2>
+            <p className="text-sm text-slate-500 text-center mb-6">정답은 하나가 아닙니다. 다양한 풀이를 비교하며 사고력을 키웁니다.</p>
+            <div className="bg-slate-50 rounded-xl p-5 border border-slate-200 font-mono text-sm text-slate-700">
+              <p className="text-slate-400 mb-3 text-xs"># 문제: 1부터 100까지 홀수의 합을 구하세요</p>
+              <div className="space-y-2">
+                <p><span className="text-blue-600 font-semibold">학생A</span>: for + if문으로 하나씩 더하기 → <span className="text-emerald-600 font-bold">2500</span></p>
+                <p><span className="text-violet-600 font-semibold">학생B</span>: range(1, 101, 2)로 깔끔하게 → <span className="text-emerald-600 font-bold">2500</span></p>
+                <p><span className="text-amber-600 font-semibold">학생C</span>: 수학 공식 50 × 50 → <span className="text-emerald-600 font-bold">2500</span></p>
+              </div>
+              <p className="text-blue-600 mt-3 text-xs font-medium">→ 3명 모두 정답! 이 비교 과정에서 사고력이 자랍니다.</p>
             </div>
-          ))}
+          </div>
+        </div>
+
+        {/* 기능 상세 소개 */}
+        <div className="mt-10 max-w-4xl w-full">
+          <h2 className="text-lg font-bold text-slate-800 text-center mb-6">어떻게 수업하나요?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <Code2 size={20} className="text-blue-500" />
+                </div>
+                <h3 className="font-semibold text-slate-800">브라우저에서 바로 코딩</h3>
+              </div>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Python 설치 없이 웹 브라우저에서 바로 코드를 작성하고 실행합니다.
+                학생 PC에 아무것도 설치할 필요가 없어 수업 준비 시간이 0분입니다.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center">
+                  <Brain size={20} className="text-violet-500" />
+                </div>
+                <h3 className="font-semibold text-slate-800">AI 코치</h3>
+              </div>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                막힐 때 AI에게 힌트를 요청합니다. <strong>정답은 절대 알려주지 않고</strong>,
+                질문과 힌트로 스스로 생각하도록 유도합니다. 교사가 도움 수준을 5단계로 조절 가능합니다.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+                  <Users size={20} className="text-emerald-500" />
+                </div>
+                <h3 className="font-semibold text-slate-800">풀이 갤러리</h3>
+              </div>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                문제를 통과한 학생들의 풀이를 비교합니다. AI가 접근법을 자동 분류(반복문, 재귀, 수학 등)하여,
+                수업 중 "이런 방법도 있구나!"라는 토론이 자연스럽게 이어집니다.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+                  <BarChart3 size={20} className="text-amber-500" />
+                </div>
+                <h3 className="font-semibold text-slate-800">교실 라이브 대시보드</h3>
+              </div>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                교사는 학생별 문제 풀이 현황을 실시간 매트릭스로 확인합니다.
+                누가 어떤 문제에서 막혔는지 한눈에 파악하고, AI 사용량과 비용도 추적할 수 있습니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 수업 흐름 */}
+        <div className="mt-10 max-w-3xl w-full">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
+            <h2 className="text-lg font-bold text-center mb-6">수업 흐름 (50분 기준)</h2>
+            <div className="flex items-center justify-between gap-2">
+              {[
+                { time: '5분', label: '접속 & 참여', desc: '사이트 접속, 교실 코드 입력' },
+                { time: '35분', label: '문제 풀이', desc: 'AI 코치 활용, 코드 작성' },
+                { time: '10분', label: '풀이 비교', desc: '갤러리에서 접근법 토론' },
+              ].map((step, i) => (
+                <div key={i} className="flex-1 text-center">
+                  <div className="text-2xl font-bold mb-1">{step.time}</div>
+                  <div className="text-sm font-medium mb-1">{step.label}</div>
+                  <div className="text-xs text-blue-200">{step.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 교사 안내 링크 */}
+        <div className="mt-8 max-w-3xl w-full text-center">
+          <Link
+            to="/guide"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-blue-200 text-blue-600 rounded-xl font-medium hover:bg-blue-50 transition-colors shadow-sm"
+          >
+            <BookOpen size={18} />
+            교사용 상세 매뉴얼 보기 →
+          </Link>
         </div>
       </main>
 
