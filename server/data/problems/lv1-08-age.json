@@ -16,7 +16,8 @@
     "2025 - year 를 계산해서 print()로 출력하세요."
   ],
   "expected_approaches": [
-    { "tag": "뺄셈 계산", "description": "print(2025 - year)로 나이 계산 후 출력" }
+    { "tag": "상수 직접 사용 O(1)", "description": "print(2025 - year) — 현재 연도 2025를 코드에 직접 작성" },
+    { "tag": "현재 연도 자동화 O(1)", "description": "from datetime import datetime → print(datetime.now().year - year) — 연도를 하드코딩하지 않아 매년 올바르게 동작" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nyear = int(input())\nprint(2025 - year)\n```\n\n`int(input())`으로 연도를 정수로 받고, `2025 - year`로 나이를 계산해요!"
 }

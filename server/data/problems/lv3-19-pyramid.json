@@ -16,7 +16,9 @@
     "공백 개수: n-i, 숫자 개수: 2*i-1"
   ],
   "expected_approaches": [
-    { "tag": "공백 + 숫자 반복 조합", "description": "\" \"*(n-i) + str(i)*(2*i-1) 로 각 층 출력" }
+    { "tag": "수식 유도 후 반복 O(N)", "description": "공백(n-i)개 + 숫자(2i-1)개 공식을 표에서 발견하여 직접 계산" },
+    { "tag": "str.center 활용 O(N)", "description": "str(i)*(2*i-1)을 center(2*n-1)로 가운데 정렬 — 공백 계산 불필요" },
+    { "tag": "리스트 누적 후 join O(N)", "description": "각 층 문자열을 리스트에 모아 '\\n'.join()으로 한 번에 출력" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nfor i in range(1, n + 1):\n    spaces = \" \" * (n - i)\n    nums = str(i) * (2 * i - 1)\n    print(spaces + nums)\n```\n\n**패턴을 수식으로 표현하는 것**이 이 문제의 핵심!\n\n| 층 i | 공백 수 | 숫자 수 |\n|------|---------|--------|\n| 1 | n-1 | 1 |\n| 2 | n-2 | 3 |\n| 3 | n-3 | 5 |\n| i | n-i | 2i-1 |\n\n표를 만들어 규칙을 찾으면 코드가 자연스럽게 나와요!\n\n**한 줄로 압축**:\n```python\nn = int(input())\nfor i in range(1, n+1): print(\" \"*(n-i) + str(i)*(2*i-1))\n```"
 }

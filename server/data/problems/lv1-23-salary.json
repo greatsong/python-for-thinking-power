@@ -15,7 +15,8 @@
     "print(monthly * 12)로 출력하면 됩니다."
   ],
   "expected_approaches": [
-    { "tag": "곱셈", "description": "print(monthly * 12)" }
+    { "tag": "곱셈 연산 O(1)", "description": "print(monthly * 12) — 곱셈 한 번으로 연봉 산출" },
+    { "tag": "반복 덧셈 O(n)", "description": "yearly = 0 → for로 12번 yearly += monthly — 곱셈의 원리를 덧셈 반복으로 체험" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nmonthly = int(input())\nprint(monthly * 12)\n```\n\n1년은 12달이니까 월급에 12를 곱하면 연봉이 돼요!"
 }

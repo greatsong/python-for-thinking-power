@@ -16,7 +16,8 @@
     "print(word * n) 처럼 쓸 수 있어요!"
   ],
   "expected_approaches": [
-    { "tag": "문자열 * 연산", "description": "print(word * n)으로 반복 출력" }
+    { "tag": "문자열 * 연산 O(1)", "description": "print(word * n)으로 한 줄에 반복 출력" },
+    { "tag": "반복문으로 이어붙이기 O(n)", "description": "result = \"\" → for로 n번 result += word → print(result)" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nword = input()\nn = int(input())\nprint(word * n)\n```\n\n`\"야\" * 3` → `\"야야야\"` ! 문자열에 `*`을 쓰면 그 수만큼 반복돼요."
 }

@@ -52,6 +52,52 @@ const useDashboardStore = create((set) => ({
       return null;
     }
   },
+
+  // 셀 상세 (학생+문제)
+  cellDetail: null,
+  cellDetailLoading: false,
+  fetchCellDetail: async (classroomId, studentId, problemId) => {
+    set({ cellDetailLoading: true });
+    try {
+      const data = await apiFetch(`/dashboard/cell-detail/${classroomId}/${studentId}/${problemId}`);
+      set({ cellDetail: data, cellDetailLoading: false });
+      return data;
+    } catch {
+      set({ cellDetailLoading: false });
+      return null;
+    }
+  },
+
+  // 학생 전체 요약
+  studentDetail: null,
+  studentDetailLoading: false,
+  fetchStudentDetail: async (classroomId, studentId) => {
+    set({ studentDetailLoading: true });
+    try {
+      const data = await apiFetch(`/dashboard/student-detail/${classroomId}/${studentId}`);
+      set({ studentDetail: data, studentDetailLoading: false });
+      return data;
+    } catch {
+      set({ studentDetailLoading: false });
+      return null;
+    }
+  },
+
+  // 피드백 저장
+  saveFeedback: async (submissionId, { score, grade, feedback }) => {
+    try {
+      await apiFetch(`/dashboard/feedback/${submissionId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ score, grade, feedback }),
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  clearCellDetail: () => set({ cellDetail: null }),
+  clearStudentDetail: () => set({ studentDetail: null }),
 }));
 
 export default useDashboardStore;

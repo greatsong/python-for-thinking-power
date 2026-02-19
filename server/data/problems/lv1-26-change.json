@@ -15,7 +15,8 @@
     "print(paid - price)로 출력하면 돼요."
   ],
   "expected_approaches": [
-    { "tag": "뺄셈", "description": "print(paid - price)" }
+    { "tag": "뺄셈 계산 O(1)", "description": "print(paid - price) — 낸 돈에서 가격을 빼서 거스름돈 산출" },
+    { "tag": "음수 검사 포함 O(1)", "description": "change = paid - price → 음수이면 돈이 부족한 경우 처리 — 실생활 예외 상황까지 사고 확장" }
   ],
   "explanation": "### 풀이 해설\n\n```python\npaid = int(input())\nprice = int(input())\nprint(paid - price)\n```\n\n낸 돈에서 물건 가격을 빼면 거스름돈이에요!"
 }

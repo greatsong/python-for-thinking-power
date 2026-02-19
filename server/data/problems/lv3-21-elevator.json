@@ -17,7 +17,9 @@
     "모든 거리를 합산하세요."
   ],
   "expected_approaches": [
-    { "tag": "현재 위치 추적 + 절댓값 합산", "description": "current=1; for f in floors: total+=abs(f-current); current=f" }
+    { "tag": "상태 시뮬레이션 O(N)", "description": "current 변수로 현재 층을 추적하며 abs(f-current) 누적" },
+    { "tag": "인접 차이 합산(zip 활용) O(N)", "description": "[1]+floors로 전체 경로를 만들고 zip으로 인접 쌍의 abs 차이 합산" },
+    { "tag": "정렬 후 최적 경로 비교 O(N log N)", "description": "입력 순서대로의 이동 거리 vs 정렬 후 이동 거리를 비교하여 최적화 가능성 탐색" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nfloors = list(map(int, input().split()))\n\ncurrent = 1  # 시작 층\ntotal = 0\n\nfor floor in floors:\n    total += abs(floor - current)  # 이동 거리 (절댓값)\n    current = floor                 # 위치 업데이트\n\nprint(total)\n```\n\n**핵심**: `abs()`로 위아래 구분 없이 이동 거리만 계산!\n\n**1→5→3→8→2 계산**:\n- 1→5: |5-1| = 4\n- 5→3: |3-5| = 2\n- 3→8: |8-3| = 5\n- 8→2: |2-8| = 6\n- 합계: 4+2+5+6 = **17**\n\n**상태 시뮬레이션**: `current`로 현재 위치를 계속 추적하면서 매 이동마다 거리를 누적해요."
 }

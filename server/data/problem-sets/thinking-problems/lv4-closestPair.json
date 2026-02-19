@@ -1,0 +1,26 @@
+{
+  "id": "lv4-closestPair",
+  "title": "가장 가까운 쌍",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 📏 가장 가까운 쌍\n\n수직선 위에 N개의 점이 있어요. 이 중 **거리가 가장 가까운 두 점**을 찾아야 해요.\n\n```\n점들: [1, 5, 3, 19, 18, 8]\n\n모든 쌍의 거리 중...\n|19-18| = 1 ← 최소!\n\n→ 가장 가까운 쌍: 18과 19 (거리 1)\n```\n\n> 모든 쌍을 비교하면 확실하지만... N=50,000이면 12억 5천만 번! 😱\n> 정렬하면 뭔가 좋아지지 않을까? 🤔\n\n---\n\n### 입력\n첫째 줄에 N (2 ≤ N ≤ 50,000), 둘째 줄에 N개의 서로 다른 정수가 공백으로 주어져요.\n\n### 출력\n가장 가까운 두 수를 작은 수 먼저 출력하세요.\n동점이면 두 수의 합이 가장 작은 쌍을 출력하세요.\n\n### 예시 1\n```\n입력:\n6\n1 5 3 19 18 8\n출력: 18 19\n```\n\n### 예시 2\n```\n입력:\n5\n10 30 20 50 40\n출력: 10 20\n```\n> 모두 거리 10으로 동일 → 합이 가장 작은 10+20=30\n\n### 생각해 볼 점 💡\n\n정렬된 수 a < b < c에서, |a-c| = |a-b| + |b-c|\n그러면 가장 가까운 쌍은 정렬 후 **어디에** 있을까요? 🤔",
+  "starter_code": "n = int(input())\npoints = list(map(int, input().split()))\n\n# 가장 가까운 두 점을 찾으세요\n",
+  "test_cases": [
+    { "input": "6\n1 5 3 19 18 8", "expected_output": "18 19", "description": "거리 1이 최소" },
+    { "input": "5\n10 30 20 50 40", "expected_output": "10 20", "description": "모두 거리 10, 합 최소인 쌍" },
+    { "input": "2\n100 1", "expected_output": "1 100", "description": "두 점뿐" },
+    { "input": "4\n1 1000000 500000 500001", "expected_output": "500000 500001", "description": "거리 1" },
+    { "input": "8\n-5 -3 0 7 14 21 28 35", "expected_output": "-5 -3", "description": "음수 좌표 포함, 거리 2가 최소" }
+  ],
+  "hints": [
+    "모든 쌍을 비교하지 않고도 가장 가까운 쌍을 찾을 수 있을까?",
+    "수직선 위의 점을 정렬하면, 가장 가까운 쌍은 반드시 인접한 두 점이에요!",
+    "왜? 정렬된 a < b < c에서 |a-c| = |a-b| + |b-c| > |a-b| 이므로!"
+  ],
+  "expected_approaches": [
+    { "tag": "완전 탐색 O(n²)", "description": "모든 쌍의 거리를 비교하여 최솟값 찾기" },
+    { "tag": "정렬 후 인접 비교 O(n log n)", "description": "정렬하면 최근접 쌍은 반드시 이웃 — 인접 차이만 비교" },
+    { "tag": "분할 정복 O(n log n)", "description": "배열을 반으로 나눠 각각의 최근접 + 경계 근처 비교 (2D 확장 가능)" }
+  ],
+  "explanation": "## 풀이 해설\n\n### 접근법 1: 완전 탐색\n\n모든 쌍의 거리를 직접 비교해요.\n\n```python\nn = int(input())\npoints = list(map(int, input().split()))\n\nmin_dist = float('inf')\nbest_pair = None\n\nfor i in range(n):\n    for j in range(i + 1, n):\n        dist = abs(points[i] - points[j])\n        a, b = min(points[i], points[j]), max(points[i], points[j])\n        if dist < min_dist or (dist == min_dist and a + b < sum(best_pair)):\n            min_dist = dist\n            best_pair = (a, b)\n\nprint(best_pair[0], best_pair[1])\n```\n\n> **생각의 방식**: \"다 비교하자!\" — N=50,000이면 ~12.5억 번, 수 분 소요 ⏰\n\n---\n\n### 접근법 2: 정렬 후 인접 비교\n\n**핵심 통찰**: 수직선에서 점을 정렬하면, 가장 가까운 두 점은 **반드시 이웃**이에요.\n\n왜? 정렬된 a < b < c에서 |a-c| = |a-b| + |b-c| > |a-b|\n→ 떨어진 점은 항상 이웃보다 멀어요!\n\n```python\nn = int(input())\npoints = list(map(int, input().split()))\n\npoints.sort()\n\nmin_dist = float('inf')\nbest_pair = None\n\nfor i in range(n - 1):\n    dist = points[i + 1] - points[i]\n    a, b = points[i], points[i + 1]\n    if dist < min_dist or (dist == min_dist and a + b < sum(best_pair)):\n        min_dist = dist\n        best_pair = (a, b)\n\nprint(best_pair[0], best_pair[1])\n```\n\n> **생각의 방식**: \"정렬하면 이웃만 보면 돼!\" — 정렬 O(n log n) + 순회 O(n)\n\n---\n\n### 접근법 3: 분할 정복\n\n배열을 반으로 나눠 각각 풀고, 경계를 확인해요.\n1D에서는 정렬이 더 간단하지만, **2D 최근접 쌍** 문제의 기초가 되는 패턴!\n\n```python\ndef closest_pair(pts):\n    if len(pts) <= 3:\n        min_d = float('inf')\n        best = None\n        for i in range(len(pts)):\n            for j in range(i+1, len(pts)):\n                d = abs(pts[i] - pts[j])\n                a, b = min(pts[i], pts[j]), max(pts[i], pts[j])\n                if d < min_d or (d == min_d and a + b < sum(best)):\n                    min_d = d\n                    best = (a, b)\n        return min_d, best\n    \n    mid = len(pts) // 2\n    d1, p1 = closest_pair(pts[:mid])\n    d2, p2 = closest_pair(pts[mid:])\n    \n    if d1 < d2 or (d1 == d2 and sum(p1) <= sum(p2)):\n        d, best = d1, p1\n    else:\n        d, best = d2, p2\n    \n    cross_d = pts[mid] - pts[mid - 1]\n    a, b = pts[mid - 1], pts[mid]\n    if cross_d < d or (cross_d == d and a + b < sum(best)):\n        d, best = cross_d, (a, b)\n    \n    return d, best\n\nn = int(input())\npoints = list(map(int, input().split()))\npoints.sort()\n_, result = closest_pair(points)\nprint(result[0], result[1])\n```\n\n> **생각의 방식**: \"반으로 나눠서 풀자!\" — 1D에서는 과하지만, 이 패턴은 2D 최근접 쌍으로 확장돼요!\n\n---\n\n### 비교 포인트 🔍\n\n| | 완전 탐색 | 정렬 후 비교 | 분할 정복 |\n|---|---|---|---|\n| 반복 횟수 | n²번 | **n log n + n번** | n log n번 |\n| 핵심 아이디어 | 다 비교 | **이웃만 비교** | 반으로 나누기 |\n| 2D 확장 | O(n²) 그대로 | ❌ 불가 | ✅ 가능! |\n\nN=50,000 실행 시간: 완전 탐색 ~30초, 정렬 ~0.01초 → **3000배 차이!**\n\n세 방법 모두 같은 답을 내지만, **생각의 경로**가 완전히 달라요!\n- 접근법 1: \"전부 비교하자\" (전수 조사)\n- 접근법 2: \"정렬이 구조를 드러낸다\" (핵심 통찰)\n- 접근법 3: \"반으로 나눠 풀자\" (분할 정복 패턴)"
+}

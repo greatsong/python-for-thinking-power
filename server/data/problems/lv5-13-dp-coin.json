@@ -18,7 +18,9 @@
     "답: dp[target] if dp[target]!=inf else -1"
   ],
   "expected_approaches": [
-    { "tag": "바텀업 DP", "description": "dp[0]=0, 각 금액에 대해 모든 동전 시도, dp[amount-coin]+1의 최솟값" }
+    { "tag": "바텀업 DP O(n×k)", "description": "dp[0]=0부터 시작, 각 금액에 대해 모든 동전을 시도하여 최솟값 갱신" },
+    { "tag": "탑다운 (재귀 + 메모이제이션)", "description": "solve(amount)를 재귀 호출하되 결과를 캐싱 — 필요한 상태만 계산" },
+    { "tag": "그리디 (학습용: 항상 최적은 아님!)", "description": "큰 동전부터 선택 — 특정 동전 조합에서 오답 발생, 왜 DP가 필요한지 체감" }
   ],
   "explanation": "## 풀이 해설\n\n```mermaid\nflowchart TD\n    A[\"dp[0]=0, 나머지=INF 초기화\"] --> B[\"amount = 1~target 순회\"]\n    B --> C[\"각 coin 순회\"]\n    C --> D{\"coin <= amount?\"}\n    D -->|\"사용 가능\"| E[\"dp[amount] = min(\\n  dp[amount],\\n  dp[amount-coin] + 1\\n)\"]\n    D -->|\"동전이 너무 크다\"| F[\"건너뜀\"]\n    E --> G{\"모든 coin 확인?\"}\n    F --> G\n    G -->|\"아니오\"| C\n    G -->|\"예\"| H{\"모든 amount 완료?\"}\n    H -->|\"아니오\"| B\n    H -->|\"예\"| I{\"dp[target] == INF?\"}\n    I -->|\"예\"| J[\"-1 출력 (불가능)\"]\n    I -->|\"아니오\"| K[\"dp[target] 출력\"]\n```\n\n```python\nn = int(input())\ncoins = list(map(int, input().split()))\ntarget = int(input())\n\ndp = [float('inf')] * (target + 1)\ndp[0] = 0  # 0원을 만들려면 0개\n\nfor amount in range(1, target + 1):\n    for coin in coins:\n        if coin <= amount:\n            dp[amount] = min(dp[amount], dp[amount - coin] + 1)\n\nresult = dp[target]\nprint(-1 if result == float('inf') else result)\n```\n\n**왜 그리디가 안 될까?**\n\n동전 [1, 5, 6, 9], 목표 11:\n- 그리디: 9 선택 → 남은 2 → 1+1 = 총 3개\n- 최적: 6+5 = 2개\n\n그리디는 큰 동전을 먼저 선택하지만, 때로는 작은 동전이 더 효율적!\n\n**DP 점화식**:\n`dp[i] = min(dp[i - coin] + 1)` for all coin ≤ i\n\n\"금액 i를 만들려면 coin을 하나 사용하고, 나머지 i-coin을 만드는 최적값 + 1\"\n\n**바텀업 DP**: 작은 금액부터 계산해서 큰 금액에 활용!\n이전 계산 결과를 재사용 → 중복 계산 없음!"
 }

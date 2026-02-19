@@ -16,7 +16,8 @@
     "print(f\"{bmi:.1f}\")로 소수점 1자리 출력!"
   ],
   "expected_approaches": [
-    { "tag": "공식 적용", "description": "weight / (height / 100) ** 2 계산" }
+    { "tag": "cm→m 변환 후 제곱 O(1)", "description": "weight / (height / 100) ** 2 — 키를 미터로 변환 후 제곱으로 나누기" },
+    { "tag": "분모 미리 계산 O(1)", "description": "height_m = height / 100 → bmi = weight / height_m / height_m — 제곱(**) 없이 두 번 나누기" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nweight = float(input())\nheight = float(input())\nbmi = weight / (height / 100) ** 2\nprint(f\"{bmi:.1f}\")\n```\n\n`** 2`는 제곱 연산이에요. 키를 100으로 나눠 m로 변환하는 걸 잊지 마세요!"
 }

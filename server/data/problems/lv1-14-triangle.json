@@ -16,7 +16,8 @@
     "print(f\"{area:.1f}\")로 소수점 1자리로 출력하세요."
   ],
   "expected_approaches": [
-    { "tag": "넓이 공식", "description": "base * height / 2 계산 후 :.1f로 출력" }
+    { "tag": "나눗셈 공식 O(1)", "description": "base * height / 2 — 곱한 후 2로 나누기" },
+    { "tag": "곱셈 공식 O(1)", "description": "base * height * 0.5 — 나눗셈 대신 0.5 곱하기로 같은 결과" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nbase = int(input())\nheight = int(input())\narea = base * height / 2\nprint(f\"{area:.1f}\")\n```\n\n삼각형 넓이 공식을 직접 적용하면 돼요!"
 }

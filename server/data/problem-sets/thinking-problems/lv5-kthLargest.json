@@ -1,0 +1,26 @@
+{
+  "id": "lv5-kthLargest",
+  "title": "K번째 큰 수",
+  "difficulty": 5,
+  "category": "algorithm",
+  "description": "## 🏅 K번째 큰 수\n\n전교생의 시험 점수 중 **K등의 점수**를 찾아야 해요.\n단순히 정렬하면? N=100,000이고 K=1이면 전체를 정렬할 필요가 있을까?\n\n```\n점수: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]\nK = 3\n\n정렬: [9, 6, 5, 5, 4, 3, 3, 2, 1, 1]\n3번째: 5\n```\n\n> 정렬: 항상 O(n log n)\n> 힙: K에 따라 O(n log k)\n> 퀵셀렉트: 평균 O(n)! — 정렬 없이!\n\n어떤 전략을 선택할지는 **K와 N의 관계**에 달렸어요! 🤔\n\n---\n\n### 입력\n첫째 줄에 N K (1 ≤ K ≤ N ≤ 100,000), 둘째 줄에 N개의 정수가 공백으로 주어져요.\n\n### 출력\nK번째로 큰 수를 출력하세요.\n(같은 값이 여러 개면 각각 카운트: [5, 5, 3]에서 2번째 큰 수는 5)\n\n### 예시 1\n```\n입력:\n10 3\n3 1 4 1 5 9 2 6 5 3\n출력: 5\n```\n\n### 예시 2\n```\n입력:\n7 1\n10 20 30 40 50 60 70\n출력: 70\n```\n> 1번째로 큰 수 = 최댓값\n\n### 생각해 볼 점 💡\n\nK번째를 찾기 위해 **전체 순서**를 알 필요가 있을까요?\n\"얼마나 많은 정보가 진짜 필요한가?\" — 이게 알고리즘 선택의 핵심이에요! 🧠",
+  "starter_code": "import sys\ninput = sys.stdin.readline\n\nn, k = map(int, input().split())\narr = list(map(int, input().split()))\n\n# K번째로 큰 수를 출력하세요\n",
+  "test_cases": [
+    { "input": "10 3\n3 1 4 1 5 9 2 6 5 3", "expected_output": "5", "description": "정렬: 9,6,5,5,4,3,3,2,1,1 → 3번째는 5" },
+    { "input": "7 1\n10 20 30 40 50 60 70", "expected_output": "70", "description": "K=1이면 최댓값" },
+    { "input": "7 7\n10 20 30 40 50 60 70", "expected_output": "10", "description": "K=N이면 최솟값" },
+    { "input": "5 3\n5 5 5 5 5", "expected_output": "5", "description": "모두 같은 수" },
+    { "input": "1 1\n42", "expected_output": "42", "description": "하나뿐" }
+  ],
+  "hints": [
+    "가장 단순한 방법은? 정렬하고 인덱스로 접근하면 끝!",
+    "K가 작으면 전체를 정렬할 필요가 없어요. 크기 K짜리 힙(heap)을 유지하면?",
+    "퀵정렬의 partition을 활용하면 정렬 없이 K번째를 찾을 수 있어요 (Quickselect)."
+  ],
+  "expected_approaches": [
+    { "tag": "정렬 O(n log n)", "description": "전체 정렬 후 k-1번째 인덱스 접근" },
+    { "tag": "최소 힙 O(n log k)", "description": "크기 K의 최소 힙을 유지, 힙 top이 K번째 큰 수" },
+    { "tag": "퀵셀렉트 O(n) 평균", "description": "Quicksort의 partition을 응용, 필요한 절반만 재귀" }
+  ],
+  "explanation": "## 풀이 해설\n\n### 접근법 1: 정렬\n\n전체를 정렬하고 인덱스로 바로 접근!\n\n```python\nimport sys\ninput = sys.stdin.readline\n\nn, k = map(int, input().split())\narr = list(map(int, input().split()))\n\narr.sort(reverse=True)\nprint(arr[k - 1])\n```\n\n> **생각의 방식**: \"전체 순서를 매기자!\" — 3줄이면 끝, 항상 O(n log n)\n> 하지만 K=1인데 전체를 정렬? 🤔\n\n---\n\n### 접근법 2: 최소 힙\n\n크기 K인 최소 힙을 유지하면, 힙의 최솟값이 K번째 큰 수!\n\n```python\nimport sys\nimport heapq\ninput = sys.stdin.readline\n\nn, k = map(int, input().split())\narr = list(map(int, input().split()))\n\nheap = []\nfor num in arr:\n    if len(heap) < k:\n        heapq.heappush(heap, num)\n    elif num > heap[0]:\n        heapq.heapreplace(heap, num)\n\nprint(heap[0])\n```\n\n> **생각의 방식**: \"상위 K개만 관리하자!\" — O(n log k)\n> K=10이고 N=100,000이면 정렬보다 **4배 빠름!**\n\n---\n\n### 접근법 3: 퀵셀렉트\n\n퀵정렬의 partition만 활용! pivot으로 나눈 후 K번째가 있는 쪽만 재귀.\n\n```python\nimport sys\nimport random\ninput = sys.stdin.readline\n\ndef quickselect(arr, k):\n    if len(arr) == 1:\n        return arr[0]\n    \n    pivot = random.choice(arr)\n    \n    bigger = [x for x in arr if x > pivot]\n    equal = [x for x in arr if x == pivot]\n    smaller = [x for x in arr if x < pivot]\n    \n    if k <= len(bigger):\n        return quickselect(bigger, k)\n    elif k <= len(bigger) + len(equal):\n        return pivot\n    else:\n        return quickselect(smaller, k - len(bigger) - len(equal))\n\nn, k = map(int, input().split())\narr = list(map(int, input().split()))\nprint(quickselect(arr, k))\n```\n\n> **생각의 방식**: \"필요한 쪽만 보자!\" — 매 재귀에서 약 절반만 남아 n + n/2 + n/4 + ... ≈ 2n → 평균 O(n)!\n\n---\n\n### 비교 포인트 🔍\n\n| | 정렬 | 최소 힙 | 퀵셀렉트 |\n|---|---|---|---|\n| 시간 (평균) | O(n log n) | O(n log k) | **O(n)** |\n| 시간 (최악) | O(n log n) | O(n log k) | O(n²) |\n| 추가 공간 | O(1)* | O(k) | O(n) |\n| K=1 (최댓값) | n log n | n | **n** |\n| K=n/2 (중앙값) | n log n | n log(n/2) | **n** |\n| 구현 난이도 | 매우 쉬움 | 쉬움 | 중간 |\n\n세 방법 모두 같은 답을 내지만, **생각의 경로**가 완전히 달라요!\n- 접근법 1: \"전체 순서를 알아야 해\" (과도한 정보)\n- 접근법 2: \"상위 K개만 관리하면 돼\" (범위 축소)\n- 접근법 3: \"K번째 위치만 맞으면 돼\" (최소 작업)\n\n\"얼마나 많은 정보가 진짜 필요한가?\"를 생각하는 것이 알고리즘의 핵심! 🧠"
+}

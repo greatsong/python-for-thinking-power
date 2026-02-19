@@ -19,7 +19,8 @@
     "score >= 90, score >= 70, score >= 50 순서로 확인하세요."
   ],
   "expected_approaches": [
-    { "tag": "if/elif/else 다중 조건", "description": "score >= 90부터 내려가며 확인" }
+    { "tag": "if/elif/else 체인 O(1)", "description": "score >= 90 → 70 → 50 순으로 내려가며 조건 확인" },
+    { "tag": "정수 나눗셈 구간 매핑 O(1)", "description": "score // 10 의 결과(9,8,7...)를 기준으로 등급 배정 — 조건문 대신 산술로 구간 분류" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nscore = int(input())\nif score >= 90:\n    print(\"S급\")\nelif score >= 70:\n    print(\"A급\")\nelif score >= 50:\n    print(\"B급\")\nelse:\n    print(\"C급\")\n```\n\n`elif`는 '아니면 만약'이에요. 조건을 위에서부터 순서대로 확인하기 때문에, 높은 점수 조건부터 작성하면 돼요!\n이미 90 이상이 아닌 것이 확인됐으니 `elif score >= 70`은 사실 70~89 범위만 체크하게 돼요."
 }

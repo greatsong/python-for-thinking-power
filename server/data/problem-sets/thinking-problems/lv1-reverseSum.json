@@ -1,0 +1,25 @@
+{
+  "id": "lv1-reverseSum",
+  "title": "숫자 뒤집기 합계",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "## 🔄 숫자 뒤집기 합계\n\n숫자 123을 뒤집으면 321이 돼요.\n\n```\n123 → 321\n400 → 4\n905 → 509\n```\n\n여러 숫자를 뒤집은 다음 전부 더하면?\n\n```\n입력: 123 400 905\n뒤집기: 321 + 4 + 509 = 834\n```\n\n> 숫자를 **문자열로 보면** 뒤집기가 쉽고,\n> **수학으로 보면** 나머지(%)와 몫(//)으로 자릿수를 뽑아낼 수 있어요.\n\n---\n\n### 입력\n한 줄에 정수 N, 다음 줄에 N개의 양의 정수가 공백으로 주어져요. (10 ≤ N ≤ 100, 각 수 ≤ 1,000,000)\n\n### 출력\n각 숫자를 뒤집은 값들의 합을 출력하세요.\n(뒤집었을 때 앞자리 0은 사라져요: 400 → 004 → 4)\n\n### 예시 1\n```\n입력:\n3\n123 400 905\n출력: 834\n```\n> 321 + 4 + 509 = **834**\n\n### 예시 2\n```\n입력:\n5\n10 20 30 40 50\n출력: 15\n```\n> 1 + 2 + 3 + 4 + 5 = **15**\n\n### 생각해 볼 점 💡\n\n숫자를 **글자처럼** 다루면 간단할까요,\n아니면 **수학적으로** 자릿수를 뽑아내는 게 나을까요? 🤔",
+  "starter_code": "n = int(input())\nnumbers = list(map(int, input().split()))\n\n# 각 숫자를 뒤집어서 합을 구하세요\n",
+  "test_cases": [
+    { "input": "3\n123 400 905", "expected_output": "834", "description": "321+4+509=834" },
+    { "input": "5\n10 20 30 40 50", "expected_output": "15", "description": "1+2+3+4+5=15" },
+    { "input": "4\n1 22 333 4444", "expected_output": "4690", "description": "1+22+333+4444 (회문은 그대로)" },
+    { "input": "1\n1000", "expected_output": "1", "description": "1000→0001→1" },
+    { "input": "10\n11 22 33 44 55 66 77 88 99 100", "expected_output": "496", "description": "회문 숫자들+100→1" }
+  ],
+  "hints": [
+    "숫자를 문자열로 바꾸면 뒤집기가 쉬울까, 수학으로 풀면 쉬울까? 🤔",
+    "문자열 방법: str(num)[::-1]로 뒤집을 수 있어요.",
+    "수학 방법: num % 10으로 마지막 자리를 뽑고, num // 10으로 마지막 자리를 제거해요."
+  ],
+  "expected_approaches": [
+    { "tag": "문자열 뒤집기", "description": "숫자→문자열→슬라이싱 [::-1]→정수 변환" },
+    { "tag": "수학적 자릿수 추출", "description": "% 10으로 자릿수를 하나씩 뽑아 새 수를 조립" }
+  ],
+  "explanation": "## 풀이 해설\n\n### 접근법 1: 문자열 뒤집기\n\n숫자를 글자로 바꾸면 뒤집기가 간단해요!\n\n```python\nn = int(input())\nnumbers = list(map(int, input().split()))\n\ntotal = 0\nfor num in numbers:\n    reversed_str = str(num)[::-1]  # 문자열 뒤집기\n    total += int(reversed_str)      # 다시 숫자로\n\nprint(total)\n```\n\n> **생각의 방식**: \"숫자를 글자로 보자!\" — `str(123)` → `'123'` → `'321'` → `321`\n\n---\n\n### 접근법 2: 수학적 자릿수 추출\n\n나머지(%)와 몫(//)을 써서 자릿수를 하나씩 뽑아요.\n\n```python\nn = int(input())\nnumbers = list(map(int, input().split()))\n\ntotal = 0\nfor num in numbers:\n    reversed_num = 0\n    temp = num\n    while temp > 0:\n        digit = temp % 10        # 마지막 자리 뽑기\n        reversed_num = reversed_num * 10 + digit  # 앞에 붙이기\n        temp = temp // 10        # 마지막 자리 제거\n    total += reversed_num\n\nprint(total)\n```\n\n> **생각의 방식**: \"자릿수를 하나씩 뽑자!\" — `123 % 10 = 3`, `123 // 10 = 12` → 반복!\n\n---\n\n### 비교 포인트 🔍\n\n| | 문자열 방법 | 수학 방법 |\n|---|---|---|\n| 코드 길이 | 3줄 | 7줄 |\n| 핵심 도구 | `str()`, `[::-1]` | `%`, `//` |\n| 생각 방식 | 숫자 = 글자 | 숫자 = 수학 |\n| 다른 언어에서 | 비슷하게 가능 | **어디서든** 가능 |\n\n세 방법 모두 같은 답을 내지만, **생각의 경로**가 완전히 달라요!\n- 접근법 1: \"글자로 바꿔서 뒤집자\" (도구 활용)\n- 접근법 2: \"수학으로 한 자리씩 뽑아내자\" (원리 이해)\n\n문자열 방법은 파이썬스럽고 간결하지만,\n수학 방법은 **어떤 프로그래밍 언어에서든** 쓸 수 있는 보편적 사고예요!"
+}

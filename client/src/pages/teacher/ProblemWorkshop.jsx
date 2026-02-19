@@ -4,8 +4,9 @@ import useAuthStore from '../../stores/authStore.js';
 import {
   Sparkles, Eye, Check, RotateCcw, Trash2, Send,
   ChevronDown, ChevronUp, Loader2, Wrench, Library, X,
-  FileText, BookOpen
+  FileText, BookOpen, Globe, Lock, Users
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { DIFFICULTY_LABELS, DIFFICULTY_COLORS, CATEGORY_LABELS } from 'shared/constants.js';
 
 export default function ProblemWorkshop() {
@@ -165,6 +166,21 @@ export default function ProblemWorkshop() {
       setRevising(false);
     }
   };
+
+  // 공개/비공개 토글
+  const handleShareToggle = async (problemId, currentlyShared) => {
+    try {
+      await apiFetch(`/problems/${problemId}/share`, {
+        method: 'PATCH',
+        body: JSON.stringify({ is_shared: !currentlyShared }),
+      });
+      await fetchLibrary();
+    } catch (err) {
+      alert('공개 설정 변경 실패: ' + err.message);
+    }
+  };
+
+  const navigate = useNavigate();
 
   const statusBadge = (status) => {
     const styles = {
@@ -494,11 +510,20 @@ export default function ProblemWorkshop() {
 
       {/* 내 문제 라이브러리 */}
       <div>
-        <h2 className="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-2">
-          <Library size={20} />
-          내 문제 라이브러리
-          <span className="text-sm font-normal text-slate-400">({library.length}개)</span>
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
+            <Library size={20} />
+            내 문제 라이브러리
+            <span className="text-sm font-normal text-slate-400">({library.length}개)</span>
+          </h2>
+          <button
+            onClick={() => navigate('/teacher/community')}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
+          >
+            <Users size={15} />
+            문제 나눔터
+          </button>
+        </div>
 
         {libraryLoading ? (
           <div className="flex items-center justify-center py-8">
@@ -517,13 +542,21 @@ export default function ProblemWorkshop() {
                   <th className="px-4 py-3">난이도</th>
                   <th className="px-4 py-3">카테고리</th>
                   <th className="px-4 py-3">상태</th>
+                  <th className="px-4 py-3">공개</th>
                   <th className="px-4 py-3">생성일</th>
                 </tr>
               </thead>
               <tbody>
                 {library.map((problem) => (
                   <tr key={problem.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium text-slate-800">{problem.title}</td>
+                    <td className="px-4 py-3">
+                      <span className="font-medium text-slate-800">{problem.title}</span>
+                      {problem.cloned_from && (
+                        <span className="ml-2 text-xs text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded">
+                          {problem.cloned_from_author ? `${problem.cloned_from_author} 원본` : '복제됨'}
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <span
                         className="px-2 py-0.5 rounded-full text-xs font-medium text-white"
@@ -536,6 +569,24 @@ export default function ProblemWorkshop() {
                       {CATEGORY_LABELS[problem.category] || problem.category}
                     </td>
                     <td className="px-4 py-3">{statusBadge(problem.status)}</td>
+                    <td className="px-4 py-3">
+                      {problem.status === 'approved' ? (
+                        <button
+                          onClick={() => handleShareToggle(problem.id, problem.is_shared)}
+                          className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                            problem.is_shared
+                              ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                              : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                          }`}
+                          title={problem.is_shared ? '클릭하면 비공개로 전환' : '클릭하면 공개로 전환'}
+                        >
+                          {problem.is_shared ? <Globe size={12} /> : <Lock size={12} />}
+                          {problem.is_shared ? '공개' : '비공개'}
+                        </button>
+                      ) : (
+                        <span className="text-xs text-slate-300">-</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-slate-500">
                       {new Date(problem.created_at).toLocaleDateString('ko-KR')}
                     </td>

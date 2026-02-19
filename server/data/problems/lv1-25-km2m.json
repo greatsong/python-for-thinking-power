@@ -16,7 +16,8 @@
     "int()로 감싸서 정수로 출력하세요."
   ],
   "expected_approaches": [
-    { "tag": "곱셈 변환", "description": "print(int(km * 1000))" }
+    { "tag": "곱셈 + int() 변환 O(1)", "description": "print(int(km * 1000)) — float 곱셈 후 int()로 정수 변환" },
+    { "tag": "round() 반올림 O(1)", "description": "print(round(km * 1000)) — 부동소수점 오차 방지를 위해 반올림 사용" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nkm = float(input())\nprint(int(km * 1000))\n```\n\n1km = 1000m 이니까 km에 1000을 곱하면 돼요!"
 }

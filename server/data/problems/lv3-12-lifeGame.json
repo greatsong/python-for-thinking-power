@@ -17,7 +17,9 @@
     "neighbor_count = (cells[i-1]=='#' if i>0 else 0) + (cells[i+1]=='#' if i<n-1 else 0)"
   ],
   "expected_approaches": [
-    { "tag": "이웃 수 계산 후 규칙 적용", "description": "각 위치별 살아있는 이웃 수 카운트 후 판별" }
+    { "tag": "직접 이웃 세기 O(N)", "description": "각 위치에서 if문으로 왼쪽/오른쪽 경계 확인 후 이웃 수 카운트" },
+    { "tag": "패딩(양 끝에 . 추가) O(N)", "description": "'.'+cells+'.'로 감싸서 경계 조건 제거, 항상 [i-1]과 [i+1] 접근 가능" },
+    { "tag": "리스트 컴프리헨션 + 슬라이싱 O(N)", "description": "cells를 숫자 배열로 변환 후 left[:-2]+right[2:]로 이웃 합 벡터 계산" }
   ],
   "explanation": "## 풀이 해설\n\n**문제 분해**:\n1. 각 위치마다 이웃 수 계산\n2. 이웃 수에 따라 다음 상태 결정\n3. 결과 합치기\n\n```python\ncells = input()\nn = len(cells)\nnext_gen = []\n\nfor i in range(n):\n    # 이웃 수 계산 (경계 처리 포함)\n    neighbors = 0\n    if i > 0 and cells[i-1] == '#':     # 왼쪽\n        neighbors += 1\n    if i < n-1 and cells[i+1] == '#':   # 오른쪽\n        neighbors += 1\n    \n    # 규칙 적용: 이웃 1명만 살아남음\n    if neighbors == 1:\n        next_gen.append('#')\n    else:\n        next_gen.append('.')\n\nprint(''.join(next_gen))\n```\n\n**경계 조건**이 이 문제의 핵심! 배열 밖을 참조하지 않도록 항상 범위를 확인해요."
 }

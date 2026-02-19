@@ -1,0 +1,26 @@
+{
+  "id": "lv1-32-multCount",
+  "title": "배수의 합",
+  "difficulty": 1,
+  "category": "logic",
+  "description": "## 🧮 배수의 합\n\n정수 N과 M이 주어져요.\n\n1부터 N까지의 수 중에서 **M의 배수**만 골라서 전부 더하세요!\n\n> 어떤 수가 M의 배수인지는 `%`(나머지) 연산으로 알 수 있어요.\n> `i % M == 0`이면 i는 M의 배수!\n\n```python\n# 예: 12가 3의 배수인지?\n12 % 3  # → 0 (나머지가 0이면 배수!)\n10 % 3  # → 1 (나머지가 1이면 배수 아님)\n```\n\n---\n\n### 입력\n한 줄에 두 정수 N, M이 공백으로 주어져요. (1 ≤ M ≤ N ≤ 1,000,000)\n\n### 출력\n1부터 N까지의 수 중 M의 배수의 합을 출력하세요.\n\n### 예시 1\n```\n입력: 10 3\n출력: 18\n```\n> 3의 배수: 3, 6, 9 → 합: 3 + 6 + 9 = **18**\n\n### 예시 2\n```\n입력: 20 5\n출력: 50\n```\n> 5의 배수: 5, 10, 15, 20 → 합: 5 + 10 + 15 + 20 = **50**\n\n### 생각해 볼 점 💡\n\n1부터 N까지 하나씩 확인하는 방법 말고,\n배수만 **바로 뽑아내는** 방법은 없을까요?\n\n그리고 혹시... 반복문 없이 **수학 공식**으로 한 번에 구할 수도 있지 않을까요? 🤔",
+  "starter_code": "N, M = map(int, input().split())\n\n# M의 배수의 합을 구하세요\n",
+  "test_cases": [
+    { "input": "10 3", "expected_output": "18", "description": "3+6+9 = 18" },
+    { "input": "20 5", "expected_output": "50", "description": "5+10+15+20 = 50" },
+    { "input": "100 7", "expected_output": "735", "description": "7+14+...+98 = 735" },
+    { "input": "1 1", "expected_output": "1", "description": "가장 작은 경우" },
+    { "input": "1000000 2", "expected_output": "250000500000", "description": "큰 입력" }
+  ],
+  "hints": [
+    "for i in range(1, N+1)로 1부터 N까지 반복하면서, i % M == 0이면 더해봐요.",
+    "range(M, N+1, M)을 쓰면 M의 배수만 바로 나와요! 세 번째 인자가 '간격'이에요.",
+    "M의 배수는 M, 2M, 3M, ... kM이에요. 개수가 k = N // M이면, 합 = M × (1+2+...+k) = M × k × (k+1) ÷ 2"
+  ],
+  "expected_approaches": [
+    { "tag": "for + if 전수 조사 O(N)", "description": "1부터 N까지 하나씩 확인하며 M의 배수인지 체크 후 더하기" },
+    { "tag": "range step 활용 O(N/M)", "description": "range(M, N+1, M)으로 배수만 바로 뽑아서 더하기" },
+    { "tag": "등차수열 합 공식 O(1)", "description": "배수의 합 = M × k(k+1)/2 (k = N//M) — 반복문 없이 한 줄 계산" }
+  ],
+  "explanation": "## 풀이 해설\n\n### 접근법 1: for + if 전수 조사\n\n1부터 N까지 **하나씩** 확인하면서, M의 배수이면 더해요.\n\n```python\nN, M = map(int, input().split())\n\ntotal = 0\nfor i in range(1, N + 1):\n    if i % M == 0:    # M의 배수인지 확인\n        total += i\n\nprint(total)\n```\n\n> **생각의 방식**: \"하나씩 확인하자!\" — 가장 직관적이에요.\n\n---\n\n### 접근법 2: range step 활용\n\n`range`의 세 번째 인자(step)를 쓰면 배수만 바로 뽑아요!\n\n```python\nN, M = map(int, input().split())\n\ntotal = 0\nfor i in range(M, N + 1, M):  # M부터 M씩 건너뛰기!\n    total += i\n\nprint(total)\n```\n\n> **생각의 방식**: \"확인할 필요 없이 배수만 바로 가자!\"\n> `range(3, 11, 3)` → 3, 6, 9 — if문이 필요 없어요.\n\n---\n\n### 접근법 3: 등차수열 합 공식\n\nM의 배수를 나열하면: M, 2M, 3M, ..., kM (k = N // M)\n\n이건 **등차수열**이에요! 합 = M × (1 + 2 + ... + k) = M × k × (k+1) ÷ 2\n\n```python\nN, M = map(int, input().split())\n\nk = N // M    # 배수가 몇 개인지\ntotal = M * k * (k + 1) // 2\n\nprint(total)\n```\n\n> **생각의 방식**: \"패턴을 발견하면 공식으로 한 방에!\" — 반복문이 아예 없어요.\n\n---\n\n### 비교 포인트 🔍\n\n| | for + if | range step | 수학 공식 |\n|---|---|---|---|\n| 반복 횟수 | N번 | N/M번 | **0번!** |\n| if 필요 | 필요 | 불필요 | 불필요 |\n| 코드 줄 수 | 5줄 | 4줄 | **3줄** |\n| 생각 방식 | 하나씩 확인 | 배수만 직행 | 공식 유도 |\n\n세 방법 모두 같은 답을 내지만, **생각의 경로**가 완전히 달라요!\n- 접근법 1: \"전부 보고 골라내자\" (전수 조사)\n- 접근법 2: \"처음부터 필요한 것만 보자\" (도구 활용)\n- 접근법 3: \"세지 말고 계산하자\" (수학적 사고)"
+}

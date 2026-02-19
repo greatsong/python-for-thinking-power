@@ -19,7 +19,8 @@
     "나머지: dp[i][j] = grid[i][j] + max(dp[i-1][j], dp[i][j-1])"
   ],
   "expected_approaches": [
-    { "tag": "2D DP 바텀업", "description": "dp[i][j] = grid[i][j] + max(위, 왼쪽), 경계 처리 주의" }
+    { "tag": "2D DP 바텀업", "description": "dp[i][j] = grid[i][j] + max(위, 왼쪽), 반복문으로 테이블 채우기" },
+    { "tag": "재귀 + 메모이제이션 (탑다운)", "description": "solve(i,j)를 재귀 호출하되 결과를 캐싱 — 경로를 거꾸로 생각" }
   ],
   "explanation": "## 풀이 해설\n\n```mermaid\nflowchart TD\n    A[\"dp[0][0] = grid[0][0]\"] --> B[\"첫 행 초기화\\ndp[0][j] = dp[0][j-1] + grid[0][j]\"]\n    A --> C[\"첫 열 초기화\\ndp[i][0] = dp[i-1][0] + grid[i][0]\"]\n    B --> D[\"나머지 칸 순회\\ni=1~n-1, j=1~m-1\"]\n    C --> D\n    D --> E{\"위 vs 왼쪽?\"}\n    E -->|\"dp[i-1][j] >= dp[i][j-1]\"| F[\"위에서 옴\"]\n    E -->|\"dp[i][j-1] > dp[i-1][j]\"| G[\"왼쪽에서 옴\"]\n    F --> H[\"dp[i][j] = grid[i][j] + dp[i-1][j]\"]\n    G --> I[\"dp[i][j] = grid[i][j] + dp[i][j-1]\"]\n    H --> J{\"모든 칸 완료?\"}\n    I --> J\n    J -->|\"아니오\"| D\n    J -->|\"예\"| K[\"dp[n-1][m-1] = 최대 점수\"]\n```\n\n```python\nn, m = map(int, input().split())\ngrid = []\nfor _ in range(n):\n    row = list(map(int, input().split()))\n    grid.append(row)\n\ndp = [[0] * m for _ in range(n)]\ndp[0][0] = grid[0][0]\n\n# 첫 행: 오른쪽으로만 이동 가능\nfor j in range(1, m):\n    dp[0][j] = dp[0][j-1] + grid[0][j]\n\n# 첫 열: 아래로만 이동 가능\nfor i in range(1, n):\n    dp[i][0] = dp[i-1][0] + grid[i][0]\n\n# 나머지: 위 또는 왼쪽 중 더 큰 것\nfor i in range(1, n):\n    for j in range(1, m):\n        dp[i][j] = grid[i][j] + max(dp[i-1][j], dp[i][j-1])\n\nprint(dp[n-1][m-1])\n```\n\n**점화식 해석**:\n\n`dp[i][j]`에 오려면 위(`dp[i-1][j]`)나 왼쪽(`dp[i][j-1]`)에서 왔을 거예요.\n둘 중 더 좋은 경로를 선택!\n\n```\ndp 테이블:\n1  4  5\n2  9  10\n6  11 12  ← 최대값!\n```\n\n**경계 처리가 중요**:\n- 맨 위 행은 왼쪽에서만 올 수 있어요\n- 맨 왼쪽 열은 위에서만 올 수 있어요\n\n**2D DP의 활용**:\n이 패턴은 수많은 문제의 기반이에요:\n- 로봇 경로 문제\n- 삼각형 경로 최대합\n- 지뢰찾기 안전 경로\n- LCS, 편집 거리도 2D DP!\n\n**Lv.5 마지막 문제를 풀었어요!** 🎉\n이제 당신은 진정한 코딩대마왕입니다!"
 }

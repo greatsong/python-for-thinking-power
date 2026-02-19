@@ -13,7 +13,8 @@
     "print(\"파이썬\"), print(\"재미있다\"), print(\"최고야\") 순서로 작성하면 됩니다!"
   ],
   "expected_approaches": [
-    { "tag": "print 3번", "description": "print()를 3번 사용해 각 줄 출력" }
+    { "tag": "print 3번", "description": "print()를 3번 사용해 각 줄 출력" },
+    { "tag": "삼중따옴표 한 번 출력", "description": "print(\"\"\"파이썬\\n재미있다\\n최고야\"\"\")처럼 여러 줄 문자열을 한 번에 출력" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nprint(\"파이썬\")\nprint(\"재미있다\")\nprint(\"최고야\")\n```\n\n`print()`는 한 줄씩 출력하고 자동으로 줄 바꿈을 해줘요!"
 }

@@ -17,7 +17,8 @@
     "if n > 0: / elif n < 0: / else: 세 가지로 나누세요."
   ],
   "expected_approaches": [
-    { "tag": "if/elif/else", "description": "n > 0, n < 0, else 세 가지 경우로 분기" }
+    { "tag": "if/elif/else 분기", "description": "n > 0, n < 0, else 세 가지 경우로 직접 분기" },
+    { "tag": "리스트 인덱싱 O(1)", "description": "(n>0) - (n<0) 의 결과(-1,0,1)를 인덱스로 활용해 [\"음수\",\"0\",\"양수\"] 매핑" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nn = int(input())\nif n > 0:\n    print(\"양수\")\nelif n < 0:\n    print(\"음수\")\nelse:\n    print(\"0\")\n```\n\n세 가지 경우는 if/elif/else로 처리해요!"
 }

@@ -16,7 +16,9 @@
     "amount = int(transaction[1:]) 으로 금액 추출"
   ],
   "expected_approaches": [
-    { "tag": "문자열 파싱 + 조건 처리", "description": "transaction[0]으로 입출금 구분, int(transaction[1:])로 금액 추출" }
+    { "tag": "부호 파싱 + if/else 분기 O(N)", "description": "transaction[0]으로 +/- 구분, int(transaction[1:])로 금액 추출 후 조건 처리" },
+    { "tag": "int 변환 후 부호로 분기 O(N)", "description": "amount=int(transaction)으로 한 번에 변환, 양수면 입금, 음수면 출금 처리" },
+    { "tag": "거래 내역 리스트 누적 O(N)", "description": "모든 거래를 리스트에 기록하며 잔액 변화를 추적, 최종에 전체 요약 가능" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nbalance = int(input())\nn = int(input())\n\nfor _ in range(n):\n    transaction = input()\n    sign = transaction[0]       # '+' 또는 '-'\n    amount = int(transaction[1:])  # 금액\n    \n    if sign == '+':\n        balance += amount\n        print(f\"입금 {amount} → 잔액: {balance}\")\n    else:  # '-'\n        if amount > balance:\n            print(f\"잔액 부족 (보유: {balance}, 출금 시도: {amount})\")\n        else:\n            balance -= amount\n            print(f\"출금 {amount} → 잔액: {balance}\")\n\nprint(f\"최종 잔액: {balance}\")\n```\n\n**문자열 파싱**이 핵심!\n- `transaction[0]`: 첫 글자(부호)\n- `transaction[1:]`: 나머지(숫자 부분)\n- `int(\"-5000\"[1:])` = `int(\"5000\")` = `5000`\n\n**상태 관리**: `balance`라는 하나의 변수가 계속 업데이트돼요."
 }

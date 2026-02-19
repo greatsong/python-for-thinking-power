@@ -17,7 +17,9 @@
     "리스트 인덱싱: days_kr[(today + days) % 7]"
   ],
   "expected_approaches": [
-    { "tag": "모듈러 + 리스트 인덱싱", "description": "days_kr[(today+days)%7]" }
+    { "tag": "모듈러 + 리스트 인덱싱 O(1)", "description": "days_kr[(today+days)%7] — 수학적으로 바로 계산" },
+    { "tag": "딕셔너리 매핑 O(1)", "description": "숫자→요일 딕셔너리를 만들고 (today+days)%7로 조회" },
+    { "tag": "시뮬레이션(하루씩 전진) O(D)", "description": "for문으로 하루씩 today=(today+1)%7 반복하여 도달 — 모듈러 없이 순환 이해" }
   ],
   "explanation": "## 풀이 해설\n\n```python\ntoday = int(input())\ndays = int(input())\n\ndays_kr = [\"월요일\", \"화요일\", \"수요일\", \"목요일\", \"금요일\", \"토요일\", \"일요일\"]\ntarget = (today + days) % 7\nprint(days_kr[target])\n```\n\n**모듈러 7의 마법**: 요일은 7일마다 반복이에요!\n`% 7`을 하면 어떤 큰 숫자도 0~6 범위 안으로 들어와요.\n\n예: `오늘이 금요일(4)이고 100일 후는?`\n`(4 + 100) % 7 = 104 % 7 = 6` → 일요일\n\n**리스트를 이런 용도로** 쓰는 것이 프로그래밍의 핵심 패턴이에요!"
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Wrench, ListChecks, MessageSquare, Settings, BookOpen, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Wrench, ListChecks, MessageSquare, Settings, BookOpen, LogOut, Menu, X, Users } from 'lucide-react';
 import useAuthStore from '../stores/authStore.js';
 
 export default function TeacherLayout() {
@@ -11,6 +11,7 @@ export default function TeacherLayout() {
   const navItems = [
     { to: '/teacher/dashboard', icon: LayoutDashboard, label: '교실 라이브' },
     { to: '/teacher/workshop', icon: Wrench, label: '문제 공방' },
+    { to: '/teacher/community', icon: Users, label: '문제 나눔터' },
     { to: '/teacher/assign', icon: ListChecks, label: '문제 배정' },
     { to: '/teacher/ai-reports', icon: MessageSquare, label: 'AI 리포트' },
     { to: '/teacher/classroom', icon: Settings, label: '교실 설정' },

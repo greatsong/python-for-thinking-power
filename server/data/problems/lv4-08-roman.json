@@ -18,7 +18,9 @@
     "while n >= value: result += symbol; n -= value"
   ],
   "expected_approaches": [
-    { "tag": "탐욕 알고리즘 (Greedy)", "description": "큰 값부터 가능한 만큼 빼기" }
+    { "tag": "탐욕(Greedy) + 값-기호 테이블 O(1)", "description": "13개 값-기호 쌍을 큰 순서로 정렬, 가능한 만큼 반복해서 빼기" },
+    { "tag": "자릿수 분해 + 매핑 테이블", "description": "천·백·십·일 각 자릿수별 로마숫자 매핑 테이블을 만들어 조합" },
+    { "tag": "하드코딩 배열 조합", "description": "ones/tens/hundreds/thousands 배열에 각 자릿수의 로마 표현을 미리 저장" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nsymbols = [\n    (1000, 'M'), (900, 'CM'), (500, 'D'), (400, 'CD'),\n    (100, 'C'), (90, 'XC'), (50, 'L'), (40, 'XL'),\n    (10, 'X'), (9, 'IX'), (5, 'V'), (4, 'IV'), (1, 'I')\n]\nresult = \"\"\nfor value, symbol in symbols:\n    while n >= value:\n        result += symbol\n        n -= value\nprint(result)\n```\n\n**탐욕 알고리즘**: 매 순간 가장 큰 선택을 하는 것!\n1994에서 1000을 빼고, 남은 994에서 900을 빼고...\n\n**감산 표기를 어떻게 처리했나?**\n`(900, 'CM')` 쌍을 리스트에 미리 넣어두면 탐욕 알고리즘이 자동으로 처리해요!\n알고리즘의 **단순함**이 아름다운 이유예요."
 }

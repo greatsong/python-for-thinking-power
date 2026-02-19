@@ -16,7 +16,9 @@
     "출력: for group in groups.values(): print(\" \".join(group))"
   ],
   "expected_approaches": [
-    { "tag": "정렬 키 딕셔너리", "description": "tuple(sorted(word))를 키로 그룹화" }
+    { "tag": "정렬 키 + 딕셔너리 O(n·k log k)", "description": "tuple(sorted(word))를 키로 그룹화 — 정렬이 애너그램의 정규형" },
+    { "tag": "글자 빈도 카운트 키 O(n·k)", "description": "Counter(word) 또는 알파벳 26자리 빈도 튜플을 딕셔너리 키로 사용" },
+    { "tag": "완전 탐색 쌍 비교 O(n²·k)", "description": "모든 단어 쌍에 대해 sorted 결과를 비교하여 같은 그룹으로 묶기" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nwords = input().split()\ngroups = {}\n\nfor word in words:\n    key = tuple(sorted(word))  # 정렬된 글자 튜플을 키로\n    if key not in groups:\n        groups[key] = []\n    groups[key].append(word)\n\nfor group in groups.values():\n    print(\" \".join(group))\n```\n\n`setdefault`를 사용하면 더 간결:\n```python\nfor word in words:\n    key = tuple(sorted(word))\n    groups.setdefault(key, []).append(word)\n```\n\n**왜 tuple?** 파이썬 딕셔너리의 키는 변경 불가능(immutable)해야 해요.\n리스트는 변경 가능하지만, 튜플은 변경 불가 → 키로 사용 가능!\n\n**추상화 포인트**: '애너그램 여부 확인'을 '정렬 후 비교'로 추상화했어요."
 }

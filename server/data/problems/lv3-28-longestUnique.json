@@ -1,0 +1,26 @@
+{
+  "id": "lv3-28-longestUnique",
+  "title": "가장 긴 고유 구간",
+  "difficulty": 3,
+  "category": "algorithm",
+  "description": "## 🪟 가장 긴 고유 구간\n\nN개의 정수로 이루어진 수열이 있어요.\n이 수열에서 **같은 수가 한 번도 반복되지 않는** 가장 긴 연속 부분 수열의 길이를 구하세요.\n\n```\n수열: [4, 2, 1, 3, 5, 2, 6]\n\n[4, 2, 1, 3, 5] → 길이 5, 모두 다른 수 ✅\n[2, 1, 3, 5, 2] → 2가 두 번! ❌\n[1, 3, 5, 2, 6] → 길이 5, 모두 다른 수 ✅\n\n→ 가장 긴 고유 구간의 길이 = 5\n```\n\n---\n\n### 제한\n- 1 ≤ N ≤ 100,000\n- 1 ≤ 각 수 ≤ 1,000,000\n\n### 입력\n- 첫째 줄: N\n- 둘째 줄: N개의 정수 (공백 구분)\n\n### 출력\n- 모든 원소가 서로 다른 가장 긴 연속 부분 수열의 길이\n\n### 예시 1\n```\n입력:\n7\n4 2 1 3 5 2 6\n출력: 5\n```\n> [4, 2, 1, 3, 5] 또는 [1, 3, 5, 2, 6] → 길이 5\n\n### 예시 2\n```\n입력:\n5\n1 1 1 1 1\n출력: 1\n```\n> 모두 같은 수이므로 고유 구간은 길이 1뿐\n\n### 생각해 볼 점 💡\n\n모든 시작점에서 중복이 나올 때까지 확장하면 O(N²)이에요.\n하지만 \"왼쪽을 버리면 오른쪽은 다시 확인할 필요가 없다\"는 성질을 이용하면?",
+  "starter_code": "N = int(input())\narr = list(map(int, input().split()))\n\n# 같은 수가 없는 가장 긴 연속 부분 수열의 길이를 구하세요\n",
+  "test_cases": [
+    { "input": "7\n4 2 1 3 5 2 6", "expected_output": "5", "description": "[4,2,1,3,5] 또는 [1,3,5,2,6]" },
+    { "input": "5\n1 1 1 1 1", "expected_output": "1", "description": "모두 같은 수" },
+    { "input": "6\n1 2 3 4 5 6", "expected_output": "6", "description": "전체가 고유" },
+    { "input": "10\n1 2 3 1 2 3 1 2 3 1", "expected_output": "3", "description": "반복 패턴" },
+    { "input": "15\n1 3 5 7 9 2 4 6 8 10 1 3 5 7 9", "expected_output": "10", "description": "큰 입력 — O(N²) vs O(N) 성능 차이 체감" }
+  ],
+  "hints": [
+    "가장 단순한 방법: 모든 시작점 i에서 중복이 나올 때까지 오른쪽으로 확장하며 최대 길이를 갱신하면?",
+    "중복이 발견되면 왼쪽 끝을 한 칸 옮기고, 오른쪽은 처음부터 다시 볼 필요가 없어요. 이게 슬라이딩 윈도우!",
+    "set에 현재 윈도우의 원소를 관리하세요. 오른쪽 추가 시 중복이면 왼쪽에서 제거!"
+  ],
+  "expected_approaches": [
+    { "tag": "완전 탐색 O(N²)", "description": "모든 시작점에서 중복이 나올 때까지 확장하며 최대 길이 갱신" },
+    { "tag": "슬라이딩 윈도우 + set O(N)", "description": "투 포인터와 set으로 윈도우를 관리, 중복 시 왼쪽 축소" },
+    { "tag": "딕셔너리 점프 O(N)", "description": "각 값의 마지막 등장 위치를 기록, 중복 시 시작점을 한 번에 점프" }
+  ],
+  "explanation": "## 풀이 해설\n\n### 접근법 1: 완전 탐색 O(N²)\n\n모든 시작점에서 중복이 발견될 때까지 오른쪽으로 확장해요.\n\n```python\nN = int(input())\narr = list(map(int, input().split()))\n\nmax_len = 0\nfor i in range(N):\n    seen = set()\n    for j in range(i, N):\n        if arr[j] in seen:\n            break\n        seen.add(arr[j])\n    max_len = max(max_len, len(seen))\n\nprint(max_len)\n```\n\n> **아이디어**: 모든 시작점을 시도 → 확실하지만 N이 크면 느림\n> N=100,000이면 최대 50억 번 연산!\n\n---\n\n### 접근법 2: 슬라이딩 윈도우 + set O(N)\n\n**핵심 통찰**: 오른쪽 끝을 넓힐 때 중복이 생기면, 왼쪽에서 중복 원소를 제거할 때까지 축소!\n이미 확인한 오른쪽을 다시 볼 필요가 없어요.\n\n```python\nN = int(input())\narr = list(map(int, input().split()))\n\nwindow = set()\nleft = 0\nmax_len = 0\n\nfor right in range(N):\n    while arr[right] in window:\n        window.remove(arr[left])  # 왼쪽 축소\n        left += 1\n    window.add(arr[right])  # 오른쪽 확장\n    max_len = max(max_len, right - left + 1)\n\nprint(max_len)\n```\n\n> **아이디어**: 창문(window)을 오른쪽으로 밀면서 크기 조절\n> left와 right 각각 최대 N번 이동 → **O(N)**!\n\n---\n\n### 접근법 3: 딕셔너리 점프 O(N)\n\n각 값이 **마지막으로 나타난 위치**를 기록해두면, 중복 발견 시 시작점을 한 번에 점프할 수 있어요.\n\n```python\nN = int(input())\narr = list(map(int, input().split()))\n\nlast_pos = {}  # 값 → 마지막 등장 인덱스\nleft = 0\nmax_len = 0\n\nfor right in range(N):\n    if arr[right] in last_pos and last_pos[arr[right]] >= left:\n        left = last_pos[arr[right]] + 1  # 한 번에 점프!\n    last_pos[arr[right]] = right\n    max_len = max(max_len, right - left + 1)\n\nprint(max_len)\n```\n\n> **아이디어**: while 루프 없이 딕셔너리로 O(1)에 시작점 갱신\n> 실제로는 접근법 2와 같은 O(N)이지만, 내부 while이 없어 **상수 배 빠름**!\n\n---\n\n### 비교 포인트 🔍\n\n| | 완전 탐색 | 슬라이딩 윈도우 | 딕셔너리 점프 |\n|---|---|---|---|\n| 시간 | O(N²) | **O(N)** | **O(N)** |\n| 공간 | O(N) | O(N) set | O(N) dict |\n| 핵심 | 매번 처음부터 | 왼쪽을 하나씩 축소 | **왼쪽을 한 번에 점프** |\n| N=100,000 | ~5초 | ~0.05초 | **~0.03초** |\n\n**핵심 통찰**: \"이미 확인한 구간을 다시 볼 필요가 없다!\"\n\n완전 탐색은 시작점이 바뀔 때마다 오른쪽을 처음부터 다시 봐요.\n슬라이딩 윈도우는 오른쪽을 **절대 되돌리지 않아요** → 이 차이가 O(N²)과 O(N)을 가르죠!"
+}

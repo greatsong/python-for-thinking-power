@@ -17,7 +17,9 @@
     "모음 시작: word + \"yay\""
   ],
   "expected_approaches": [
-    { "tag": "슬라이싱 활용", "description": "word[1:] + word[0] + \"ay\" vs word + \"yay\"" }
+    { "tag": "첫 글자 분기 + 슬라이싱 O(N)", "description": "word[0]이 모음인지 확인 후 word[1:]+word[0]+'ay' 또는 word+'yay'" },
+    { "tag": "연속 자음 탐색 + 슬라이싱 O(N)", "description": "while로 첫 모음 위치 i를 찾고 word[i:]+word[:i]+'ay' — 자음군 전체 이동" },
+    { "tag": "정규식으로 자음/모음 분리 O(N)", "description": "re.match(r'^([^aeiou]*)(.*)', word)로 자음부+나머지 분리 후 재조합" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nword = input().lower()\nvowels = \"aeiou\"\n\nif word[0] in vowels:\n    result = word + \"yay\"\nelse:\n    result = word[1:] + word[0] + \"ay\"\n\nprint(result)\n```\n\n**슬라이싱**이 핵심이에요!\n- `word[0]` → 첫 글자\n- `word[1:]` → 첫 글자 이후 모든 글자\n- `word[1:] + word[0] + \"ay\"` → 첫 글자를 끝으로 이동하고 ay 추가\n\n예: `\"hello\"` → `word[1:]=\"ello\"` + `word[0]=\"h\"` + `\"ay\"` = `\"ellohay\"`\n\n**확장 도전**: 연속 자음도 처리하고 싶다면?\n```python\ni = 0\nwhile i < len(word) and word[i] not in vowels:\n    i += 1\nresult = word[i:] + word[:i] + \"ay\"\n```"
 }

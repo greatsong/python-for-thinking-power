@@ -16,7 +16,8 @@
     "print(a + b)로 두 수의 합을 출력하세요."
   ],
   "expected_approaches": [
-    { "tag": "덧셈 연산", "description": "print(a + b)로 합 출력" }
+    { "tag": "덧셈 연산 O(1)", "description": "print(a + b)로 합 출력" },
+    { "tag": "sum() 함수 활용 O(n)", "description": "print(sum([a, b]))로 리스트에 담아 내장 함수로 합 구하기" }
   ],
   "explanation": "### 풀이 해설\n\n```python\na = int(input())\nb = int(input())\nprint(a + b)\n```\n\n두 수를 따로 입력받아 `+`로 더한 후 출력해요!"
 }

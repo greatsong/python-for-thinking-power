@@ -16,7 +16,8 @@
     "파이썬에서 곱셈은 * 기호예요. print(width * height)로 출력하세요."
   ],
   "expected_approaches": [
-    { "tag": "곱셈 연산", "description": "print(width * height)로 넓이 출력" }
+    { "tag": "곱셈 공식 O(1)", "description": "print(width * height) — 가로 x 세로 곱셈 한 번으로 계산" },
+    { "tag": "반복 덧셈 O(n)", "description": "area = 0 → for로 height번 area += width — 곱셈이 덧셈의 반복임을 체험" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nwidth = int(input())\nheight = int(input())\nprint(width * height)\n```\n\n가로와 세로를 곱하면 직사각형의 넓이를 구할 수 있어요!"
 }

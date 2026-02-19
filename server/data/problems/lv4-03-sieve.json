@@ -17,7 +17,9 @@
     "결과: [i for i in range(2, n+1) if is_prime[i]]"
   ],
   "expected_approaches": [
-    { "tag": "불리언 배열 + 배수 제거", "description": "is_prime 배열로 마킹, √n까지만 체크" }
+    { "tag": "에라토스테네스의 체 O(n log log n)", "description": "불리언 배열에서 소수의 배수를 지워나가는 고전적 방법" },
+    { "tag": "개별 소수 판별 O(n√n)", "description": "각 수마다 2~√k로 나눠보며 소수인지 하나씩 판별" },
+    { "tag": "세트(set) 활용 배수 제거", "description": "합성수를 set에 모아두고, 2~n 중 set에 없는 수를 소수로 추출" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nis_prime = [True] * (n + 1)\nis_prime[0] = is_prime[1] = False\n\nfor i in range(2, int(n**0.5) + 1):\n    if is_prime[i]:  # i가 소수라면\n        for j in range(i*i, n+1, i):  # i*i부터 배수들을 제거\n            is_prime[j] = False\n\nprimes = [i for i in range(2, n+1) if is_prime[i]]\nprint(\" \".join(map(str, primes)))\n```\n\n**왜 i*i부터 시작하나?**\ni의 배수 중 `2i, 3i, ..., (i-1)*i`는 이미 이전 소수로 처리됐어요!\n예: i=5이면 10, 15, 20은 이미 2, 3, 5의 배수로 지워짐 → 25부터 시작\n\n**시간 복잡도**: O(n log log n) — 매우 빠름!\n하나씩 확인하는 방법 O(n√n)보다 훨씬 효율적이에요."
 }

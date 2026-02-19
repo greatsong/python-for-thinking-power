@@ -17,7 +17,8 @@
     "큐에서 꺼낼 때 E이면 거리 반환!"
   ],
   "expected_approaches": [
-    { "tag": "BFS (너비 우선 탐색)", "description": "deque 큐로 레이어별 탐색, 최초 도달 = 최단 거리" }
+    { "tag": "BFS (너비 우선 탐색) O(V+E)", "description": "deque 큐로 레이어별 탐색, 최초 도달 = 최단 거리 보장" },
+    { "tag": "DFS + 모든 경로 탐색", "description": "재귀로 모든 가능한 경로를 탐색하여 최소 거리 갱신 — 직관적이지만 비효율적" }
   ],
   "explanation": "## 풀이 해설\n\n### BFS 알고리즘 흐름도\n\n```mermaid\nflowchart TD\n    A[\"시작점을 큐에 넣기\"] --> B{\"큐가 비어있나?\"}\n    B -->|\"아니오\"| C[\"큐에서 꺼내기 (dequeue)\"]\n    B -->|\"예\"| H[\"도달 불가: -1 반환\"]\n    C --> D{\"목표점(E)인가?\"}\n    D -->|\"예\"| E[\"최단 거리 반환!\"]\n    D -->|\"아니오\"| F[\"상하좌우 4방향 확인\"]\n    F --> G{\"이동 가능하고\\n미방문인가?\"}\n    G -->|\"예\"| I[\"방문 표시 + 큐에 넣기\\n(거리 +1)\"]\n    G -->|\"아니오\"| J[\"건너뛰기\"]\n    I --> B\n    J --> F\n```\n\n```python\nfrom collections import deque\n\nn, m = map(int, input().split())\nmaze = []\nstart = end = None\nfor i in range(n):\n    row = input().split()\n    maze.append(row)\n    for j, cell in enumerate(row):\n        if cell == 'S': start = (i, j)\n        if cell == 'E': end = (i, j)\n\nqueue = deque([(start[0], start[1], 0)])  # (행, 열, 거리)\nvisited = {start}\ndx = [0, 0, 1, -1]\ndy = [1, -1, 0, 0]\n\nresult = -1\nwhile queue:\n    r, c, dist = queue.popleft()\n    if (r, c) == end:\n        result = dist\n        break\n    for i in range(4):\n        nr, nc = r + dx[i], c + dy[i]\n        if 0 <= nr < n and 0 <= nc < m and maze[nr][nc] != '#' and (nr, nc) not in visited:\n            visited.add((nr, nc))\n            queue.append((nr, nc, dist + 1))\n\nprint(result)\n```\n\n**BFS가 최단 경로를 보장하는 이유**\n\nBFS는 거리 순서로 탐색해요:\n```\n거리 0: 시작점\n거리 1: 시작점에서 1칸 이동 가능한 곳들\n거리 2: 2칸 이동 가능한 곳들\n...\n```\nE에 처음 도달했을 때가 반드시 최단 거리예요!\n(더 짧은 경로가 있다면 이미 도달했을 테니까)\n\n**DFS vs BFS**: DFS는 한 길을 끝까지 파고드는 방식이라 최단 경로 보장 X.\nBFS는 동심원처럼 퍼져나가서 최단 경로 보장 ✓"
 }

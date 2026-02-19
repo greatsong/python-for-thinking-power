@@ -16,7 +16,9 @@
     "for start, end in intervals[1:]: if start <= merged[-1][1]: merged[-1][1] = max(merged[-1][1], end)"
   ],
   "expected_approaches": [
-    { "tag": "정렬 후 순차 합치기", "description": "시작점 정렬 후 현재 끝과 다음 시작 비교" }
+    { "tag": "정렬 + 순차 병합 O(n log n)", "description": "시작점 기준 정렬 후 인접 구간의 끝과 시작을 비교하며 병합" },
+    { "tag": "완전 탐색 쌍 비교 O(n²)", "description": "모든 구간 쌍을 비교하여 겹치면 합치기를 반복, 더 이상 합칠 것이 없을 때까지" },
+    { "tag": "이벤트 스윕(Event Sweep) O(n log n)", "description": "시작/끝을 이벤트로 분리하고, 활성 구간 카운트가 0이 되는 지점에서 구간을 끊기" }
   ],
   "explanation": "## 풀이 해설\n\n**겹치는 구간 합치기 흐름:**\n\n```mermaid\nflowchart TD\n    A[\"시작점 기준 정렬\"] --> B[\"merged에 첫 구간 추가\"]\n    B --> C[\"다음 구간 읽기\"]\n    C --> D{\"현재 시작 <=\\nmerged 마지막 끝?\"}\n    D -->|\"Yes 겹침!\"| E[\"merged 마지막 끝 =\\nmax 끝1, 끝2\"]\n    D -->|\"No 안 겹침\"| F[\"merged에 새 구간 추가\"]\n    E --> G{\"구간 남았나?\"}\n    F --> G\n    G -->|\"Yes\"| C\n    G -->|\"No\"| H[\"merged 출력\"]\n    style E fill:#FFD700\n    style F fill:#87CEEB\n    style H fill:#90EE90\n```\n\n> 정렬 후 순차 비교: 겹치면 끝을 확장(노란색), 안 겹치면 새로 추가(파란색)!\n\n```python\nn = int(input())\nintervals = []\nfor _ in range(n):\n    s, e = map(int, input().split())\n    intervals.append([s, e])\n\n# 시작점 기준 정렬\nintervals.sort()\nmerged = [intervals[0]]\n\nfor start, end in intervals[1:]:\n    if start <= merged[-1][1]:  # 겹침!\n        merged[-1][1] = max(merged[-1][1], end)  # 끝 확장\n    else:  # 안 겹침\n        merged.append([start, end])\n\nfor s, e in merged:\n    print(s, e)\n```\n\n**왜 정렬을 먼저 하나?**\n정렬하면 겹치는 구간이 반드시 인접해 있어요!\n정렬 없이는 모든 쌍을 비교해야 해서 O(n²) → 정렬 후 O(n log n)\n\n**경계 처리**: `start <= merged[-1][1]` — `<=`이어야 [1,4],[4,5]도 합쳐요!"
 }

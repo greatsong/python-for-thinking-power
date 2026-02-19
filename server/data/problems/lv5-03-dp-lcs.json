@@ -18,7 +18,8 @@
     "답: dp[len(a)][len(b)]"
   ],
   "expected_approaches": [
-    { "tag": "2D DP", "description": "dp[i][j] = a[:i]와 b[:j]의 LCS 길이, 문자 같으면 +1, 다르면 max" }
+    { "tag": "2D DP 바텀업 O(nm)", "description": "dp[i][j] 테이블을 작은 부분부터 채워나가는 반복문 방식" },
+    { "tag": "재귀 + 메모이제이션 (탑다운)", "description": "lcs(i,j)를 재귀 호출하되 결과를 캐싱 — 사고 흐름이 더 직관적" }
   ],
   "explanation": "## 풀이 해설\n\n```mermaid\nflowchart TD\n    A[\"i=1~len(A), j=1~len(B) 순회\"] --> B{\"A[i-1] == B[j-1]?\"}\n    B -->|\"같다\"| C[\"dp[i][j] = dp[i-1][j-1] + 1\\n(대각선 + 1)\"]\n    B -->|\"다르다\"| D[\"dp[i][j] = max(dp[i-1][j], dp[i][j-1])\\n(위 또는 왼쪽 중 최대)\"]\n    C --> E[\"다음 칸으로 이동\"]\n    D --> E\n    E --> F{\"모든 칸 완료?\"}\n    F -->|\"아니오\"| A\n    F -->|\"예\"| G[\"dp[len(A)][len(B)] = LCS 길이\"]\n```\n\n```python\na = input()\nb = input()\n\nla, lb = len(a), len(b)\ndp = [[0]*(lb+1) for _ in range(la+1)]\n\nfor i in range(1, la+1):\n    for j in range(1, lb+1):\n        if a[i-1] == b[j-1]:      # 문자가 같으면\n            dp[i][j] = dp[i-1][j-1] + 1  # 대각선 +1\n        else:                      # 다르면\n            dp[i][j] = max(dp[i-1][j], dp[i][j-1])  # 위 또는 왼쪽 최댓값\n\nprint(dp[la][lb])\n```\n\n**점화식 이해**\n\n`a[i-1] == b[j-1]`일 때:\n→ 두 문자가 같으니 LCS에 포함! 이전 상태(dp[i-1][j-1])에서 +1\n\n`a[i-1] != b[j-1]`일 때:\n→ 두 문자 중 하나를 무시. 더 좋은 것 선택\n- a[i-1] 무시: dp[i-1][j]\n- b[j-1] 무시: dp[i][j-1]\n\n**왜 2D 배열인가?**\nLCS는 두 문자열의 상태(i번째까지, j번째까지)를 동시에 추적해야 해서 2차원이 필요해요.\n\n**LCS의 응용**: DNA 서열 비교, 파일 diff, 자동 번역 등에서 핵심 알고리즘으로 사용돼요."
 }

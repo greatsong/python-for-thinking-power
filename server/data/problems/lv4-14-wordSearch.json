@@ -16,7 +16,9 @@
     "방문 표시: visited[row][col] = True / 탐색 후 False로 되돌리기 (백트래킹)"
   ],
   "expected_approaches": [
-    { "tag": "DFS + 백트래킹", "description": "각 시작점에서 DFS, 방문 처리 후 되돌리기" }
+    { "tag": "DFS + 백트래킹 O(m·n·4ᴸ)", "description": "각 시작점에서 DFS, 방문 처리 후 되돌리기 — 4방향 재귀 탐색" },
+    { "tag": "DFS + 가지치기(pruning) 최적화", "description": "글자 빈도를 미리 세어 불가능한 경우 조기 종료, 희귀 글자부터 탐색 시작" },
+    { "tag": "BFS + 상태 관리", "description": "큐에 (위치, 방문set, 인덱스)를 넣어 너비 우선으로 탐색 (메모리 많이 사용)" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nr, c = map(int, input().split())\ngrid = [list(input()) for _ in range(r)]\nword = input()\nvisited = [[False]*c for _ in range(r)]\ndirections = [(0,1),(0,-1),(1,0),(-1,0)]\n\ndef dfs(row, col, idx):\n    if idx == len(word):  # 단어 완성!\n        return True\n    if row < 0 or row >= r or col < 0 or col >= c:\n        return False  # 범위 초과\n    if visited[row][col] or grid[row][col] != word[idx]:\n        return False  # 방문했거나 글자 불일치\n    \n    visited[row][col] = True  # 방문 표시\n    for dr, dc in directions:\n        if dfs(row+dr, col+dc, idx+1):\n            visited[row][col] = False\n            return True\n    visited[row][col] = False  # 백트래킹!\n    return False\n\nfound = any(dfs(i, j, 0) for i in range(r) for j in range(c))\nprint(\"가능\" if found else \"불가능\")\n```\n\n**백트래킹 핵심**: `visited[row][col] = False` — 탐색 실패 후 방문 취소!"
 }

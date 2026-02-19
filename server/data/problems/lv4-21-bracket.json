@@ -18,7 +18,9 @@
     "닫힌 괄호를 만나면: stack.pop()이 짝인지 확인. 스택이 비어있거나 짝이 안맞으면 NO"
   ],
   "expected_approaches": [
-    { "tag": "스택 활용", "description": "열린 괄호 push, 닫힌 괄호에서 pop 후 짝 확인" }
+    { "tag": "스택(LIFO) 활용 O(n)", "description": "열린 괄호 push, 닫힌 괄호에서 pop 후 짝 확인 — 자료구조의 핵심 응용" },
+    { "tag": "카운터 기반 (단일 괄호) O(n)", "description": "괄호가 1종류일 때 depth 카운터만으로 판별 가능 (여러 종류면 스택 필요)" },
+    { "tag": "문자열 치환 반복 O(n²)", "description": "'()', '[]', '{}'를 반복 제거하여 빈 문자열이 되면 유효 — 직관적이지만 느림" }
   ],
   "explanation": "## 풀이 해설\n\n```python\ns = input()\n\nstack = []\npairs = {')': '(', ']': '[', '}': '{'}\n\nfor c in s:\n    if c in '([{':\n        stack.append(c)  # 열린 괄호: 스택에 저장\n    elif c in ')]}':\n        if not stack or stack[-1] != pairs[c]:\n            print('NO')  # 스택 비었거나 짝 안맞음\n            exit()\n        stack.pop()  # 짝 맞음: 제거\n\nprint('YES' if not stack else 'NO')\n```\n\n**왜 스택인가?**\n\n`({[]})` 처리 과정:\n```\n'(' → 스택: ['(']\n'{' → 스택: ['(', '{']\n'[' → 스택: ['(', '{', '[']\n']' → '[' 꺼냄 ✓, 스택: ['(', '{']\n'}' → '{' 꺼냄 ✓, 스택: ['(']\n')' → '(' 꺼냄 ✓, 스택: []\n→ 스택 비었다 → YES!\n```\n\n**핵심**: 가장 최근에 열린 괄호가 먼저 닫혀야 하는 규칙이\n딱 스택의 LIFO 특성과 맞아요!\n\n괄호 검사기는 컴파일러가 코드 문법을 검사할 때 실제로 사용하는 방법이에요."
 }

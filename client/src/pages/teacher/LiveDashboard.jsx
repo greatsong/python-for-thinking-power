@@ -2,11 +2,12 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { apiFetch } from '../../api/client.js';
 import useAuthStore from '../../stores/authStore.js';
 import useDashboardStore from '../../stores/dashboardStore.js';
+import StudentDetailPanel from '../../components/StudentDetailPanel.jsx';
 import {
   LayoutDashboard, Users, FileCheck, MessageSquare,
   RefreshCw, School, Clock, Activity, Grid3X3,
   ArrowUpDown, Filter, Bot, AlertTriangle, ChevronDown,
-  CheckCircle, XCircle, Minus, Search, Heart
+  CheckCircle, XCircle, Minus, Search, Heart, Download
 } from 'lucide-react';
 import { DIFFICULTY_LABELS, DIFFICULTY_COLORS, CATEGORY_LABELS } from 'shared/constants.js';
 
@@ -30,6 +31,12 @@ export default function LiveDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilterMenu, setShowFilterMenu] = useState(false);
 
+  // 학생 상세 패널
+  const [selectedCell, setSelectedCell] = useState(null); // { student, problem, cell }
+
+  // 내보내기 드롭다운
+  const [showExportMenu, setShowExportMenu] = useState(false);
+
   // 문제 열 클릭 정렬
   const [sortByProblemId, setSortByProblemId] = useState(null);
   const [sortByProblemAsc, setSortByProblemAsc] = useState(true); // true: 자력→AI→미통과, false: 반대
@@ -52,6 +59,39 @@ export default function LiveDashboard() {
   const handleStudentHeaderClick = () => {
     setSortByProblemId(null);
     setSortBy('number');
+  };
+
+  // 매트릭스 셀 클릭 → 학생 상세 패널
+  const handleCellClick = (student, problem, cell) => {
+    setSelectedCell({ student, problem, cell });
+  };
+
+  // 학생 행 클릭 → 전체 요약 모드
+  const handleStudentClick = (student) => {
+    setSelectedCell({ student, problem: null, cell: null });
+  };
+
+  // CSV 내보내기
+  const handleExport = async (type) => {
+    setShowExportMenu(false);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`/api/dashboard/export/${selectedClassroom}?type=${type}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('내보내기 실패');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${type}_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('내보내기 실패:', err.message);
+    }
   };
 
   // 교실 목록 불러오기
@@ -316,6 +356,34 @@ export default function LiveDashboard() {
             <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
             <span className="hidden sm:inline">새로고침</span>
           </button>
+
+          {/* 내보내기 */}
+          <div className="relative">
+            <button
+              onClick={() => setShowExportMenu(!showExportMenu)}
+              disabled={!selectedClassroom}
+              className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-colors shrink-0"
+            >
+              <Download size={16} />
+              <span className="hidden sm:inline">내보내기</span>
+            </button>
+            {showExportMenu && (
+              <div className="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-20 min-w-[160px]">
+                <button
+                  onClick={() => handleExport('grades')}
+                  className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 rounded-t-lg"
+                >
+                  성적표 CSV
+                </button>
+                <button
+                  onClick={() => handleExport('progress')}
+                  className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 rounded-b-lg border-t border-slate-100"
+                >
+                  진행 요약 CSV
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -573,6 +641,27 @@ export default function LiveDashboard() {
                       </tr>
                     </thead>
                     <tbody>
+                      {/* 통과율 행 */}
+                      <tr className="bg-slate-25">
+                        <td className="sticky left-0 z-10 bg-slate-50 px-3 py-1 text-[10px] text-slate-400 font-medium border-b border-r border-slate-200">
+                          통과율
+                        </td>
+                        {matrix.problems.map(p => {
+                          const total = matrix.students?.length || 0;
+                          const passed = total > 0
+                            ? matrix.students.filter(s => matrix.cells?.[`${s.id}:${p.id}`]?.status === 'passed').length
+                            : 0;
+                          const rate = total > 0 ? Math.round(passed / total * 100) : 0;
+                          return (
+                            <td key={p.id} className="text-center text-[10px] py-1 border-b border-slate-100 font-medium" style={{
+                              color: rate >= 80 ? '#059669' : rate >= 50 ? '#d97706' : rate > 0 ? '#dc2626' : '#94a3b8'
+                            }}>
+                              {rate}%
+                            </td>
+                          );
+                        })}
+                        <td className="border-b border-l border-slate-200" />
+                      </tr>
                       {filteredStudents.map((student) => {
                         // 통과 수 계산
                         let passedCount = 0;
@@ -604,14 +693,23 @@ export default function LiveDashboard() {
                                   className="px-1 py-1.5 border-b border-slate-100 text-center"
                                 >
                                   <div
-                                    className={`w-8 h-8 mx-auto rounded-md border ${info.bg} ${info.border} flex items-center justify-center ${info.color} font-bold text-xs cursor-default relative group/cell`}
+                                    className={`w-8 h-8 mx-auto rounded-md border ${info.bg} ${info.border} flex items-center justify-center ${info.color} font-bold text-xs cursor-pointer hover:ring-2 hover:ring-blue-400 relative group/cell transition-shadow`}
                                     title={info.tooltip || ''}
+                                    onClick={() => handleCellClick(student, p, cell)}
                                   >
                                     {info.label}
                                     {cell?.aiUsed && info.label !== '⚠' && (
                                       <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-violet-500 border border-white flex items-center justify-center">
                                         <Bot size={7} className="text-white" />
                                       </span>
+                                    )}
+                                    {cell?.teacherGrade && (
+                                      <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-500 border border-white text-[7px] text-white flex items-center justify-center font-bold">
+                                        {cell.teacherGrade}
+                                      </span>
+                                    )}
+                                    {!cell?.teacherGrade && cell?.hasFeedback && (
+                                      <span className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-amber-400 border border-white" />
                                     )}
                                   </div>
                                 </td>
@@ -854,7 +952,7 @@ export default function LiveDashboard() {
                     </thead>
                     <tbody>
                       {students.map((student) => (
-                        <tr key={student.id} className="border-t border-slate-100 hover:bg-slate-50">
+                        <tr key={student.id} className="border-t border-slate-100 hover:bg-slate-50 cursor-pointer" onClick={() => handleStudentClick(student)}>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
                               <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
@@ -896,6 +994,19 @@ export default function LiveDashboard() {
             </div>
           )}
         </>
+      )}
+
+      {/* 학생 상세 슬라이드 패널 */}
+      {selectedCell && (
+        <StudentDetailPanel
+          classroomId={selectedClassroom}
+          studentId={selectedCell.student.id}
+          problemId={selectedCell.problem?.id || null}
+          studentName={selectedCell.student.name}
+          problemTitle={selectedCell.problem?.title || null}
+          onClose={() => setSelectedCell(null)}
+          onFeedbackSaved={loadDashboardData}
+        />
       )}
     </div>
   );

@@ -17,7 +17,9 @@
     "모든 칸 순회: if grid[r][c]==1: count+=1; dfs(r,c)"
   ],
   "expected_approaches": [
-    { "tag": "DFS 재귀", "description": "땅 발견 시 DFS로 연결된 모든 땅을 0으로 침수, count 증가" }
+    { "tag": "DFS 재귀 (침수법)", "description": "땅 발견 시 DFS로 연결된 모든 땅을 0으로 침수, count 증가" },
+    { "tag": "BFS (큐 기반 탐색)", "description": "deque로 레이어별 탐색하며 연결된 땅을 모두 방문 처리" },
+    { "tag": "Union-Find (집합 기반)", "description": "인접한 땅을 union으로 합치고, 최종 그룹 수 = 섬 수" }
   ],
   "explanation": "## 풀이 해설\n\n### DFS 섬 세기 알고리즘 흐름도\n\n```mermaid\nflowchart TD\n    A[\"격자 전체 스캔 시작\\ncount = 0\"] --> B{\"다음 칸 확인\"}\n    B -->|\"grid[r][c] == 1\"| C[\"새 섬 발견!\\ncount += 1\"]\n    B -->|\"grid[r][c] == 0\"| B\n    B -->|\"모든 칸 완료\"| H[\"count 출력\"]\n    C --> D[\"DFS 시작: 현재 칸 침수\\ngrid[r][c] = 0\"]\n    D --> E{\"8방향 이웃 중\\n땅(1)이 있나?\"}\n    E -->|\"예\"| F[\"이웃으로 이동\"]\n    F --> D\n    E -->|\"아니오\"| G[\"DFS 종료\\n(한 섬 완전 침수)\"]\n    G --> B\n```\n\n```python\nimport sys\nsys.setrecursionlimit(10000)\n\nn, m = map(int, input().split())\ngrid = []\nfor _ in range(n):\n    row = list(map(int, input().split()))\n    grid.append(row)\n\ndef dfs(r, c):\n    grid[r][c] = 0  # 방문 표시 (바다로 침수)\n    for dr in [-1, 0, 1]:\n        for dc in [-1, 0, 1]:\n            if dr == 0 and dc == 0:\n                continue\n            nr, nc = r + dr, c + dc\n            if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] == 1:\n                dfs(nr, nc)\n\ncount = 0\nfor r in range(n):\n    for c in range(m):\n        if grid[r][c] == 1:\n            count += 1\n            dfs(r, c)  # 연결된 모든 땅 침수\n\nprint(count)\n```\n\n**\"침수\" 아이디어의 우아함**\n\n땅을 발견하면 연결된 모든 땅을 바다(0)로 만들어요.\n그러면 같은 섬은 다시 카운트되지 않아요!\n\n**DFS 실행 흐름** (예시):\n```\ngrid[0][1]=1 발견 → count=1, DFS 시작\n→ grid[0][1]=0 (침수)\n→ 이웃 grid[0][2]=1 → DFS → 침수\n→ 이웃 grid[1][1]=1 → DFS → 침수\n→ 더 이상 연결된 땅 없음, DFS 종료\n다음 미발견 땅: grid[2][3]=1 → count=2...\n```\n\n**재귀 깊이 제한**: Python 기본 1000, `sys.setrecursionlimit`으로 늘려야 해요!"
 }

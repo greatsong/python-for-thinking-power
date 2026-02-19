@@ -15,7 +15,9 @@
     "헤더: print(f\"{'이름':<12}{'점수':>5}\") / 구분선: print(\"-\" * 17)"
   ],
   "expected_approaches": [
-    { "tag": "f-string 정렬 서식", "description": "f\"{name:<12}{score:>5}\" 로 각 행 출력" }
+    { "tag": "f-string 정렬 서식 O(N)", "description": "f\"{name:<12}{score:>5}\" 로 각 행 출력 — 파이썬 내장 포맷 활용" },
+    { "tag": "str.ljust/rjust 메서드 O(N)", "description": "name.ljust(12) + str(score).rjust(5)로 수동 정렬" },
+    { "tag": "최대 길이 동적 계산 O(N)", "description": "max(len(name) for name,_ in data)로 열 폭을 데이터에 맞게 자동 조절" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nn = int(input())\ndata = []\nfor _ in range(n):\n    name, score = input().split()\n    data.append((name, int(score)))\n\n# 헤더 출력\nprint(f\"{'이름':<12}{'점수':>5}\")\nprint(\"-\" * 17)\n\n# 데이터 출력\nfor name, score in data:\n    print(f\"{name:<12}{score:>5}\")\n```\n\n**f-string 정렬 문법**:\n- `:<12` → 왼쪽 정렬, 최소 12칸\n- `:>5` → 오른쪽 정렬, 최소 5칸\n- `:^10` → 가운데 정렬, 최소 10칸\n\n한글은 한 글자가 2바이트라 정렬이 달라질 수 있어요. 이 점을 고려한 테스트를 작성해봐요!"
 }

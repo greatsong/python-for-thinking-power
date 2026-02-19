@@ -16,7 +16,8 @@
     "print(f\"{f:.1f}\")로 소수점 1자리로 출력하세요."
   ],
   "expected_approaches": [
-    { "tag": "변환 공식 적용", "description": "f = c * 9 / 5 + 32 계산 후 :.1f로 출력" }
+    { "tag": "분수 계산 O(1)", "description": "f = c * 9 / 5 + 32 — 9/5를 곱셈과 나눗셈으로 계산" },
+    { "tag": "소수 계수 O(1)", "description": "f = c * 1.8 + 32 — 9/5를 미리 소수(1.8)로 바꿔서 한 번에 계산" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nc = float(input())\nf = c * 9 / 5 + 32\nprint(f\"{f:.1f}\")\n```\n\n공식 `c * 9 / 5 + 32`를 계산하고 `:.1f`로 소수점 1자리 출력!"
 }

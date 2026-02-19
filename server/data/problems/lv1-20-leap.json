@@ -19,7 +19,8 @@
     "규칙: (4의 배수 and 100의 배수 아님) or 400의 배수"
   ],
   "expected_approaches": [
-    { "tag": "복합 조건", "description": "(year % 4 == 0 and year % 100 != 0) or year % 400 == 0" }
+    { "tag": "한 줄 복합 조건 O(1)", "description": "(year % 4 == 0 and year % 100 != 0) or year % 400 == 0 — 조건을 하나로 합치기" },
+    { "tag": "중첩 if 단계적 판별 O(1)", "description": "if year%400==0 → 윤년, elif year%100==0 → 평년, elif year%4==0 → 윤년 — 조건을 단계별로 분리" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nyear = int(input())\nif (year % 4 == 0 and year % 100 != 0) or year % 400 == 0:\n    print(\"윤년\")\nelse:\n    print(\"평년\")\n```\n\n윤년 규칙 세 가지를 `and`, `or`, `!=`로 표현했어요!"
 }

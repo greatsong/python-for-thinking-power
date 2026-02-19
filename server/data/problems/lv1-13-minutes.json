@@ -17,7 +17,8 @@
     "print(f\"{시간}시간 {분}분\") 형식으로 출력하세요."
   ],
   "expected_approaches": [
-    { "tag": "몫과 나머지", "description": "// 로 시간, % 로 분을 구해 f-string 출력" }
+    { "tag": "// 와 % 따로 계산 O(1)", "description": "hour = total // 60, minute = total % 60 으로 각각 구하기" },
+    { "tag": "divmod() 한 번에 O(1)", "description": "hour, minute = divmod(total, 60) 으로 몫과 나머지를 동시에 구하기" }
   ],
   "explanation": "### 풀이 해설\n\n```python\ntotal = int(input())\nhour = total // 60\nminute = total % 60\nprint(f\"{hour}시간 {minute}분\")\n```\n\n`//`는 나눗셈의 몫, `%`는 나머지예요!"
 }

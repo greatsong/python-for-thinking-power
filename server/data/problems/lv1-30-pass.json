@@ -16,7 +16,8 @@
     "if score >= 60: print(\"합격\") else: print(\"불합격\")"
   ],
   "expected_approaches": [
-    { "tag": "if/else 비교", "description": "score >= 60이면 합격, 아니면 불합격" }
+    { "tag": "if/else 분기 O(1)", "description": "if score >= 60: print(\"합격\") else: print(\"불합격\")" },
+    { "tag": "조건식(삼항 연산) O(1)", "description": "print(\"합격\" if score >= 60 else \"불합격\") — 한 줄로 조건 판별" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nscore = int(input())\nif score >= 60:\n    print(\"합격\")\nelse:\n    print(\"불합격\")\n```\n\n`>=` 연산자는 '크거나 같다'는 뜻이에요. 60점도 합격!"
 }

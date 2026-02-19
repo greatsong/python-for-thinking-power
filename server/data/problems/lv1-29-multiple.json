@@ -16,7 +16,8 @@
     "if a % b == 0: print(\"배수\") else: print(\"아님\")"
   ],
   "expected_approaches": [
-    { "tag": "% 연산", "description": "a % b == 0이면 배수, 아니면 아님" }
+    { "tag": "나머지 연산(%) 판별 O(1)", "description": "if a % b == 0 — 나머지가 0이면 배수" },
+    { "tag": "몫 역산 비교 O(1)", "description": "if a // b * b == a — 몫에 b를 다시 곱해서 원래 수와 같은지 비교" }
   ],
   "explanation": "### 풀이 해설\n\n```python\na = int(input())\nb = int(input())\nif a % b == 0:\n    print(\"배수\")\nelse:\n    print(\"아님\")\n```\n\n나머지가 0이면 딱 떨어지는 배수예요!"
 }

@@ -33,16 +33,41 @@ export async function initDatabase() {
     console.log('[DB] 새 데이터베이스 생성');
   }
 
-  // 스키마 실행 (IF NOT EXISTS이므로 기존 테이블에 안전)
+  // 스키마 실행: 테이블 생성 먼저, 인덱스는 마이그레이션 후에
   const schema = fs.readFileSync(SCHEMA_PATH, 'utf-8');
-  db.run(schema);
+  const tableStatements = schema.split(';')
+    .map(s => s.trim())
+    .filter(s => s.length > 0 && !s.toUpperCase().startsWith('CREATE INDEX'));
+  const indexStatements = schema.split(';')
+    .map(s => s.trim())
+    .filter(s => s.length > 0 && s.toUpperCase().startsWith('CREATE INDEX'));
 
-  // 마이그레이션: 새 컬럼 추가 (기존 DB 호환)
+  // 1단계: 테이블 생성 (IF NOT EXISTS이므로 안전)
+  for (const stmt of tableStatements) {
+    db.run(stmt);
+  }
+
+  // 2단계: 마이그레이션 (기존 DB 호환 — ALTER TABLE은 컬럼 존재 시 에러이므로 try-catch)
   try { db.run('ALTER TABLE submissions ADD COLUMN reflection TEXT'); } catch {}
   try { db.run('ALTER TABLE problems ADD COLUMN explanation TEXT'); } catch {}
   try { db.run('ALTER TABLE users ADD COLUMN current_level INT DEFAULT 1'); } catch {}
   try { db.run('ALTER TABLE users ADD COLUMN anthropic_api_key TEXT'); } catch {}
   try { db.run('ALTER TABLE classrooms ADD COLUMN daily_ai_limit INTEGER DEFAULT 0'); } catch {}
+  try { db.run('ALTER TABLE problems ADD COLUMN is_shared INTEGER DEFAULT 0'); } catch {}
+  try { db.run('ALTER TABLE problems ADD COLUMN shared_at TEXT'); } catch {}
+  try { db.run('ALTER TABLE problems ADD COLUMN cloned_from TEXT'); } catch {}
+
+  // 교사 피드백/평가 관련 마이그레이션
+  try { db.run('ALTER TABLE submissions ADD COLUMN teacher_score INTEGER'); } catch {}
+  try { db.run('ALTER TABLE submissions ADD COLUMN teacher_grade TEXT'); } catch {}
+  try { db.run('ALTER TABLE submissions ADD COLUMN teacher_feedback TEXT'); } catch {}
+  try { db.run('ALTER TABLE submissions ADD COLUMN feedback_at TEXT'); } catch {}
+  try { db.run('ALTER TABLE submissions ADD COLUMN feedback_by TEXT'); } catch {}
+
+  // 3단계: 인덱스 생성 (마이그레이션으로 컬럼이 추가된 후에 실행)
+  for (const stmt of indexStatements) {
+    try { db.run(stmt); } catch {}
+  }
 
   // 성능 최적화
   db.run('PRAGMA foreign_keys=ON');

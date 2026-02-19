@@ -17,7 +17,8 @@
     "if d > dist[u]: continue  # 이미 더 짧은 경로 있음"
   ],
   "expected_approaches": [
-    { "tag": "다익스트라 + heapq", "description": "우선순위 큐로 최소 거리 노드 추출, 이웃 거리 갱신" }
+    { "tag": "다익스트라 + heapq O((V+E)logV)", "description": "우선순위 큐로 최소 거리 노드를 효율적으로 추출하여 이웃 갱신" },
+    { "tag": "벨만-포드 O(VE)", "description": "모든 간선을 V-1번 반복 완화 — 음수 가중치도 처리 가능하지만 느림" }
   ],
   "explanation": "## 풀이 해설\n\n### 다익스트라 알고리즘 흐름도\n\n```mermaid\nflowchart TD\n    A[\"초기화\\ndist[start]=0, 나머지=INF\"] --> B[\"우선순위 큐에\\n(0, start) 넣기\"]\n    B --> C{\"큐가 비어있나?\"}\n    C -->|\"아니오\"| D[\"최소 거리 노드\\n(d, u) 꺼내기\"]\n    C -->|\"예\"| I[\"모든 최단 거리 확정!\"]\n    D --> E{\"d > dist[u]?\\n(이미 더 짧은 경로?)\"}\n    E -->|\"예\"| C\n    E -->|\"아니오\"| F[\"u의 이웃 v 탐색\"]\n    F --> G{\"dist[u]+w < dist[v]?\\n(더 짧은 경로 발견?)\"}\n    G -->|\"예\"| H[\"dist[v] 갱신\\n큐에 (dist[v], v) 추가\"]\n    G -->|\"아니오\"| F\n    H --> F\n    F -->|\"모든 이웃 완료\"| C\n```\n\n```python\nimport heapq\n\nn, m = map(int, input().split())\nstart = int(input())\ngraph = [[] for _ in range(n+1)]\nfor _ in range(m):\n    u, v, w = map(int, input().split())\n    graph[u].append((v, w))\n\ndist = [float('inf')] * (n+1)\ndist[start] = 0\nheap = [(0, start)]  # (거리, 노드)\n\nwhile heap:\n    d, u = heapq.heappop(heap)  # 최소 거리 노드\n    if d > dist[u]:              # 이미 더 짧은 경로 있으면 스킵\n        continue\n    for v, w in graph[u]:        # 이웃 탐색\n        if dist[u] + w < dist[v]:  # 더 짧은 경로 발견!\n            dist[v] = dist[u] + w\n            heapq.heappush(heap, (dist[v], v))\n\nfor i in range(1, n+1):\n    print('INF' if dist[i] == float('inf') else dist[i])\n```\n\n**핵심 원리**:\n\n다익스트라 = 그리디 + DP\n- 그리디: 현재 가장 가까운 노드를 먼저 처리\n- DP: 이전에 계산한 최단 거리를 활용\n\n**왜 heapq인가?**\n우선순위 큐로 최소 거리 노드를 O(log n)에 꺼낼 수 있어요.\n매번 전체를 순회하면 O(n), heapq는 O(log n) → 전체 O((n+m)log n)\n\n**주의**: 음수 가중치가 있으면 다익스트라 불가 → 벨만-포드 알고리즘 필요"
 }

@@ -77,6 +77,88 @@ async function seed(skipInit = false) {
 }
 
 function seedProblemSets() {
+  // ── 문제 자동 발견: problems 디렉토리의 모든 JSON에서 ID와 difficulty 수집 ──
+  const allProblemFiles = fs.readdirSync(PROBLEMS_DIR).filter(f => f.endsWith('.json'));
+  const allProblemMeta = new Map(); // id → { difficulty, id }
+  for (const file of allProblemFiles) {
+    try {
+      const data = JSON.parse(fs.readFileSync(path.join(PROBLEMS_DIR, file), 'utf-8'));
+      if (data.id && data.difficulty) {
+        allProblemMeta.set(data.id, { difficulty: data.difficulty, id: data.id });
+      }
+    } catch { /* 파싱 실패한 파일 무시 */ }
+  }
+
+  // ── 기존 문제 목록 (순서 보존용 — 수동 큐레이션) ──
+  const curatedIds = {
+    1: [
+      'beginner-01-hello', 'beginner-02-namecard', 'beginner-03-calculator',
+      'beginner-04-circle', 'beginner-05-evenodd',
+      'lv1-06-multiprint', 'lv1-07-fullname', 'lv1-08-dogAge', 'lv1-09-candy',
+      'lv1-10-clap', 'lv1-11-emoji', 'lv1-12-nameTag', 'lv1-13-promise',
+      'lv1-14-levelup', 'lv1-15-store', 'lv1-16-strrepeat', 'lv1-17-fstring',
+      'lv1-18-positive', 'lv1-19-bigger', 'lv1-21-swap', 'lv1-22-nameBanner',
+      'lv1-23-bus', 'lv1-24-calories', 'lv1-25-typing', 'lv1-26-change',
+      'lv1-27-tempDiff', 'lv1-28-topScore', 'lv1-29-fizz', 'lv1-30-grade', 'lv1-star',
+    ],
+    2: [
+      'lv1-20-leap', 'beginner-06-grade', 'beginner-07-stars',
+      'beginner-08-timestable', 'beginner-09-sum', 'beginner-10-reverse',
+      'lv2-01-traffic', 'lv2-02-season', 'lv2-03-countdown', 'lv2-04-nameList',
+      'lv2-05-multiplication', 'lv2-06-sumOdd', 'lv2-07-multiply', 'lv2-08-maxMin',
+      'lv2-09-staircase', 'lv2-10-fizzbuzz', 'lv2-11-palindrome', 'lv2-12-charCount',
+      'lv2-13-upperCount', 'lv2-14-wordLength', 'lv2-15-listFilter', 'lv2-16-average',
+      'lv2-17-listSort', 'lv2-18-dice', 'lv2-19-ticket', 'lv2-20-stringReverse',
+      'lv2-21-unique', 'lv2-22-fibonacci', 'lv2-23-prime', 'lv2-24-dict',
+    ],
+    3: [
+      'novice-01-temperature', 'novice-02-password-checker', 'novice-03-receipt',
+      'demo-01-card-game', 'demo-02-sugar-delivery', 'demo-03-shell-game',
+      'lv3-01-vending', 'lv3-02-pattern', 'lv3-03-caesar', 'lv3-04-runLength',
+      'lv3-05-numberToWord', 'lv3-06-snake', 'lv3-07-stock', 'lv3-08-matrix',
+      'lv3-09-anagram', 'lv3-10-brackets', 'lv3-11-score', 'lv3-12-lifeGame',
+      'lv3-13-twoSum', 'lv3-14-calendar', 'lv3-15-textSplit', 'lv3-16-pigLatin',
+      'lv3-17-bankAccount', 'lv3-18-textFormat', 'lv3-19-pyramid', 'lv3-20-duplicates',
+      'lv3-21-elevator', 'lv3-22-binarySearch', 'lv3-23-tokenizer', 'lv3-24-scheduler',
+    ],
+    4: [
+      'lv4-01-recursion', 'lv4-02-hanoi', 'lv4-03-sieve', 'lv4-04-binary',
+      'lv4-05-maxSubarray', 'lv4-06-stack', 'lv4-07-groupAnagram', 'lv4-08-roman',
+      'lv4-09-queue', 'lv4-10-permutation', 'lv4-11-graph', 'lv4-12-memoize',
+      'lv4-13-backtrack', 'lv4-14-wordSearch', 'lv4-15-intervals', 'lv4-16-spiral',
+      'lv4-17-palindrome', 'lv4-18-matrix', 'lv4-19-twosum', 'lv4-20-pascal',
+      'lv4-21-bracket', 'lv4-22-decode', 'lv4-23-schedule',
+    ],
+    5: [
+      'lv5-01-bfs', 'lv5-02-dfs', 'lv5-03-dp-lcs', 'lv5-04-dp-knapsack',
+      'lv5-05-dijkstra', 'lv5-06-trie', 'lv5-07-topological', 'lv5-08-kmp',
+      'lv5-09-segment', 'lv5-10-unionfind', 'lv5-11-dp-lis', 'lv5-12-backtrack-sudoku',
+      'lv5-13-dp-coin', 'lv5-14-minSpan', 'lv5-15-editDistance', 'lv5-16-nqueens',
+      'lv5-17-floydWarshall', 'lv5-18-suffixArray', 'lv5-19-bipartite',
+      'lv5-20-slidingWindow', 'lv5-21-monotoneStack', 'lv5-22-treeDp', 'lv5-23-dp2d',
+    ],
+  };
+
+  // ── 새 문제 자동 발견: 큐레이션 목록에 없는 문제를 difficulty 기준으로 자동 추가 ──
+  const allCuratedIds = new Set(Object.values(curatedIds).flat());
+  const autoDiscovered = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+  for (const [id, meta] of allProblemMeta) {
+    if (!allCuratedIds.has(id) && meta.difficulty >= 1 && meta.difficulty <= 5) {
+      autoDiscovered[meta.difficulty].push(id);
+    }
+  }
+
+  // 자동 발견된 문제를 ID 알파벳순 정렬 후 기존 목록 뒤에 추가
+  let totalAutoDiscovered = 0;
+  for (let lv = 1; lv <= 5; lv++) {
+    autoDiscovered[lv].sort();
+    curatedIds[lv].push(...autoDiscovered[lv]);
+    totalAutoDiscovered += autoDiscovered[lv].length;
+  }
+  if (totalAutoDiscovered > 0) {
+    console.log(`[Seed] 새 문제 ${totalAutoDiscovered}개 자동 발견 (문제집에 추가됨)`);
+  }
+
   const sets = [
     {
       id: 'set-lv1-beginner',
@@ -85,38 +167,7 @@ function seedProblemSets() {
       emoji: '🐣',
       color: '#22c55e',
       sort_order: 0,
-      problemIds: [
-        'beginner-01-hello',
-        'beginner-02-namecard',
-        'beginner-03-calculator',
-        'beginner-04-circle',
-        'beginner-05-evenodd',
-        'lv1-06-multiprint',
-        'lv1-07-fullname',
-        'lv1-08-dogAge',
-        'lv1-09-candy',
-        'lv1-10-clap',
-        'lv1-11-emoji',
-        'lv1-12-nameTag',
-        'lv1-13-promise',
-        'lv1-14-levelup',
-        'lv1-15-store',
-        'lv1-16-strrepeat',
-        'lv1-17-fstring',
-        'lv1-18-positive',
-        'lv1-19-bigger',
-        'lv1-21-swap',
-        'lv1-22-nameBanner',
-        'lv1-23-bus',
-        'lv1-24-calories',
-        'lv1-25-typing',
-        'lv1-26-change',
-        'lv1-27-tempDiff',
-        'lv1-28-topScore',
-        'lv1-29-fizz',
-        'lv1-30-grade',
-        'lv1-star',
-      ],
+      problemIds: curatedIds[1],
     },
     {
       id: 'set-lv2-novice',
@@ -125,38 +176,7 @@ function seedProblemSets() {
       emoji: '🛡️',
       color: '#3b82f6',
       sort_order: 1,
-      problemIds: [
-        'lv1-20-leap',
-        'beginner-06-grade',
-        'beginner-07-stars',
-        'beginner-08-timestable',
-        'beginner-09-sum',
-        'beginner-10-reverse',
-        'lv2-01-traffic',
-        'lv2-02-season',
-        'lv2-03-countdown',
-        'lv2-04-nameList',
-        'lv2-05-multiplication',
-        'lv2-06-sumOdd',
-        'lv2-07-multiply',
-        'lv2-08-maxMin',
-        'lv2-09-staircase',
-        'lv2-10-fizzbuzz',
-        'lv2-11-palindrome',
-        'lv2-12-charCount',
-        'lv2-13-upperCount',
-        'lv2-14-wordLength',
-        'lv2-15-listFilter',
-        'lv2-16-average',
-        'lv2-17-listSort',
-        'lv2-18-dice',
-        'lv2-19-ticket',
-        'lv2-20-stringReverse',
-        'lv2-21-unique',
-        'lv2-22-fibonacci',
-        'lv2-23-prime',
-        'lv2-24-dict',
-      ],
+      problemIds: curatedIds[2],
     },
     {
       id: 'set-lv3-challenger',
@@ -165,38 +185,7 @@ function seedProblemSets() {
       emoji: '⚔️',
       color: '#eab308',
       sort_order: 2,
-      problemIds: [
-        'novice-01-temperature',
-        'novice-02-password-checker',
-        'novice-03-receipt',
-        'demo-01-card-game',
-        'demo-02-sugar-delivery',
-        'demo-03-shell-game',
-        'lv3-01-vending',
-        'lv3-02-pattern',
-        'lv3-03-caesar',
-        'lv3-04-runLength',
-        'lv3-05-numberToWord',
-        'lv3-06-snake',
-        'lv3-07-stock',
-        'lv3-08-matrix',
-        'lv3-09-anagram',
-        'lv3-10-brackets',
-        'lv3-11-score',
-        'lv3-12-lifeGame',
-        'lv3-13-twoSum',
-        'lv3-14-calendar',
-        'lv3-15-textSplit',
-        'lv3-16-pigLatin',
-        'lv3-17-bankAccount',
-        'lv3-18-textFormat',
-        'lv3-19-pyramid',
-        'lv3-20-duplicates',
-        'lv3-21-elevator',
-        'lv3-22-binarySearch',
-        'lv3-23-tokenizer',
-        'lv3-24-scheduler',
-      ],
+      problemIds: curatedIds[3],
     },
     {
       id: 'set-lv4-solver',
@@ -205,31 +194,7 @@ function seedProblemSets() {
       emoji: '🧙‍♂️',
       color: '#f97316',
       sort_order: 3,
-      problemIds: [
-        'lv4-01-recursion',
-        'lv4-02-hanoi',
-        'lv4-03-sieve',
-        'lv4-04-binary',
-        'lv4-05-maxSubarray',
-        'lv4-06-stack',
-        'lv4-07-groupAnagram',
-        'lv4-08-roman',
-        'lv4-09-queue',
-        'lv4-10-permutation',
-        'lv4-11-graph',
-        'lv4-12-memoize',
-        'lv4-13-backtrack',
-        'lv4-14-wordSearch',
-        'lv4-15-intervals',
-        'lv4-16-spiral',
-        'lv4-17-palindrome',
-        'lv4-18-matrix',
-        'lv4-19-twosum',
-        'lv4-20-pascal',
-        'lv4-21-bracket',
-        'lv4-22-decode',
-        'lv4-23-schedule',
-      ],
+      problemIds: curatedIds[4],
     },
     {
       id: 'set-lv5-master',
@@ -238,31 +203,7 @@ function seedProblemSets() {
       emoji: '👑',
       color: '#ef4444',
       sort_order: 4,
-      problemIds: [
-        'lv5-01-bfs',
-        'lv5-02-dfs',
-        'lv5-03-dp-lcs',
-        'lv5-04-dp-knapsack',
-        'lv5-05-dijkstra',
-        'lv5-06-trie',
-        'lv5-07-topological',
-        'lv5-08-kmp',
-        'lv5-09-segment',
-        'lv5-10-unionfind',
-        'lv5-11-dp-lis',
-        'lv5-12-backtrack-sudoku',
-        'lv5-13-dp-coin',
-        'lv5-14-minSpan',
-        'lv5-15-editDistance',
-        'lv5-16-nqueens',
-        'lv5-17-floydWarshall',
-        'lv5-18-suffixArray',
-        'lv5-19-bipartite',
-        'lv5-20-slidingWindow',
-        'lv5-21-monotoneStack',
-        'lv5-22-treeDp',
-        'lv5-23-dp2d',
-      ],
+      problemIds: curatedIds[5],
     },
   ];
 

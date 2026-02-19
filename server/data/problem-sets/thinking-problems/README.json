@@ -1,0 +1,42 @@
+{
+  "name": "사고력 문제집 Vol.1",
+  "description": "LeetCode, CSES, Advent of Code에서 영감을 받은 '같은 문제, 다른 생각' 문제 모음",
+  "theme": "하나의 문제를 여러 각도에서 풀어보며 알고리즘적 사고력을 기르자!",
+  "problems": [
+    {
+      "file": "lv1-reverseSum.json",
+      "title": "숫자 뒤집기 합계",
+      "level": 1,
+      "approaches": ["문자열 뒤집기", "수학적 자릿수 추출"],
+      "core_insight": "숫자를 '글자'로 볼 것인가, '수학'으로 볼 것인가"
+    },
+    {
+      "file": "lv2-freqChamp.json",
+      "title": "빈도 챔피언",
+      "level": 2,
+      "approaches": ["완전 탐색 O(n²)", "딕셔너리 O(n)", "정렬 후 카운트 O(n log n)"],
+      "core_insight": "세는 방법: 반복해서 vs 기록하며 vs 모아서"
+    },
+    {
+      "file": "lv3-subarrayK.json",
+      "title": "연속 부분합 K 찾기",
+      "level": 3,
+      "approaches": ["완전 탐색 O(n²)", "슬라이딩 윈도우 O(n)", "누적합+해시맵 O(n)"],
+      "core_insight": "구간을 다 확인 vs 창문을 밀기 vs 수학적 변환"
+    },
+    {
+      "file": "lv4-closestPair.json",
+      "title": "가장 가까운 쌍",
+      "level": 4,
+      "approaches": ["완전 탐색 O(n²)", "정렬 후 인접 비교 O(n log n)", "분할 정복 O(n log n)"],
+      "core_insight": "정렬이 구조를 드러낸다 — 이웃만 보면 충분!"
+    },
+    {
+      "file": "lv5-kthLargest.json",
+      "title": "K번째 큰 수",
+      "level": 5,
+      "approaches": ["정렬 O(n log n)", "최소 힙 O(n log k)", "퀵셀렉트 O(n)"],
+      "core_insight": "필요한 정보의 양 — 전체 순서 vs 상위 K개 vs 딱 하나"
+    }
+  ]
+}

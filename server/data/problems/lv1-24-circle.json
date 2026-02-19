@@ -16,7 +16,8 @@
     "print(f\"{circumference:.2f}\")로 소수점 2자리까지 출력하세요."
   ],
   "expected_approaches": [
-    { "tag": "둘레 공식", "description": "2 * 3.14 * r 계산 후 :.2f로 출력" }
+    { "tag": "직접 상수 사용 O(1)", "description": "2 * 3.14 * r — pi 값을 직접 3.14로 사용" },
+    { "tag": "math.pi 활용 O(1)", "description": "import math → 2 * math.pi * r — 정밀한 pi 값 사용 (결과가 미세하게 달라질 수 있음)" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nr = float(input())\ncircumference = 2 * 3.14 * r\nprint(f\"{circumference:.2f}\")\n```\n\n원의 둘레 공식 2πr에서 π = 3.14를 사용했어요!"
 }

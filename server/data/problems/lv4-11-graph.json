@@ -16,7 +16,9 @@
     "for neighbor in graph[node]: if not visited[neighbor]: visited[neighbor]=True; queue.append((neighbor, dist+1))"
   ],
   "expected_approaches": [
-    { "tag": "BFS (너비 우선 탐색)", "description": "deque로 레벨별 탐색, 최단 거리 보장" }
+    { "tag": "BFS 너비 우선 탐색 O(V+E)", "description": "deque로 레벨별 탐색, 최단 거리 보장 — 가중치 없는 그래프의 정석" },
+    { "tag": "DFS 깊이 우선 탐색 O(V+E)", "description": "재귀/스택으로 깊이 탐색하며 모든 경로 중 최단 거리 기록 (비효율적이지만 가능)" },
+    { "tag": "양방향 BFS O(V+E)", "description": "시작과 목표 양쪽에서 동시에 BFS하여 만나는 지점을 찾아 탐색 범위 축소" }
   ],
   "explanation": "## 풀이 해설\n\n**BFS 탐색 흐름:**\n\n```mermaid\nflowchart TD\n    A[\"시작 노드를 큐에 넣기\\nvisited 표시\"] --> B{\"큐가 비었나?\"}\n    B -->|\"Yes\"| C[\"-1 출력\\n연결 안 됨\"]\n    B -->|\"No\"| D[\"큐에서 노드 꺼내기\\npopleft\"]\n    D --> E{\"목표 노드인가?\"}\n    E -->|\"Yes\"| F[\"거리 출력 후 종료\"]\n    E -->|\"No\"| G[\"인접 노드 탐색\"]\n    G --> H{\"방문 안 한\\n이웃 있나?\"}\n    H -->|\"Yes\"| I[\"visited 표시 후\\n큐에 추가 거리+1\"]\n    I --> H\n    H -->|\"No\"| B\n    style F fill:#90EE90\n    style C fill:#FF6B6B\n    style I fill:#87CEEB\n```\n\n> BFS는 레벨 단위로 탐색하므로 목표를 처음 발견했을 때가 최단 거리!\n\n```python\nfrom collections import deque\n\nn, m = map(int, input().split())\ngraph = [[] for _ in range(n + 1)]\nfor _ in range(m):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    graph[b].append(a)\nstart, target = map(int, input().split())\n\nvisited = [False] * (n + 1)\nqueue = deque([(start, 0)])\nvisited[start] = True\nresult = -1\n\nwhile queue:\n    node, dist = queue.popleft()\n    if node == target:\n        result = dist\n        break\n    for neighbor in graph[node]:\n        if not visited[neighbor]:\n            visited[neighbor] = True\n            queue.append((neighbor, dist + 1))\n\nprint(result)\n```\n\n**왜 BFS가 최단 거리를 보장하나?**\nBFS는 레벨(단계)별로 탐색해요.\n- 1단계 이웃 모두 탐색 → 2단계 이웃 모두 탐색 → ...\n- 목표를 처음 발견했을 때의 단계가 최단 거리!"
 }

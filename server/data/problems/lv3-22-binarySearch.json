@@ -18,7 +18,9 @@
     "mid == target 이면 찾음! count를 세세요."
   ],
   "expected_approaches": [
-    { "tag": "이분 탐색 while 루프", "description": "low,high로 범위 좁히며 count 증가" }
+    { "tag": "이분 탐색 반복문 O(log N)", "description": "while low<=high로 범위를 절반씩 좁히며 mid 비교, count 증가" },
+    { "tag": "이분 탐색 재귀 O(log N)", "description": "search(low, high, count) 재귀 함수로 구현 — 분할 정복의 구조가 명확" },
+    { "tag": "순차 탐색과 비교 O(N)", "description": "1부터 n까지 하나씩 확인하는 선형 탐색의 횟수와 이분 탐색 횟수를 비교" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nn = int(input())\ntarget = int(input())\n\nlow, high = 1, n\ncount = 0\n\nwhile low <= high:\n    mid = (low + high) // 2\n    count += 1\n    if mid == target:\n        break\n    elif mid < target:\n        low = mid + 1   # 더 큰 쪽으로\n    else:\n        high = mid - 1  # 더 작은 쪽으로\n\nprint(count)\n```\n\n**이분 탐색의 위력**: n=100이면 최대 7번(`log₂100 ≈ 6.6`)만에 찾아요!\n일일이 1부터 찾으면 최악 100번이지만, 이분 탐색은 최악 7번!\n\n**범위가 절반씩 줄어드는 마법**: 100→50→25→12→6→3→1→찾음!\n\n이것이 바로 O(log n) 알고리즘이에요."
 }

@@ -1,0 +1,25 @@
+{
+  "id": "lv2-28-prefixQuery",
+  "title": "구간 합 구하기",
+  "difficulty": 2,
+  "category": "list",
+  "description": "## 📊 구간 합 구하기\n\nN개의 숫자가 일렬로 있어요. 선생님이 Q번 질문해요:\n\n> \"L번째부터 R번째까지 숫자를 다 더하면 얼마야?\"\n\n```\n숫자: [1, 2, 3, 4, 5]  (인덱스 0부터)\n\n질문 1: 0번~2번 → 1 + 2 + 3 = 6\n질문 2: 1번~4번 → 2 + 3 + 4 + 5 = 14\n질문 3: 3번~3번 → 4\n```\n\n매번 L부터 R까지 더해도 되지만, **미리 합을 구해두면** 더 빠르게 답할 수 있어요!\n\n---\n\n### 누적합이란?\n\n앞에서부터 차례로 합을 쌓아두는 거예요:\n\n```\n원본:  [1, 2, 3, 4, 5]\n누적합: [0, 1, 3, 6, 10, 15]\n       ↑ prefix[0] = 0 (아무것도 안 더함)\n          ↑ prefix[1] = 1\n             ↑ prefix[2] = 1+2 = 3\n                ↑ prefix[3] = 1+2+3 = 6\n```\n\n그러면 **구간 합 = prefix[R+1] - prefix[L]** 로 바로 구할 수 있어요!\n\n예: 1번~4번 합 = prefix[5] - prefix[1] = 15 - 1 = **14** ✅\n\n---\n\n### 입력\n- 첫째 줄: N Q (숫자 개수, 질문 개수)\n- 둘째 줄: N개의 정수 (공백 구분)\n- 이후 Q줄: 각 줄에 L R (0-based 인덱스)\n\n### 출력\n- 각 질문에 대해 구간 합을 한 줄씩 출력\n\n### 예시 1\n```\n입력:\n5 3\n1 2 3 4 5\n0 2\n1 4\n3 3\n출력:\n6\n14\n4\n```\n\n### 예시 2\n```\n입력:\n3 2\n10 20 30\n0 1\n0 2\n출력:\n30\n60\n```",
+  "starter_code": "N, Q = map(int, input().split())\narr = list(map(int, input().split()))\n\nfor _ in range(Q):\n    L, R = map(int, input().split())\n    # L번째부터 R번째까지의 합을 출력하세요\n",
+  "test_cases": [
+    { "input": "5 3\n1 2 3 4 5\n0 2\n1 4\n3 3", "expected_output": "6\n14\n4", "description": "기본 예시" },
+    { "input": "3 2\n10 20 30\n0 1\n0 2", "expected_output": "30\n60", "description": "큰 수, 전체 구간" },
+    { "input": "6 4\n5 3 7 2 8 1\n0 5\n2 4\n0 0\n4 5", "expected_output": "26\n17\n5\n9", "description": "다양한 구간" },
+    { "input": "1 1\n42\n0 0", "expected_output": "42", "description": "원소 1개" },
+    { "input": "10 5\n1 1 1 1 1 1 1 1 1 1\n0 9\n0 4\n5 9\n3 7\n0 0", "expected_output": "10\n5\n5\n5\n1", "description": "모두 같은 수" }
+  ],
+  "hints": [
+    "가장 단순한 방법: 질문이 올 때마다 for문으로 L~R을 더하면 돼요.",
+    "sum(arr[L:R+1])을 쓰면 더 간결하게 합을 구할 수 있어요.",
+    "누적합 배열을 미리 만들면? prefix[i] = arr[0]+...+arr[i-1]로 구간 합 = prefix[R+1] - prefix[L]"
+  ],
+  "expected_approaches": [
+    { "tag": "매번 합산 O(N×Q)", "description": "질문이 올 때마다 L~R을 반복문 또는 sum()으로 합산" },
+    { "tag": "누적합 전처리 O(N+Q)", "description": "누적합 배열을 미리 만들어두면, 각 질문에 빼기 한 번으로 답 계산" }
+  ],
+  "explanation": "## 풀이 해설\n\n### 접근법 1: 매번 합산 O(N×Q)\n\n질문이 올 때마다 L부터 R까지 직접 더해요.\n\n```python\nN, Q = map(int, input().split())\narr = list(map(int, input().split()))\n\nfor _ in range(Q):\n    L, R = map(int, input().split())\n    total = 0\n    for i in range(L, R + 1):  # L~R을 직접 더하기\n        total += arr[i]\n    print(total)\n```\n\n또는 `sum()`을 활용하면 더 짧아요:\n\n```python\nN, Q = map(int, input().split())\narr = list(map(int, input().split()))\n\nfor _ in range(Q):\n    L, R = map(int, input().split())\n    print(sum(arr[L:R + 1]))  # 슬라이싱 + sum\n```\n\n> **아이디어**: 물어볼 때마다 직접 세기 — 직관적이지만 질문이 많으면 느려요.\n\n---\n\n### 접근법 2: 누적합 전처리 O(N+Q)\n\n**핵심 아이디어**: 합을 미리 계산해두면, 질문에 **빼기 한 번**으로 답할 수 있어요!\n\n```python\nN, Q = map(int, input().split())\narr = list(map(int, input().split()))\n\n# 누적합 배열 만들기 (한 번만!)\nprefix = [0] * (N + 1)\nfor i in range(N):\n    prefix[i + 1] = prefix[i] + arr[i]\n\n# 질문에 답하기\nfor _ in range(Q):\n    L, R = map(int, input().split())\n    print(prefix[R + 1] - prefix[L])  # 빼기 한 번!\n```\n\n> **아이디어**: \"매번 세지 말고, 미리 정리해두자!\"\n\n---\n\n### 누적합이 왜 되는 걸까? 🤔\n\n```\narr:    [1, 2, 3, 4, 5]\nprefix: [0, 1, 3, 6, 10, 15]\n```\n\n`prefix[i]` = arr[0]부터 arr[i-1]까지의 합\n\n구간 합 = **\"끝까지의 합\" - \"시작 전까지의 합\"**\n\n```\narr[1] + arr[2] + arr[3] + arr[4]\n= (arr[0]+arr[1]+arr[2]+arr[3]+arr[4]) - (arr[0])\n= prefix[5] - prefix[1]\n= 15 - 1 = 14 ✅\n```\n\n---\n\n### 비교 포인트 🔍\n\n| | 매번 합산 | 누적합 전처리 |\n|---|---|---|\n| 전처리 시간 | 없음 | O(N) — 한 번 |\n| 질문당 시간 | O(N) — 매번 더하기 | **O(1)** — 빼기 한 번! |\n| 총 시간 | O(N × Q) | **O(N + Q)** |\n| 핵심 | 물어볼 때마다 세기 | **미리 정리해두기** |\n\nN=1000, Q=1000이면:\n- 매번 합산: 최대 100만 번 연산\n- 누적합: 1000 + 1000 = **2000번 연산** → 500배 빠름!\n\n**\"미리 계산해두면 나중에 빨라진다\"** — 이것이 **전처리(preprocessing)**의 힘이에요!"
+}

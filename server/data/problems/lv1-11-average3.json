@@ -16,7 +16,8 @@
     "print(f\"{avg:.1f}\") 처럼 :.1f를 사용하면 소수점 1자리로 출력돼요."
   ],
   "expected_approaches": [
-    { "tag": "f-string :.1f", "description": "print(f\"{(a+b+c)/3:.1f}\")로 소수점 1자리 출력" }
+    { "tag": "직접 합산 후 나누기 O(1)", "description": "(a+b+c)/3 계산 후 f-string :.1f로 출력" },
+    { "tag": "리스트 + sum() 활용 O(n)", "description": "nums = [a,b,c] → print(f\"{sum(nums)/len(nums):.1f}\") — 수가 늘어나도 코드 변경 불필요" }
   ],
   "explanation": "### 풀이 해설\n\n```python\na = int(input())\nb = int(input())\nc = int(input())\nprint(f\"{(a+b+c)/3:.1f}\")\n```\n\n`:.1f`는 소수점 첫째 자리까지 출력하는 형식이에요. 평균이 정수여도 `.0`이 붙어요!"
 }

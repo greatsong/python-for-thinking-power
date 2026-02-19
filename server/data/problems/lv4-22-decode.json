@@ -19,7 +19,9 @@
     "dp[i] += dp[i-2] if 10 <= int(s[i-2:i]) <= 26 (2자리로 끊기)"
   ],
   "expected_approaches": [
-    { "tag": "DP(점화식)", "description": "dp[i] = 마지막 1자리 방법수 + 마지막 2자리 방법수 (조건 만족 시)" }
+    { "tag": "DP 점화식 (Bottom-up) O(n)", "description": "dp[i] = 마지막 1자리 방법수 + 마지막 2자리 방법수 — 배열로 순방향 계산" },
+    { "tag": "재귀 + 메모이제이션 (Top-down) O(n)", "description": "decode(i)를 재귀 호출하되, 이미 계산한 위치는 memo에서 가져오기" },
+    { "tag": "완전 탐색 (재귀) O(2ⁿ)", "description": "매 위치에서 1자리/2자리 분기를 모두 탐색 — 중복 계산이 많아 느리지만 원리 이해에 도움" }
   ],
   "explanation": "## 풀이 해설\n\n**DP 점화식 흐름 (디코딩 방법의 수):**\n\n```mermaid\nflowchart TD\n    A[\"dp 0 = 1 빈 문자열\\ndp 1 = 1 첫 글자\"] --> B[\"i = 2부터 순회\"]\n    B --> C{\"s의 i-1번째\\n숫자 != 0?\"}\n    C -->|\"Yes\"| D[\"dp i += dp i-1\\n1자리로 끊기\"]\n    C -->|\"No\"| E[\"1자리 불가\"]\n    D --> F{\"s의 i-2 ~ i-1\\n= 10~26?\"}\n    E --> F\n    F -->|\"Yes\"| G[\"dp i += dp i-2\\n2자리로 끊기\"]\n    F -->|\"No\"| H[\"2자리 불가\"]\n    G --> I{\"i < n?\"}\n    H --> I\n    I -->|\"Yes\"| B\n    I -->|\"No\"| J[\"dp n 출력\"]\n    style D fill:#87CEEB\n    style G fill:#FFD700\n    style J fill:#90EE90\n```\n\n> 매 위치에서 1자리(파란색)와 2자리(노란색) 해석을 합산해서 dp를 채워요!\n\n```python\ns = input()\nn = len(s)\n\nif not s or s[0] == '0':\n    print(0)\nelse:\n    dp = [0] * (n + 1)\n    dp[0] = 1  # 빈 문자열: 1가지\n    dp[1] = 1  # 첫 글자 (0이 아님 확인했으므로)\n    \n    for i in range(2, n + 1):\n        one = int(s[i-1])       # 마지막 1자리\n        two = int(s[i-2:i])     # 마지막 2자리\n        \n        if one != 0:            # 1자리로 끊기 가능\n            dp[i] += dp[i-1]\n        if 10 <= two <= 26:     # 2자리로 끊기 가능 (10~26)\n            dp[i] += dp[i-2]\n    \n    print(dp[n])\n```\n\n**점화식 이해**:\n\n`\"226\"` 처리:\n```\ndp[0]=1 (빈)\ndp[1]=1 (\"2\"→B: 1가지)\ndp[2]: \"22\"\n  - one=2 (≠0) → dp[2] += dp[1] = 1  (\"2\",\"2\")\n  - two=22 (10~26) → dp[2] += dp[0] = 1  (\"22\")\n  dp[2] = 2\ndp[3]: \"226\"\n  - one=6 (≠0) → dp[3] += dp[2] = 2\n  - two=26 (10~26) → dp[3] += dp[1] = 1\n  dp[3] = 3 ✓\n```\n\n**핵심 통찰**: 큰 문제를 작은 문제로 분해!\n마지막 1~2자리만 결정하면 나머지는 이미 계산된 결과 활용.\n이것이 **동적 프로그래밍(DP)**의 본질이에요."
 }

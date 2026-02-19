@@ -17,7 +17,8 @@
     "if/else로 조건을 분기하세요."
   ],
   "expected_approaches": [
-    { "tag": "나머지 연산으로 배수 판별", "description": "if n % 3 == 0: print(\"짝!\") else: print(n)" }
+    { "tag": "if/else + % 연산 O(1)", "description": "if n % 3 == 0: print(\"짝!\") else: print(n) — 조건문으로 분기" },
+    { "tag": "삼항 연산 한 줄 O(1)", "description": "print(\"짝!\" if n % 3 == 0 else n) — 조건식으로 한 줄 처리" }
   ],
   "explanation": "## 풀이 해설\n\n```python\nn = int(input())\nif n % 3 == 0:\n    print(\"짝!\")\nelse:\n    print(n)\n```\n\n`n % 3`은 n을 3으로 나눈 나머지예요.\n나머지가 0 → 딱 나눠떨어짐 → 배수!\n이 원리를 이해하면 6의 배수, 7의 배수도 같은 방식으로 판별할 수 있어요."
 }

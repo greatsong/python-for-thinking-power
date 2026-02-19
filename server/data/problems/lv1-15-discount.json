@@ -17,7 +17,8 @@
     "price * (100 - discount) // 100 을 계산해보세요."
   ],
   "expected_approaches": [
-    { "tag": "정수 나눗셈", "description": "price * (100 - discount) // 100으로 계산" }
+    { "tag": "잔여 비율 계산 O(1)", "description": "price * (100 - discount) // 100 — 남는 비율을 곱해서 할인가 산출" },
+    { "tag": "할인액 빼기 O(1)", "description": "price - price * discount // 100 — 할인 금액을 먼저 구한 뒤 원가에서 차감" }
   ],
   "explanation": "### 풀이 해설\n\n```python\nprice = int(input())\ndiscount = int(input())\nresult = price * (100 - discount) // 100\nprint(result)\n```\n\n`//`를 사용하면 나눗셈 결과를 정수로 내림 처리해요!"
 }

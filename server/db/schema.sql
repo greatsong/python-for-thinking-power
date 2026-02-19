@@ -43,6 +43,9 @@ CREATE TABLE IF NOT EXISTS problems (
   status TEXT DEFAULT 'approved',
   created_by TEXT,
   sort_order INTEGER DEFAULT 0,
+  is_shared INTEGER DEFAULT 0,
+  shared_at TEXT,
+  cloned_from TEXT,
   created_at TEXT DEFAULT (datetime('now'))
 );
 
@@ -136,6 +139,14 @@ CREATE TABLE IF NOT EXISTS ai_usage_log (
   created_at TEXT DEFAULT (datetime('now'))
 );
 
+-- 문제 추천 (교사 스타)
+CREATE TABLE IF NOT EXISTS problem_stars (
+  user_id TEXT NOT NULL REFERENCES users(id),
+  problem_id TEXT NOT NULL REFERENCES problems(id),
+  created_at TEXT DEFAULT (datetime('now')),
+  PRIMARY KEY (user_id, problem_id)
+);
+
 -- 인덱스
 CREATE INDEX IF NOT EXISTS idx_submissions_problem ON submissions(problem_id, classroom_id);
 CREATE INDEX IF NOT EXISTS idx_submissions_user ON submissions(user_id, problem_id);
@@ -144,3 +155,5 @@ CREATE INDEX IF NOT EXISTS idx_ai_conv_classroom ON ai_conversations(classroom_i
 CREATE INDEX IF NOT EXISTS idx_classroom_members ON classroom_members(classroom_id);
 CREATE INDEX IF NOT EXISTS idx_problem_set_items ON problem_set_items(set_id);
 CREATE INDEX IF NOT EXISTS idx_ai_usage_user_classroom_date ON ai_usage_log(user_id, classroom_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_problems_shared ON problems(is_shared, status);
+CREATE INDEX IF NOT EXISTS idx_problem_stars_problem ON problem_stars(problem_id);

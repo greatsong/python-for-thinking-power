@@ -16,7 +16,8 @@
     "n-1개 간선 추가되면 종료"
   ],
   "expected_approaches": [
-    { "tag": "크루스칼 + Union-Find", "description": "비용 정렬 → 사이클 체크 후 추가 → n-1개 선택" }
+    { "tag": "크루스칼 + Union-Find", "description": "비용 순 정렬 → 사이클 체크 후 간선 추가 — 희소 그래프에 유리" },
+    { "tag": "프림 알고리즘 + heapq", "description": "임의 정점에서 시작, 인접 최소 간선을 확장 — 밀집 그래프에 유리" }
   ],
   "explanation": "## 풀이 해설\n\n### 크루스칼 알고리즘 흐름도\n\n```mermaid\nflowchart TD\n    A[\"모든 간선을\\n가중치 순으로 정렬\"] --> B[\"Union-Find 초기화\\n각 노드가 자기 자신의 부모\"]\n    B --> C{\"다음 간선 (a-b) 확인\"}\n    C -->|\"간선 남음\"| D{\"find(a) != find(b)?\\n(다른 컴포넌트?)\"}\n    C -->|\"간선 없음 or\\nn-1개 선택 완료\"| H[\"MST 총 비용 출력\"]\n    D -->|\"예 (사이클 X)\"| E[\"union(a, b)\\nMST에 간선 추가\"]\n    D -->|\"아니오 (사이클 O)\"| F[\"건너뛰기\"]\n    E --> G{\"선택한 간선\\n= n-1개?\"}\n    G -->|\"예\"| H\n    G -->|\"아니오\"| C\n    F --> C\n```\n\n```python\nn, m = map(int, input().split())\nedges = []\nfor _ in range(m):\n    a, b, cost = map(int, input().split())\n    edges.append((cost, a, b))\n\n# 크루스칼: 가중치 기준 정렬\nedges.sort()\n\n# Union-Find\nparent = list(range(n + 1))\n\ndef find(x):\n    if parent[x] != x:\n        parent[x] = find(parent[x])\n    return parent[x]\n\ndef union(x, y):\n    px, py = find(x), find(y)\n    if px == py:\n        return False  # 이미 같은 그룹 (사이클!)\n    parent[px] = py\n    return True\n\ntotal = 0\ncount = 0\nfor cost, a, b in edges:\n    if union(a, b):  # 사이클 없으면 추가\n        total += cost\n        count += 1\n    if count == n - 1:  # n-1개 추가 완료!\n        break\n\nprint(total)\n```\n\n**왜 n-1개 간선인가?**\n\nn개의 노드를 트리로 연결하면 항상 정확히 n-1개의 간선!\n(트리는 사이클 없는 연결 그래프)\n\n**크루스칼 vs 프림**:\n- 크루스칼: 간선 기준, 희소 그래프에 유리\n- 프림: 정점 기준 확장, 밀집 그래프에 유리\n\n**실제 적용**: 통신망, 전력망, 도로 설계에서 최소 비용으로 연결 방법!"
 }
