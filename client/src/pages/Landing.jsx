@@ -4,6 +4,39 @@ import { Code2, Brain, Users, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useAuthStore from '../stores/authStore.js';
 
+function PythinkLogo({ size = 64, className = '' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <defs>
+        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3b82f6" />
+          <stop offset="100%" stopColor="#6366f1" />
+        </linearGradient>
+        <linearGradient id="snakeGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="100%" stopColor="#e0e7ff" />
+        </linearGradient>
+      </defs>
+      {/* 배경 원 */}
+      <circle cx="60" cy="60" r="56" fill="url(#logoGrad)" />
+      {/* 뱀 몸통 - S자 곡선 */}
+      <path
+        d="M72 30 C72 30, 85 30, 85 42 C85 54, 68 54, 55 54 C42 54, 35 54, 35 66 C35 78, 48 78, 48 78"
+        stroke="url(#snakeGrad)" strokeWidth="10" strokeLinecap="round" fill="none"
+      />
+      {/* 뱀 머리 */}
+      <circle cx="48" cy="82" r="8" fill="white" />
+      {/* 뱀 눈 */}
+      <circle cx="46" cy="80" r="2.5" fill="#3b82f6" />
+      {/* 뱀 혀 */}
+      <path d="M42 86 L36 92 M42 86 L38 94" stroke="#f87171" strokeWidth="2" strokeLinecap="round" />
+      {/* 코드 괄호 < > */}
+      <path d="M26 38 L18 46 L26 54" stroke="rgba(255,255,255,0.4)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path d="M94 38 L102 46 L94 54" stroke="rgba(255,255,255,0.4)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  );
+}
+
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '853390253196-1g91cg7l90pk5p54ftn3l39sa07q97j5.apps.googleusercontent.com';
 
 export default function Landing() {
@@ -50,7 +83,9 @@ export default function Landing() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col overflow-y-auto">
       {/* 상단 네비게이션 */}
       <nav className="flex items-center justify-between px-4 md:px-6 py-4 max-w-4xl mx-auto w-full">
-        <span className="text-sm font-semibold text-slate-700">🐍 사고력을 위한 파이썬</span>
+        <span className="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
+          <PythinkLogo size={22} /> 사고력을 위한 파이썬
+        </span>
         <div className="flex items-center gap-3 md:gap-4">
           <Link to="/guide" className="text-xs md:text-sm text-slate-500 hover:text-blue-600 transition-colors">서비스 안내</Link>
           <Link to="/apply" className="text-xs md:text-sm text-slate-500 hover:text-blue-600 transition-colors">교사 신청</Link>
@@ -59,7 +94,9 @@ export default function Landing() {
 
       <main className="flex-1 flex flex-col items-center justify-start py-6 md:py-8 px-4 md:px-6">
         <div className="text-center max-w-2xl w-full">
-          <div className="text-5xl md:text-6xl mb-4 md:mb-6">🐍</div>
+          <div className="mb-4 md:mb-6 flex justify-center">
+            <PythinkLogo size={80} className="drop-shadow-lg" />
+          </div>
           <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3 md:mb-4">
             사고력을 위한 파이썬
           </h1>
