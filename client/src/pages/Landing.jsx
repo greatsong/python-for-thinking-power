@@ -12,27 +12,28 @@ function PythinkLogo({ size = 64, className = '' }) {
           <stop offset="0%" stopColor="#3b82f6" />
           <stop offset="100%" stopColor="#6366f1" />
         </linearGradient>
-        <linearGradient id="snakeGrad" x1="20%" y1="0%" x2="80%" y2="100%">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="100%" stopColor="#e0e7ff" />
-        </linearGradient>
       </defs>
-      {/* 배경 원 */}
-      <circle cx="60" cy="60" r="56" fill="url(#logoGrad)" />
-      {/* 뱀 몸통 - S자 곡선 */}
+      {/* 둥근 사각형 배경 */}
+      <rect x="4" y="4" width="112" height="112" rx="28" fill="url(#logoGrad)" />
+      {/* 왼쪽 중괄호 { */}
       <path
-        d="M72 30 C72 30, 85 30, 85 42 C85 54, 68 54, 55 54 C42 54, 35 54, 35 66 C35 78, 48 78, 48 78"
-        stroke="url(#snakeGrad)" strokeWidth="10" strokeLinecap="round" fill="none"
+        d="M38 34 C32 34, 30 38, 30 44 L30 52 C30 56, 26 60, 26 60 C26 60, 30 64, 30 68 L30 76 C30 82, 32 86, 38 86"
+        stroke="white" strokeWidth="5" strokeLinecap="round" fill="none" opacity="0.9"
       />
-      {/* 뱀 머리 */}
-      <circle cx="48" cy="82" r="8" fill="white" />
-      {/* 뱀 눈 */}
-      <circle cx="46" cy="80" r="2.5" fill="#3b82f6" />
-      {/* 뱀 혀 */}
-      <path d="M42 86 L36 92 M42 86 L38 94" stroke="#f87171" strokeWidth="2" strokeLinecap="round" />
-      {/* 코드 괄호 < > */}
-      <path d="M26 38 L18 46 L26 54" stroke="rgba(255,255,255,0.4)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      <path d="M94 38 L102 46 L94 54" stroke="rgba(255,255,255,0.4)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      {/* 오른쪽 중괄호 } */}
+      <path
+        d="M82 34 C88 34, 90 38, 90 44 L90 52 C90 56, 94 60, 94 60 C94 60, 90 64, 90 68 L90 76 C90 82, 88 86, 82 86"
+        stroke="white" strokeWidth="5" strokeLinecap="round" fill="none" opacity="0.9"
+      />
+      {/* 전구 — 아이디어/사고력 */}
+      <circle cx="60" cy="52" r="14" stroke="white" strokeWidth="4.5" fill="none" />
+      <path d="M54 66 L54 72 C54 74, 56 76, 60 76 C64 76, 66 74, 66 72 L66 66" stroke="white" strokeWidth="4" strokeLinecap="round" fill="none" />
+      {/* 전구 빛 라인 */}
+      <line x1="60" y1="30" x2="60" y2="24" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.5" />
+      <line x1="44" y1="38" x2="40" y2="34" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.5" />
+      <line x1="76" y1="38" x2="80" y2="34" stroke="white" strokeWidth="3" strokeLinecap="round" opacity="0.5" />
+      {/* 밑줄 커서 깜빡임 효과 */}
+      <rect x="52" y="84" width="16" height="3" rx="1.5" fill="white" opacity="0.6" />
     </svg>
   );
 }
