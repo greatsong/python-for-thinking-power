@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Code2, Brain, Users, BarChart3, BookOpen } from 'lucide-react';
+import { Code2, Brain, Users, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useAuthStore from '../stores/authStore.js';
 
@@ -64,7 +64,16 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col overflow-y-auto">
-      <main className="flex-1 flex flex-col items-center justify-start py-12 px-6">
+      {/* 상단 네비게이션 */}
+      <nav className="flex items-center justify-between px-6 py-4 max-w-4xl mx-auto w-full">
+        <span className="text-sm font-semibold text-slate-700">🐍 사고력을 위한 파이썬</span>
+        <div className="flex items-center gap-4">
+          <Link to="/guide" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">서비스 안내</Link>
+          <Link to="/apply" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">교사 신청</Link>
+        </div>
+      </nav>
+
+      <main className="flex-1 flex flex-col items-center justify-start py-8 px-6">
         <div className="text-center max-w-2xl w-full">
           <div className="text-6xl mb-6">🐍</div>
           <h1 className="text-4xl font-bold text-slate-900 mb-4">
@@ -113,18 +122,10 @@ export default function Landing() {
           </div>
 
           {/* 하단 링크 */}
-          <div className="mt-4 flex items-center justify-center gap-3 text-xs text-slate-400">
-            <Link to="/guide" className="text-blue-500 hover:text-blue-600 font-medium">
-              서비스 안내 →
-            </Link>
-            <span>·</span>
-            <span>
-              교사이신가요?{' '}
-              <Link to="/apply" className="text-blue-500 hover:text-blue-600 font-medium">
-                교사 계정 신청 →
-              </Link>
-            </span>
-          </div>
+          <p className="mt-4 text-xs text-slate-400">
+            교사이신가요?{' '}
+            <Link to="/apply" className="text-blue-500 hover:text-blue-600 font-medium">교사 계정 신청 →</Link>
+          </p>
         </div>
 
         {/* 핵심 철학 */}
@@ -222,16 +223,6 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* 교사 안내 링크 */}
-        <div className="mt-8 max-w-3xl w-full text-center">
-          <Link
-            to="/guide"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-blue-200 text-blue-600 rounded-xl font-medium hover:bg-blue-50 transition-colors shadow-sm"
-          >
-            <BookOpen size={18} />
-            교사용 상세 매뉴얼 보기 →
-          </Link>
-        </div>
       </main>
 
       <footer className="p-6 text-center text-xs text-slate-400">
