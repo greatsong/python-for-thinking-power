@@ -37,10 +37,13 @@
 - **코드 워크스페이스**: CodeMirror 에디터 + Pyodide 즉시 실행 (서버 부하 없음)
 - **5단계 AI 코치**: 교사가 문제별로 AI 도움 수준을 제어 (0:비활성 ~ 4:코드예시)
 - **AI 문제 공방**: AI가 문제를 생성하고 교사가 검토/승인/수정
+- **문제 나눔터**: 교사 간 문제 공유/검색/복제/추천 커뮤니티
 - **풀이 갤러리**: AI가 학생 풀이의 접근법을 자동 분류, 비교 토론 유도
 - **코드 여정**: 코드 수정 이력을 타임라인으로 시각화
-- **교실 라이브 대시보드**: 학생 현황 실시간 모니터링
-- **교실 시스템**: 6자리 참여 코드로 학생 합류
+- **교실 라이브 대시보드**: 학생×문제 매트릭스, 셀 클릭 슬라이드 패널, 문제별 통과율
+- **교사 피드백/평가**: 점수(0~100) + 등급(A~F) + 코멘트, AI 대화 원문 열람
+- **데이터 내보내기**: 성적표/진행 요약 CSV (한글 엑셀 호환)
+- **교실 시스템**: 5자리 참여 코드로 학생 합류
 
 ---
 
@@ -320,7 +323,7 @@ python-for-thinking-power/
 │       ├── pages/
 │       │   ├── student/      # 학생 페이지 (문제목록, 워크스페이스, 갤러리, 코드여정)
 │       │   └── teacher/      # 교사 페이지 (교실설정, 문제공방, 대시보드, AI리포트)
-│       ├── components/       # 공용 컴포넌트 (CodeEditor, AICoach, SolutionGallery 등)
+│       ├── components/       # 공용 컴포넌트 (CodeEditor, AICoach, StudentDetailPanel 등)
 │       ├── stores/           # Zustand 상태 (auth, classroom, problem, editor, chat, dashboard)
 │       └── lib/              # Pyodide 엔진, 테스트 러너
 │
@@ -368,9 +371,17 @@ python-for-thinking-power/
 | GET | `/api/submissions/snapshots` | 코드 스냅샷 |
 | POST | `/api/ai/chat` | AI 코치 대화 (SSE) |
 | GET | `/api/ai/conversations` | AI 대화 이력 |
-| GET | `/api/dashboard/overview` | 교사 대시보드 |
-| GET | `/api/dashboard/students` | 학생 현황 |
-| GET | `/api/dashboard/ai-summaries` | AI 대화 요약 |
+| GET | `/api/problems/community` | 공유 문제 나눔터 (검색/필터) |
+| POST | `/api/problems/:id/clone` | 공유 문제 복제 |
+| POST | `/api/problems/:id/star` | 문제 추천(스타) 토글 |
+| GET | `/api/dashboard/overview/:classroomId` | 교사 대시보드 개요 |
+| GET | `/api/dashboard/students/:classroomId` | 학생 현황 |
+| GET | `/api/dashboard/ai-summaries/:classroomId` | AI 대화 요약 |
+| GET | `/api/dashboard/matrix/:classroomId` | 학생×문제 매트릭스 (평가 상태 포함) |
+| GET | `/api/dashboard/cell-detail/:classroomId/:studentId/:problemId` | 셀 상세 (코드, AI대화, 스냅샷) |
+| GET | `/api/dashboard/student-detail/:classroomId/:studentId` | 학생 전체 요약 |
+| PUT | `/api/dashboard/feedback/:submissionId` | 교사 피드백/점수/등급 저장 |
+| GET | `/api/dashboard/export/:classroomId?type=grades\|progress` | CSV 내보내기 |
 | GET | `/api/gallery/:problemId` | 풀이 갤러리 |
 | POST | `/api/gallery/:problemId/analyze` | AI 접근법 분석 |
 

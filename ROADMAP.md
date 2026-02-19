@@ -54,6 +54,37 @@
 
 ---
 
+## Phase 1.5: 교사 워크플로우 3대 패턴 ✅ 구현 완료
+
+### 구현 내역 (2026-02-19)
+
+교사 워크플로우 10가지 패턴 분석 후 가장 시급한 3가지를 구현:
+
+#### 1-5-1. 교사 피드백/평가 시스템 ✅
+- `submissions` 테이블에 5개 컬럼 추가: `teacher_score`, `teacher_grade`, `teacher_feedback`, `feedback_at`, `feedback_by`
+- `PUT /api/dashboard/feedback/:submissionId` — 점수(0~100) + 등급(A~F) + 코멘트 저장
+- 매트릭스 셀에 금색 등급 뱃지 표시
+
+#### 1-5-2. 매트릭스 셀 클릭 → 슬라이드 패널 ✅
+- `StudentDetailPanel.jsx` 신규 — 오른쪽 슬라이드 패널
+- **셀 모드** 4탭: 코드 보기, AI 대화 원문 (치팅 키워드 하이라이팅), 피드백/평가, 코드 여정
+- **학생 모드** 2탭: 전체 요약, 채점 현황
+- `GET /api/dashboard/cell-detail/:classroomId/:studentId/:problemId`
+- `GET /api/dashboard/student-detail/:classroomId/:studentId`
+
+#### 1-5-3. 데이터 내보내기 ✅
+- `GET /api/dashboard/export/:classroomId?type=grades|progress`
+- 성적표 CSV: 학생×문제 점수/등급 매트릭스
+- 진행 요약 CSV: 학생별 제출수/통과율/AI사용횟수
+- 한글 엑셀 호환 UTF-8 BOM
+
+#### 1-5-4. 매트릭스 개선 ✅
+- 매트릭스 API에 `teacherScore`, `teacherGrade`, `hasFeedback` 필드 추가
+- 문제별 통과율 행 추가
+- DB 초기화 순서 버그 수정 (테이블 → 마이그레이션 → 인덱스)
+
+---
+
 ## Phase 2: AI 사용량 관리
 
 ### 2-1. 학생별 일일 AI 호출 제한
@@ -124,6 +155,7 @@ ALTER TABLE users ADD COLUMN school_id TEXT REFERENCES schools(id);
 | Phase | 난이도 | 주요 변경 파일 |
 |-------|--------|----------------|
 | 1 (API 키 관리) | ~~낮음~~ ✅ 완료 | `schema.sql`, `ai.js`, `aiCoach.js`, `crypto.js`, `ClassroomSetup.jsx` |
+| 1.5 (교사 워크플로우) | ~~중간~~ ✅ 완료 | `dashboard.js`, `database.js`, `StudentDetailPanel.jsx`, `LiveDashboard.jsx` |
 | 2 (사용량 관리) | 낮음~중간 | `ai.js`, `schema.sql`, 학생/교사 UI |
 | 3 (학교 관리) | 중간 | `schema.sql`, 새 라우트, 대시보드 UI |
 | 4 (확장성) | 높음 | 아키텍처 전환 (필요 시에만) |
@@ -142,7 +174,9 @@ server/
 │   ├── ai.js               ← AI 코칭 API (/api/ai/chat, /config, /status)
 │   ├── auth.js             ← 인증 (Google OAuth, JWT)
 │   ├── classrooms.js       ← 교실 CRUD
-│   ├── problems.js         ← 문제 CRUD
+│   ├── dashboard.js        ← 교사 대시보드 (매트릭스, 셀상세, 피드백, CSV내보내기)
+│   ├── gallery.js          ← 풀이 갤러리, 접근법 분석
+│   ├── problems.js         ← 문제 CRUD, 나눔터(공유/복제/추천)
 │   └── submissions.js      ← 제출 관리
 ├── services/
 │   ├── aiCoach.js          ← Anthropic SDK 호출 (streamChat, buildSystemPrompt)
