@@ -1,0 +1,26 @@
+{
+  "id": "lv3-25-bestWeek",
+  "title": "매출 최고 구간",
+  "difficulty": 3,
+  "category": "algorithm",
+  "description": "## 📈 매출 최고 구간\n\n편의점 사장님이 N일간의 매출 기록을 갖고 있습니다.\n**연속 K일**의 매출 합이 가장 높은 구간의 시작일(1부터 시작)과 그 합을 출력하세요.\n\n### 생각해볼 점\n365일 매출에서 연속 7일 최고 구간을 찾으려면?\n- 1~7일 합, 2~8일 합, 3~9일 합, ... 매번 처음부터 더할까?\n- 미리 합을 준비해둘 순 없을까?\n- 이미 계산한 합을 재활용할 순 없을까?\n\n---\n\n## 입력\n- 첫째 줄: 일 수 N, 구간 길이 K (공백 구분)\n- 둘째 줄: N개의 매출 (공백 구분)\n\n## 출력\n- 최대 합 구간의 시작일(1부터)과 합을 공백으로 구분하여 출력\n- 최대 합 구간이 여러 개면 가장 앞의 것\n\n### 예시 1\n```\n입력:\n7 3\n100 200 300 150 400 350 200\n\n출력:\n5 950\n```\n> 1~3일: 600 / 2~4일: 650 / 3~5일: 850 / 4~6일: 900 / 5~7일: 950 → 최대!\n\n### 예시 2\n```\n입력:\n5 2\n10 20 30 20 10\n\n출력:\n2 50\n```\n> 2~3일: 20+30=50이 최대",
+  "starter_code": "n, k = map(int, input().split())\nsales = list(map(int, input().split()))\n\n# 연속 k일 매출 합이 최대인 시작일과 합을 출력하세요\n",
+  "test_cases": [
+    { "input": "7 3\n100 200 300 150 400 350 200", "expected_output": "5 950", "description": "5~7일 합 950이 최대" },
+    { "input": "5 2\n10 20 30 20 10", "expected_output": "2 50", "description": "2~3일 합 50" },
+    { "input": "4 4\n100 200 300 400", "expected_output": "1 1000", "description": "전체가 하나의 구간" },
+    { "input": "6 1\n5 3 8 2 8 1", "expected_output": "3 8", "description": "K=1이면 최대값 위치" },
+    { "input": "8 3\n1 1 1 100 100 100 1 1", "expected_output": "4 300", "description": "가운데 몰린 경우" }
+  ],
+  "hints": [
+    "가장 단순한 방법: 모든 시작점에서 K개를 더해보세요. 어떻게 하면 될까요?",
+    "슬라이딩 윈도우: 창문을 한 칸 밀 때, 새로 들어오는 값을 더하고 빠지는 값을 빼면 어떨까요?",
+    "누적합: prefix[i] = sales[0]+...+sales[i-1]을 미리 만들면, 구간합 = prefix[j] - prefix[i]"
+  ],
+  "expected_approaches": [
+    { "tag": "매번 더하기 O(NK)", "description": "각 시작점마다 sum(sales[i:i+k])으로 구간합 계산" },
+    { "tag": "슬라이딩 윈도우 O(N)", "description": "이전 합에서 빠지는 값 빼고 들어오는 값 더하기 (재활용)" },
+    { "tag": "누적합 O(N)", "description": "prefix sum 배열을 미리 만들고, 구간합 = prefix[i+k] - prefix[i]" }
+  ],
+  "explanation": "## 풀이 해설\n\n이 문제는 **'구간 합 계산'**을 어떤 아이디어로 하느냐의 차이에요.\n\n---\n\n### 풀이 1: 매번 처음부터 더하기\n\n가장 직관적! 모든 K일 구간마다 합을 새로 계산해요.\n\n```python\nn, k = map(int, input().split())\nsales = list(map(int, input().split()))\n\nbest_start = 0\nbest_sum = 0\n\nfor i in range(n - k + 1):\n    total = sum(sales[i:i+k])\n    if total > best_sum:\n        best_sum = total\n        best_start = i\n\nprint(best_start + 1, best_sum)\n```\n\nN=365, K=7이면 359번의 구간 × 7번의 덧셈 = 2513번. 괜찮지만, N이 커지면?\n\n---\n\n### 풀이 2: 창문 밀기 (슬라이딩 윈도우)\n\n핵심 아이디어: **이미 더한 걸 버리지 말자!**\n\n1~3일 합을 구했으면, 2~4일 합은 = (1~3일 합) - 1일 매출 + 4일 매출!\n\n```python\nn, k = map(int, input().split())\nsales = list(map(int, input().split()))\n\ncurrent = sum(sales[:k])\nbest_sum = current\nbest_start = 0\n\nfor i in range(1, n - k + 1):\n    current = current - sales[i - 1] + sales[i + k - 1]\n    if current > best_sum:\n        best_sum = current\n        best_start = i\n\nprint(best_start + 1, best_sum)\n```\n\n매번 덧셈 2번이면 끝! 처음 한 번만 K개를 더하고, 나머지는 **빼고 더하기**만.\n\n---\n\n### 풀이 3: 미리 준비하기 (누적합)\n\n누적합 배열을 미리 만들어두면, **어떤 구간의 합이든 뺄셈 한 번**으로 구할 수 있어요.\n\n```python\nn, k = map(int, input().split())\nsales = list(map(int, input().split()))\n\n# 누적합: prefix[i] = sales[0] + ... + sales[i-1]\nprefix = [0] * (n + 1)\nfor i in range(n):\n    prefix[i + 1] = prefix[i] + sales[i]\n\nbest_sum = 0\nbest_start = 0\nfor i in range(n - k + 1):\n    total = prefix[i + k] - prefix[i]\n    if total > best_sum:\n        best_sum = total\n        best_start = i\n\nprint(best_start + 1, best_sum)\n```\n\n누적합은 \"미리 다 더해두고, 필요할 때 빼기\"라는 발상이에요. 나중에 여러 종류의 구간합을 구해야 할 때 특히 강력!\n\n---\n\n### 핵심 비교\n\n| 아이디어 | 비유 | 핵심 |\n|---------|------|------|\n| 매번 더하기 | 매번 처음부터 다시 계산 | 단순하지만 중복 계산 |\n| 창문 밀기 | 새 값 추가 + 옛 값 제거 | 이미 계산한 걸 재활용 |\n| 미리 준비 | 누적 합계표를 미리 만들기 | 준비 한 번, 조회는 뺄셈 한 번 |\n\n**매번 더하기? 재활용하기? 미리 준비하기?** — 같은 합산인데 발상이 완전히 달라요!"
+}

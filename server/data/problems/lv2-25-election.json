@@ -1,0 +1,25 @@
+{
+  "id": "lv2-25-election",
+  "title": "반장 선거",
+  "difficulty": 2,
+  "category": "list",
+  "description": "## 🗳️ 반장 선거\n\n전교생이 반장 후보에게 투표했습니다.\n투표 결과에서 **가장 많이 득표한 후보**의 이름과 득표수를 출력하세요.\n\n### 생각해볼 점\n투표용지가 10000장이라면, 어떻게 세는 게 가장 빠를까요?\n- 후보 이름을 하나씩 불러서 손든 사람 세기?\n- 투표용지를 한 장씩 보면서 메모하기?\n- 투표용지를 이름순으로 정렬해서 묶어 세기?\n\n---\n\n## 입력\n- 첫째 줄: 투표 수 N\n- 둘째 줄: N개의 후보 이름 (공백 구분)\n\n## 출력\n- 가장 많이 득표한 후보 이름과 득표수를 공백으로 구분하여 출력\n- 동률이면 이름이 사전순으로 앞선 후보 출력\n\n### 예시 1\n```\n입력:\n7\nAlice Bob Alice Charlie Bob Alice Charlie\n\n출력:\nAlice 3\n```\n> Alice 3표, Bob 2표, Charlie 2표 → Alice가 최다 득표\n\n### 예시 2\n```\n입력:\n6\nBob Alice Bob Alice Bob Alice\n\n출력:\nAlice 3\n```\n> Alice 3표, Bob 3표 → 동률이면 사전순: Alice < Bob",
+  "starter_code": "n = int(input())\nvotes = input().split()\n\n# 가장 많이 득표한 후보의 이름과 득표수를 출력하세요\n",
+  "test_cases": [
+    { "input": "7\nAlice Bob Alice Charlie Bob Alice Charlie", "expected_output": "Alice 3", "description": "Alice 최다 득표" },
+    { "input": "6\nBob Alice Bob Alice Bob Alice", "expected_output": "Alice 3", "description": "동률이면 사전순" },
+    { "input": "1\nCharlie", "expected_output": "Charlie 1", "description": "투표 1장" },
+    { "input": "10\nA B C A B C A B C A", "expected_output": "A 4", "description": "A:4, B:3, C:3" }
+  ],
+  "hints": [
+    "각 후보의 득표수를 어떻게 셀 수 있을까요? 여러 가지 방법이 있어요!",
+    "방법1: votes.count(이름)으로 세기 / 방법2: 딕셔너리에 한 표씩 기록하기 / 방법3: 정렬 후 연속 구간 세기",
+    "딕셔너리 예시: freq = {}; for v in votes: freq[v] = freq.get(v, 0) + 1"
+  ],
+  "expected_approaches": [
+    { "tag": "후보별 세기 (count)", "description": "고유 후보 목록을 구한 뒤, 각 후보마다 votes.count()로 세기" },
+    { "tag": "한 번 훑으며 기록 (딕셔너리)", "description": "투표용지를 한 장씩 보면서 딕셔너리에 표수를 기록" },
+    { "tag": "정렬 후 묶어 세기", "description": "이름순으로 정렬하면 같은 이름이 연속 → 연속 구간 길이를 세기" }
+  ],
+  "explanation": "## 풀이 해설\n\n이 문제는 **'세기'를 어떻게 하느냐**에 따라 세 가지 다른 아이디어가 나와요.\n\n---\n\n### 풀이 1: 후보별로 물어보기 (count)\n\n각 후보에게 \"너 몇 표야?\"라고 물어보는 방식이에요.\n\n```python\nn = int(input())\nvotes = input().split()\n\ncandidates = list(set(votes))  # 고유 후보 목록\nbest = ''\nbest_count = 0\n\nfor name in candidates:\n    c = votes.count(name)\n    if c > best_count or (c == best_count and name < best):\n        best = name\n        best_count = c\n\nprint(best, best_count)\n```\n\n직관적이지만, 후보가 100명이고 투표가 10000장이면 `count()`를 100번 호출 → 100만 번 비교!\n\n---\n\n### 풀이 2: 한 장씩 보며 기록하기 (딕셔너리)\n\n투표용지를 한 장씩 넘기면서, 메모장에 정(正)자를 그리듯 기록하는 방식이에요.\n\n```python\nn = int(input())\nvotes = input().split()\n\nfreq = {}\nfor v in votes:\n    freq[v] = freq.get(v, 0) + 1\n\nbest = min(name for name, cnt in freq.items() if cnt == max(freq.values()))\nprint(best, freq[best])\n```\n\n딱 한 번만 훑으면 끝! 10000장이든 100만 장이든 한 번이면 돼요.\n\n---\n\n### 풀이 3: 정렬 후 묶어 세기\n\n투표용지를 이름순으로 정렬하면, 같은 이름이 옆에 모여요. 그러면 연속으로 몇 장인지만 세면 돼요.\n\n```python\nn = int(input())\nvotes = input().split()\n\nvotes.sort()\nbest = ''\nbest_count = 0\ncurrent = votes[0]\ncount = 1\n\nfor i in range(1, len(votes)):\n    if votes[i] == current:\n        count += 1\n    else:\n        if count > best_count or (count == best_count and current < best):\n            best = current\n            best_count = count\n        current = votes[i]\n        count = 1\n\nif count > best_count or (count == best_count and current < best):\n    best = current\n    best_count = count\n\nprint(best, best_count)\n```\n\n정렬이라는 아이디어로 '세기' 문제를 해결! 정렬 자체는 빠르고(N log N), 세는 건 한 번이면 끝.\n\n---\n\n### 핵심 비교\n\n| 아이디어 | 비유 | 핵심 |\n|---------|------|------|\n| 후보별 세기 | \"김민수 뽑은 사람 손!\" | 후보마다 전체를 훑음 |\n| 기록하기 | 표 볼 때마다 메모장에 체크 | 한 번만 훑음 |\n| 정렬 후 세기 | 이름순으로 줄 세우면 같은 사람끼리 모임 | 정렬 + 한 번 훑음 |\n\n**물어보기? 기록하기? 줄 세우기?** — 같은 '세기'인데 생각이 완전히 달라요!"
+}

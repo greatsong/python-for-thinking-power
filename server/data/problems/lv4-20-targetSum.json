@@ -1,0 +1,26 @@
+{
+  "id": "lv4-20-targetSum",
+  "title": "목표 구간합 찾기",
+  "difficulty": 4,
+  "category": "algorithm",
+  "description": "## 🎯 목표 구간합 찾기\n\n양의 정수로 이루어진 배열에서, **연속된 구간의 합이 정확히 목표값(target)**이 되는 구간을 찾으세요.\n\n### 예시\n```\n배열: [1, 3, 2, 5, 4, 2]\n목표: 10\n→ [3, 2, 5] (인덱스 1~3)의 합이 10!\n```\n\n### 생각해볼 점\n배열이 50000개라면, 합이 target인 구간을 어떻게 찾을까요?\n- 모든 시작점 × 모든 끝점을 다 시도?\n- 누적합을 미리 계산하고, 빼기로 원하는 합을 찾기?\n- 구간을 늘리거나 줄이면서 합을 조절하기?\n\n---\n\n## 입력\n- 첫째 줄: 배열 크기 N, 목표값 target (공백 구분)\n- 둘째 줄: N개의 양의 정수 (공백 구분)\n\n## 출력\n- 합이 target인 연속 구간의 시작 인덱스와 끝 인덱스(0부터 시작) 출력\n- 여러 구간이 있으면 가장 먼저 나오는 것\n- 없으면 `-1` 출력\n\n### 예시 1\n```\n입력:\n6 10\n1 3 2 5 4 2\n\n출력:\n1 3\n```\n> 인덱스 1~3: 3+2+5=10\n\n### 예시 2\n```\n입력:\n5 100\n1 2 3 4 5\n\n출력:\n-1\n```\n> 합이 100인 구간 없음\n\n### 예시 3\n```\n입력:\n4 6\n1 2 3 4\n\n출력:\n0 2\n```\n> 인덱스 0~2: 1+2+3=6",
+  "starter_code": "n, target = map(int, input().split())\nnums = list(map(int, input().split()))\n\n# 합이 target인 연속 구간의 시작/끝 인덱스를 출력하세요\n",
+  "test_cases": [
+    { "input": "6 10\n1 3 2 5 4 2", "expected_output": "1 3", "description": "3+2+5=10" },
+    { "input": "5 100\n1 2 3 4 5", "expected_output": "-1", "description": "합이 100인 구간 없음" },
+    { "input": "4 6\n1 2 3 4", "expected_output": "0 2", "description": "1+2+3=6" },
+    { "input": "5 5\n5 1 2 3 4", "expected_output": "0 0", "description": "단일 원소" },
+    { "input": "7 14\n2 4 1 3 5 6 2", "expected_output": "3 5", "description": "3+5+6=14" }
+  ],
+  "hints": [
+    "가장 단순한 방법: 모든 시작점 i와 끝점 j에 대해 합을 구해보세요.",
+    "투 포인터: 합이 target보다 작으면 오른쪽을 넓히고, 크면 왼쪽을 좁혀보세요. 양의 정수이니까 가능해요!",
+    "누적합: prefix[j] - prefix[i] == target이면 구간 i~j-1의 합이 target!"
+  ],
+  "expected_approaches": [
+    { "tag": "전수조사 O(N²)", "description": "모든 시작점과 끝점 조합을 시도하여 합이 target인 구간 탐색" },
+    { "tag": "투 포인터 O(N)", "description": "합이 작으면 오른쪽 확장, 크면 왼쪽 축소 — 양쪽에서 조절" },
+    { "tag": "누적합 + 딕셔너리 O(N)", "description": "누적합 배열을 만들고, prefix[j] - target이 이전에 나왔는지 딕셔너리로 확인" }
+  ],
+  "explanation": "## 풀이 해설\n\n이 문제는 **'구간 탐색'**을 어떤 전략으로 하느냐의 차이에요.\n\n---\n\n### 풀이 1: 전수조사 (모든 구간 시도)\n\n가능한 모든 시작점과 끝점 조합을 시도해요.\n\n```python\nn, target = map(int, input().split())\nnums = list(map(int, input().split()))\n\nfound = False\nfor i in range(n):\n    total = 0\n    for j in range(i, n):\n        total += nums[j]\n        if total == target:\n            print(i, j)\n            found = True\n            break\n        if total > target:\n            break  # 양수이므로 더 커질 수밖에 없음\n    if found:\n        break\n\nif not found:\n    print(-1)\n```\n\n직관적이고 확실! 하지만 최악의 경우 N² 번 계산해야 해요.\n\n---\n\n### 풀이 2: 양쪽에서 조절하기 (투 포인터)\n\n핵심 아이디어: 구간의 왼쪽(left)과 오른쪽(right)을 **합에 따라 조절**해요.\n\n- 현재 합 < target → 오른쪽을 넓혀서 합을 키우기\n- 현재 합 > target → 왼쪽을 좁혀서 합을 줄이기\n- 현재 합 == target → 찾음!\n\n모든 수가 양수이기 때문에 이 전략이 가능해요.\n\n```python\nn, target = map(int, input().split())\nnums = list(map(int, input().split()))\n\nleft = 0\ncurrent_sum = 0\nfound = False\n\nfor right in range(n):\n    current_sum += nums[right]\n    \n    while current_sum > target and left <= right:\n        current_sum -= nums[left]\n        left += 1\n    \n    if current_sum == target:\n        print(left, right)\n        found = True\n        break\n\nif not found:\n    print(-1)\n```\n\nleft와 right가 한 방향으로만 움직이니까, 전체를 딱 한 번만 훑으면 끝! O(N)\n\n---\n\n### 풀이 3: 미리 계산하고 기억하기 (누적합 + 딕셔너리)\n\n누적합을 미리 계산하면, 구간합 = prefix[j+1] - prefix[i].\n따라서 prefix[j+1] - target = prefix[i]인 i가 있는지를 **딕셔너리에서 검색**하면 돼요.\n\n```python\nn, target = map(int, input().split())\nnums = list(map(int, input().split()))\n\nprefix = {0: -1}  # 누적합 → 인덱스 기록 (0은 시작점 전)\ncurrent_sum = 0\nfound = False\n\nfor j in range(n):\n    current_sum += nums[j]\n    need = current_sum - target\n    \n    if need in prefix:\n        print(prefix[need] + 1, j)\n        found = True\n        break\n    \n    if current_sum not in prefix:\n        prefix[current_sum] = j\n\nif not found:\n    print(-1)\n```\n\n\"지금까지의 합에서 target을 빼면, 그 값을 전에 본 적 있나?\" — 이 질문을 딕셔너리로 O(1)에 답해요!\n\n---\n\n### 핵심 비교\n\n| 아이디어 | 비유 | 핵심 |\n|---------|------|------|\n| 전수조사 | 모든 시작~끝 조합 시도 | 확실하지만 느림 |\n| 양쪽 조절 | 고무줄처럼 늘리고 줄이기 | 합이 맞을 때까지 조절 |\n| 계산+기억 | 누적합을 기억, 뺄셈으로 검색 | 미리 준비 + 딕셔너리 조회 |\n\n**다 해보기? 조절하기? 기억하기?** — 같은 구간 탐색인데 전략이 완전히 달라요!\n\n특히 투 포인터는 **'양수'라는 조건**이 있어야 가능하고, 누적합+딕셔너리는 **음수가 있어도** 사용할 수 있다는 차이가 있어요. 문제의 조건에 따라 어떤 아이디어가 적합한지 판단하는 것도 실력이에요!"
+}
