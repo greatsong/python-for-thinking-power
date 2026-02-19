@@ -58,19 +58,19 @@ export default function AIReports() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-          <MessageSquare size={24} />
+    <div className="p-4 md:p-6 max-w-5xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 md:mb-6">
+        <h1 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2">
+          <MessageSquare size={22} />
           AI 대화 리포트
         </h1>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           {/* 교실 선택 */}
           <select
             value={selectedClassroom}
             onChange={(e) => setSelectedClassroom(e.target.value)}
-            className="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 sm:flex-none px-3 md:px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">교실 선택</option>
             {classrooms.map((c) => (
@@ -81,10 +81,10 @@ export default function AIReports() {
           <button
             onClick={handleRefresh}
             disabled={loading || !selectedClassroom}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-colors shrink-0"
           >
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-            새로고침
+            <span className="hidden sm:inline">새로고침</span>
           </button>
         </div>
       </div>

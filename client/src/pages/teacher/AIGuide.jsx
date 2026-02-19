@@ -105,7 +105,7 @@ export default function AIGuide() {
       {/* 빠른 시작 */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 mb-6 text-white">
         <h2 className="text-lg font-bold mb-3">3단계로 시작하기</h2>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-2 md:gap-4">
           <div className="bg-white/15 rounded-lg p-3 text-center">
             <div className="text-2xl font-bold mb-1">1</div>
             <p className="text-xs">교실 만들기</p>
@@ -492,7 +492,7 @@ export default function AIGuide() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
               <div className="border border-emerald-200 rounded-lg p-4 bg-emerald-50/50">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle size={16} className="text-emerald-600" />

@@ -356,19 +356,19 @@ export default function ClassroomSetup() {
         ) : (
           classrooms.map((classroom) => (
             <div key={classroom.id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-              <div className="p-5">
-                <div className="flex items-center justify-between">
+              <div className="p-4 md:p-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-800">{classroom.name}</h3>
-                    <p className="text-sm text-slate-500 mt-1">
+                    <h3 className="text-base md:text-lg font-semibold text-slate-800">{classroom.name}</h3>
+                    <p className="text-xs md:text-sm text-slate-500 mt-1">
                       생성일: {new Date(classroom.created_at).toLocaleDateString('ko-KR')}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {/* 참여 코드 */}
-                    <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">
-                      <Hash size={16} className="text-slate-400" />
-                      <span className="font-mono font-bold text-lg text-blue-600 tracking-wider">
+                    <div className="flex items-center gap-2 bg-slate-50 px-3 md:px-4 py-2 rounded-lg border border-slate-200">
+                      <Hash size={14} className="text-slate-400" />
+                      <span className="font-mono font-bold text-base md:text-lg text-blue-600 tracking-wider">
                         {classroom.join_code}
                       </span>
                       <button
@@ -387,7 +387,7 @@ export default function ClassroomSetup() {
                     {/* 학생 수 */}
                     <button
                       onClick={() => handleShowStudents(classroom)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
+                      className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg border transition-colors ${
                         selectedClassroom?.id === classroom.id
                           ? 'bg-blue-50 border-blue-300 text-blue-700'
                           : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'

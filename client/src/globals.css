@@ -297,3 +297,83 @@ body {
 .animate-starFloat {
   animation: starFloat 2s ease-in-out infinite;
 }
+
+/* ========================
+   Mobile Responsive
+   ======================== */
+
+/* 터치 디바이스에서 스크롤바 숨김 */
+@media (pointer: coarse) {
+  ::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
+}
+
+/* 모바일에서 마크다운 폰트 크기 조정 */
+@media (max-width: 767px) {
+  .markdown-body {
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .markdown-body h2 {
+    font-size: 1rem;
+  }
+
+  .markdown-body h3 {
+    font-size: 0.875rem;
+  }
+
+  .markdown-body pre {
+    padding: 0.625em 0.75em;
+    font-size: 0.8em;
+  }
+}
+
+/* 모바일에서 탭 가능한 최소 영역 확보 */
+@media (pointer: coarse) {
+  button, a, select, input[type="checkbox"], input[type="radio"] {
+    min-height: 36px;
+  }
+}
+
+/* iOS 노치 대응 safe area */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* 모바일 오버레이 배경 */
+.overlay-backdrop {
+  background: rgba(0, 0, 0, 0.4);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+/* 모바일에서 텍스트 선택 방지 (UI 요소용) */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 모바일 슬라이드 트랜지션 */
+.slide-in-right {
+  animation: slideInRight 0.25s ease-out both;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.slide-up {
+  animation: slideUpSheet 0.3s ease-out both;
+}
+
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}

@@ -509,8 +509,8 @@ export default function ProblemWorkshop() {
             아직 만든 문제가 없습니다. AI에게 문제를 생성해보세요.
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <table className="w-full text-sm">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+            <table className="w-full text-sm min-w-[500px]">
               <thead>
                 <tr className="text-left text-slate-500 border-b border-slate-200 bg-slate-50">
                   <th className="px-4 py-3">제목</th>

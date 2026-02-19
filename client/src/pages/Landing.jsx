@@ -49,18 +49,18 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col overflow-y-auto">
       {/* 상단 네비게이션 */}
-      <nav className="flex items-center justify-between px-6 py-4 max-w-4xl mx-auto w-full">
+      <nav className="flex items-center justify-between px-4 md:px-6 py-4 max-w-4xl mx-auto w-full">
         <span className="text-sm font-semibold text-slate-700">🐍 사고력을 위한 파이썬</span>
-        <div className="flex items-center gap-4">
-          <Link to="/guide" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">서비스 안내</Link>
-          <Link to="/apply" className="text-sm text-slate-500 hover:text-blue-600 transition-colors">교사 신청</Link>
+        <div className="flex items-center gap-3 md:gap-4">
+          <Link to="/guide" className="text-xs md:text-sm text-slate-500 hover:text-blue-600 transition-colors">서비스 안내</Link>
+          <Link to="/apply" className="text-xs md:text-sm text-slate-500 hover:text-blue-600 transition-colors">교사 신청</Link>
         </div>
       </nav>
 
-      <main className="flex-1 flex flex-col items-center justify-start py-8 px-6">
+      <main className="flex-1 flex flex-col items-center justify-start py-6 md:py-8 px-4 md:px-6">
         <div className="text-center max-w-2xl w-full">
-          <div className="text-6xl mb-6">🐍</div>
-          <h1 className="text-4xl font-bold text-slate-900 mb-4">
+          <div className="text-5xl md:text-6xl mb-4 md:mb-6">🐍</div>
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3 md:mb-4">
             사고력을 위한 파이썬
           </h1>
           <p className="text-lg text-slate-600 mb-2">
@@ -160,18 +160,20 @@ export default function Landing() {
 
         {/* 수업 흐름 */}
         <div className="mt-10 max-w-3xl w-full">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
-            <h2 className="text-lg font-bold text-center mb-6">수업 흐름 (50분 기준)</h2>
-            <div className="flex items-center justify-between gap-2">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 md:p-8 text-white">
+            <h2 className="text-base md:text-lg font-bold text-center mb-4 md:mb-6">수업 흐름 (50분 기준)</h2>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-2">
               {[
                 { time: '5분', label: '접속 & 참여', desc: '사이트 접속, 교실 코드 입력' },
                 { time: '35분', label: '문제 풀이', desc: 'AI 코치 활용, 코드 작성' },
                 { time: '10분', label: '풀이 비교', desc: '갤러리에서 접근법 토론' },
               ].map((step, i) => (
-                <div key={i} className="flex-1 text-center">
-                  <div className="text-2xl font-bold mb-1">{step.time}</div>
-                  <div className="text-sm font-medium mb-1">{step.label}</div>
-                  <div className="text-xs text-blue-200">{step.desc}</div>
+                <div key={i} className="flex-1 text-center sm:text-center flex sm:flex-col items-center sm:items-center gap-3 sm:gap-0 bg-white/10 sm:bg-transparent rounded-lg p-3 sm:p-0">
+                  <div className="text-xl sm:text-2xl font-bold sm:mb-1">{step.time}</div>
+                  <div className="text-left sm:text-center">
+                    <div className="text-sm font-medium sm:mb-1">{step.label}</div>
+                    <div className="text-xs text-blue-200">{step.desc}</div>
+                  </div>
                 </div>
               ))}
             </div>

@@ -185,11 +185,11 @@ export default function ProblemAssign() {
     return (
       <div
         key={problem.id}
-        className={`flex items-center justify-between px-4 py-3 border-b border-slate-100 last:border-b-0 transition-colors ${
+        className={`flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 border-b border-slate-100 last:border-b-0 transition-colors gap-2 ${
           isAssigned ? 'bg-green-50/50' : 'hover:bg-slate-50'
         }`}
       >
-        <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0 flex-wrap">
           <h4 className="text-sm font-medium text-slate-800 truncate">{problem.title}</h4>
           <span
             className="px-2 py-0.5 rounded-full text-[10px] font-medium text-white shrink-0"
@@ -197,7 +197,7 @@ export default function ProblemAssign() {
           >
             {DIFFICULTY_LABELS[problem.difficulty] || `Lv.${problem.difficulty}`}
           </span>
-          <span className="bg-slate-100 px-2 py-0.5 rounded-full text-[10px] font-medium text-slate-500 shrink-0">
+          <span className="bg-slate-100 px-2 py-0.5 rounded-full text-[10px] font-medium text-slate-500 shrink-0 hidden sm:inline">
             {CATEGORY_LABELS[problem.category] || problem.category}
           </span>
           {isAssigned && (
@@ -207,7 +207,7 @@ export default function ProblemAssign() {
           )}
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 md:gap-3 shrink-0">
           <select
             value={settings.aiLevel}
             onChange={(e) => handleAiLevelChange(problem.id, e.target.value)}

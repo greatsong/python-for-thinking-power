@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Play, FlaskConical, RotateCcw, ArrowLeft, Lightbulb, ChevronDown, ChevronUp, Loader2, Upload, Bot, Terminal, FileCode, Sparkles, PanelLeftClose, PanelLeftOpen, Send, X, GalleryHorizontalEnd } from 'lucide-react';
+import { Play, FlaskConical, RotateCcw, ArrowLeft, Lightbulb, ChevronDown, ChevronUp, Loader2, Upload, Bot, Terminal, FileCode, Sparkles, PanelLeftClose, PanelLeftOpen, Send, X, GalleryHorizontalEnd, FileText } from 'lucide-react';
 import MarkdownRenderer from '../../components/MarkdownRenderer.jsx';
 import toast from 'react-hot-toast';
 import useProblemStore from '../../stores/problemStore.js';
@@ -30,6 +30,9 @@ export default function Workspace() {
   const [savingReflection, setSavingReflection] = useState(false);
   const snapshotTimerRef = useRef(null);
   const lastSnapshotRef = useRef('');
+
+  // 모바일: 문제 설명 시트
+  const [mobileDescOpen, setMobileDescOpen] = useState(false);
 
   // 문제 로드
   useEffect(() => {
@@ -195,9 +198,9 @@ export default function Workspace() {
   const testCases = currentProblem.test_cases || [];
 
   return (
-    <div className="h-full flex flex-col bg-slate-900">
+    <div className="h-screen flex flex-col bg-slate-900">
       {/* ── Compact Header ── */}
-      <header className="bg-slate-800 border-b border-slate-700 px-4 py-2 flex items-center gap-3 shrink-0">
+      <header className="bg-slate-800 border-b border-slate-700 px-3 md:px-4 py-2 flex items-center gap-2 md:gap-3 shrink-0">
         <button
           onClick={() => navigate('/student/problems')}
           className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-colors"
@@ -216,11 +219,20 @@ export default function Workspace() {
           {currentProblem.title}
         </h2>
 
-        <span className="text-[11px] text-slate-500">
+        <span className="text-[11px] text-slate-500 hidden sm:inline">
           {CATEGORY_LABELS[currentProblem.category] || currentProblem.category}
         </span>
 
-        <div className="ml-auto">
+        {/* 모바일: 문제 설명 토글 버튼 */}
+        <button
+          onClick={() => setMobileDescOpen(!mobileDescOpen)}
+          className="md:hidden ml-auto p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-colors"
+          title="문제 설명"
+        >
+          <FileText size={16} />
+        </button>
+
+        <div className={`${mobileDescOpen ? '' : 'ml-auto'} hidden md:block md:ml-auto`}>
           {!pyodideReady ? (
             <div className="flex items-center gap-1.5 text-[11px] text-amber-400 bg-amber-950/50 px-2.5 py-1 rounded-full border border-amber-800/50">
               <Loader2 size={11} className="animate-spin" />
@@ -236,11 +248,76 @@ export default function Workspace() {
       </header>
 
       {/* ── Main: Left Description | Right Code+Output ── */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
 
-        {/* ▌Left Panel — Problem Description (접이식) */}
+        {/* 모바일: 문제 설명 바텀 시트 */}
+        {mobileDescOpen && (
+          <>
+            <div className="md:hidden fixed inset-0 bg-black/40 z-30" onClick={() => setMobileDescOpen(false)} />
+            <div className="md:hidden fixed inset-x-0 bottom-0 z-30 bg-white rounded-t-2xl max-h-[75vh] flex flex-col animate-slideUp">
+              <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="h-6 px-2 rounded flex items-center justify-center text-white text-[11px] font-bold"
+                    style={{ backgroundColor: difficultyColor }}
+                  >
+                    {DIFFICULTY_LABELS[currentProblem.difficulty]}
+                  </div>
+                  <span className="text-sm font-bold text-slate-800">{currentProblem.title}</span>
+                </div>
+                <button onClick={() => setMobileDescOpen(false)} className="p-1 text-slate-400 hover:text-slate-600">
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="flex-1 overflow-auto px-4 py-4">
+                <MarkdownRenderer className="prose prose-sm max-w-none">
+                  {currentProblem.description}
+                </MarkdownRenderer>
+
+                {hints.length > 0 && (
+                  <div className="mt-6 pt-4 border-t border-slate-200">
+                    <button
+                      onClick={() => {
+                        setShowHints(!showHints);
+                        if (!showHints && revealedHints === 0) setRevealedHints(1);
+                      }}
+                      className="flex items-center gap-2 text-sm font-semibold text-amber-600"
+                    >
+                      <Lightbulb size={15} />
+                      <span>힌트 ({revealedHints}/{hints.length})</span>
+                      {showHints ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    </button>
+
+                    {showHints && (
+                      <div className="mt-3 space-y-2.5 animate-fadeIn">
+                        {hints.slice(0, revealedHints).map((hint, i) => (
+                          <div key={i} className="flex gap-2.5 text-sm text-amber-800 bg-amber-50 p-3 rounded-lg">
+                            <span className="shrink-0 w-5 h-5 rounded-full bg-amber-200 text-amber-700 flex items-center justify-center text-xs font-bold mt-0.5">
+                              {i + 1}
+                            </span>
+                            <span>{hint}</span>
+                          </div>
+                        ))}
+                        {revealedHints < hints.length && (
+                          <button
+                            onClick={() => setRevealedHints(prev => prev + 1)}
+                            className="ml-7 text-xs text-amber-600 hover:text-amber-800 underline underline-offset-2"
+                          >
+                            다음 힌트 보기
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* ▌Left Panel — Problem Description (데스크톱 전용, 접이식) */}
         <div
-          className={`bg-white flex flex-col shrink-0 border-r border-slate-200 transition-all duration-300 ${
+          className={`hidden md:flex bg-white flex-col shrink-0 border-r border-slate-200 transition-all duration-300 ${
             leftCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-[380px]'
           }`}
         >
@@ -314,11 +391,11 @@ export default function Workspace() {
           </div>
         </div>
 
-        {/* Left Panel Expand Button (접힌 상태에서만 표시) */}
+        {/* Left Panel Expand Button (접힌 상태에서만 표시, 데스크톱) */}
         {leftCollapsed && (
           <button
             onClick={() => setLeftCollapsed(false)}
-            className="shrink-0 w-8 bg-slate-800 border-r border-slate-700 flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-colors"
+            className="hidden md:flex shrink-0 w-8 bg-slate-800 border-r border-slate-700 items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-colors"
             title="문제 설명 펼치기"
           >
             <PanelLeftOpen size={16} />
@@ -344,11 +421,11 @@ export default function Workspace() {
           </div>
 
           {/* Action Bar */}
-          <div className="bg-slate-800 border-t border-slate-700 px-4 py-2 flex items-center gap-2 shrink-0">
+          <div className="bg-slate-800 border-t border-slate-700 px-2 md:px-4 py-2 flex items-center gap-1.5 md:gap-2 shrink-0 overflow-x-auto">
             <button
               onClick={handleRun}
               disabled={isRunning || !pyodideReady}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-500 text-white rounded-md text-sm font-semibold hover:bg-emerald-600 active:bg-emerald-700 disabled:opacity-40 transition-all"
+              className="inline-flex items-center gap-1 md:gap-1.5 px-2.5 md:px-3.5 py-1.5 bg-emerald-500 text-white rounded-md text-xs md:text-sm font-semibold hover:bg-emerald-600 active:bg-emerald-700 disabled:opacity-40 transition-all shrink-0"
             >
               {isRunning ? <Loader2 size={13} className="animate-spin" /> : <Play size={13} fill="white" />}
               실행
@@ -356,7 +433,7 @@ export default function Workspace() {
             <button
               onClick={handleRunTests}
               disabled={isRunning || !pyodideReady}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-500 text-white rounded-md text-sm font-semibold hover:bg-blue-600 active:bg-blue-700 disabled:opacity-40 transition-all"
+              className="inline-flex items-center gap-1 md:gap-1.5 px-2.5 md:px-3.5 py-1.5 bg-blue-500 text-white rounded-md text-xs md:text-sm font-semibold hover:bg-blue-600 active:bg-blue-700 disabled:opacity-40 transition-all shrink-0"
             >
               <FlaskConical size={13} />
               테스트
@@ -364,34 +441,34 @@ export default function Workspace() {
             <button
               onClick={handleSubmit}
               disabled={isRunning || submitting || !code.trim()}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-violet-500 text-white rounded-md text-sm font-semibold hover:bg-violet-600 active:bg-violet-700 disabled:opacity-40 transition-all"
+              className="inline-flex items-center gap-1 md:gap-1.5 px-2.5 md:px-3.5 py-1.5 bg-violet-500 text-white rounded-md text-xs md:text-sm font-semibold hover:bg-violet-600 active:bg-violet-700 disabled:opacity-40 transition-all shrink-0"
             >
               {submitting ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
               제출
             </button>
 
-            <div className="h-4 w-px bg-slate-600 mx-1" />
+            <div className="h-4 w-px bg-slate-600 mx-0.5 md:mx-1 shrink-0" />
 
             <button
               onClick={() => reset(currentProblem.starter_code || '')}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-md text-sm transition-all"
+              className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-2.5 py-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-md text-xs md:text-sm transition-all shrink-0"
             >
               <RotateCcw size={13} />
-              초기화
+              <span className="hidden sm:inline">초기화</span>
             </button>
 
-            <span className="ml-auto text-[10px] text-slate-600 hidden md:block">
+            <span className="ml-auto text-[10px] text-slate-600 hidden lg:block shrink-0">
               ⌘Enter 실행 · ⌘⇧Enter 테스트
             </span>
           </div>
 
           {/* Bottom: Output / AI Coach */}
-          <div className="h-[240px] border-t border-slate-700 flex flex-col bg-slate-950 shrink-0">
+          <div className="h-[180px] md:h-[240px] border-t border-slate-700 flex flex-col bg-slate-950 shrink-0">
             {/* Tabs */}
             <div className="flex shrink-0">
               <button
                 onClick={() => setRightPanel('output')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-all border-b-2 ${
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 md:py-2.5 text-xs font-semibold transition-all border-b-2 ${
                   rightPanel === 'output'
                     ? 'text-emerald-400 border-emerald-400 bg-slate-900/50'
                     : 'text-slate-500 border-transparent hover:text-slate-400 hover:bg-slate-900/30'
@@ -402,7 +479,7 @@ export default function Workspace() {
               </button>
               <button
                 onClick={() => setRightPanel('ai')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-all border-b-2 ${
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 md:py-2.5 text-xs font-semibold transition-all border-b-2 ${
                   rightPanel === 'ai'
                     ? 'text-violet-400 border-violet-400 bg-slate-900/50'
                     : 'text-slate-500 border-transparent hover:text-slate-400 hover:bg-slate-900/30'
@@ -440,7 +517,7 @@ export default function Workspace() {
       {/* 축하 모달 + 소감 입력 */}
       {showCelebration && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 animate-fadeIn">
+          <div className="relative bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-md w-full mx-4 animate-fadeIn">
             <button
               onClick={() => setShowCelebration(false)}
               className="absolute top-4 right-4 p-1 text-slate-400 hover:text-slate-600 transition-colors"
