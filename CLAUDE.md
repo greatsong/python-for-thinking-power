@@ -262,6 +262,38 @@ python-for-thinking-power/
 | `server/services/approachAnalyzer.js` | 풀이 분석 | 아이디어 차이 중심 분류, 7접근법 유형 기반 |
 | `server/db/seed.js` | 문제 시딩 | 자동 발견 + 큐레이션 목록 하이브리드 |
 
+## 교사 워크플로우 기능 (대시보드)
+
+### 매트릭스 셀 클릭 → 슬라이드 패널
+
+교사 라이브 대시보드에서 학생×문제 매트릭스 셀을 클릭하면 오른쪽 슬라이드 패널이 열림.
+
+**셀 모드 (학생+문제):** 4개 탭
+- 코드 보기: 제출 코드 + 테스트 결과 + 접근법 태그
+- AI 대화: messages_json 원문 (치팅 키워드 하이라이팅)
+- 피드백/평가: 점수(0~100) + 등급(A~F) + 코멘트 저장
+- 코드 여정: 스냅샷 타임라인
+
+**학생 모드 (학생 전체):** 2개 탭
+- 전체 요약: 모든 문제 제출 현황 + 통계
+- 채점 현황: 평가 완료/미완료 목록
+
+### 데이터 내보내기
+
+매트릭스 상단 "내보내기" 드롭다운:
+- 성적표 CSV: 학생×문제 점수/등급 매트릭스
+- 진행 요약 CSV: 학생별 제출수/통과율/AI사용횟수
+- 한글 엑셀 호환 (UTF-8 BOM)
+
+### 관련 파일
+
+| 파일 | 역할 |
+|------|------|
+| `client/src/components/StudentDetailPanel.jsx` | 슬라이드 패널 (4탭 셀모드 + 2탭 학생모드) |
+| `client/src/pages/teacher/LiveDashboard.jsx` | 매트릭스 셀 클릭 + 내보내기 + 통과율 행 |
+| `client/src/stores/dashboardStore.js` | fetchCellDetail, fetchStudentDetail, saveFeedback |
+| `server/routes/dashboard.js` | cell-detail, student-detail, feedback, export API |
+
 ## 상세 문서
 
 - 출제 가이드라인: `PROBLEM_DESIGN.md`
