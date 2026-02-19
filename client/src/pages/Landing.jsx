@@ -89,13 +89,13 @@ export default function Landing() {
             <h2 className="text-xl font-bold text-slate-900 text-center mb-2">같은 문제, 다른 생각</h2>
             <p className="text-sm text-slate-500 text-center mb-6">정답은 하나가 아닙니다. 다양한 풀이를 비교하며 사고력을 키웁니다.</p>
             <div className="bg-slate-50 rounded-xl p-5 border border-slate-200 font-mono text-sm text-slate-700">
-              <p className="text-slate-400 mb-3 text-xs"># 문제: 구구단에서 결과가 12인 것을 모두 찾으세요</p>
+              <p className="text-slate-400 mb-3 text-xs"># 문제: 1부터 100까지의 합을 구하세요</p>
               <div className="space-y-2">
-                <p><span className="text-blue-600 font-semibold">학생A</span>: 이중 for문으로 전부 확인 → <span className="text-emerald-600 font-bold">2×6, 3×4, 4×3, 6×2</span></p>
-                <p><span className="text-violet-600 font-semibold">학생B</span>: 12의 약수를 구해서 쌍 만들기 → <span className="text-emerald-600 font-bold">2×6, 3×4, 4×3, 6×2</span></p>
-                <p><span className="text-amber-600 font-semibold">학생C</span>: 리스트 컴프리헨션 한 줄 → <span className="text-emerald-600 font-bold">2×6, 3×4, 4×3, 6×2</span></p>
+                <p><span className="text-blue-600 font-semibold">학생A</span>: 1+2+3+... 하나씩 더하기 → <span className="text-emerald-600 font-bold">5050</span> <span className="text-slate-400 text-xs">(끈기의 풀이)</span></p>
+                <p><span className="text-violet-600 font-semibold">학생B</span>: 양 끝 짝짓기 (1+100)×50 → <span className="text-emerald-600 font-bold">5050</span> <span className="text-slate-400 text-xs">(가우스의 발견!)</span></p>
+                <p><span className="text-amber-600 font-semibold">학생C</span>: 수학 공식 100×101÷2 → <span className="text-emerald-600 font-bold">5050</span> <span className="text-slate-400 text-xs">(공식 활용)</span></p>
               </div>
-              <p className="text-blue-600 mt-3 text-xs font-medium">→ 3명 다 정답! 전수조사 vs 수학적 사고 vs 파이썬스러운 사고 — 이 비교에서 사고력이 자랍니다.</p>
+              <p className="text-blue-600 mt-3 text-xs font-medium">→ 3명 다 정답! 하지만 '끈기'와 '통찰'과 '지식'은 다르다 — 이 비교에서 사고력이 자랍니다.</p>
             </div>
           </div>
         </div>
