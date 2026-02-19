@@ -166,12 +166,12 @@ export default function AIGuide() {
             </p>
             <p>핵심 철학은 <strong>"같은 문제, 다른 생각"</strong>입니다:</p>
             <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 font-mono text-xs">
-              <p className="text-slate-500 mb-2">[문제] 1부터 10000까지의 소수를 모두 찾으세요</p>
-              <p>학생A: 2부터 하나씩 나눠보기 — 확실하지만 30초</p>
-              <p>학생B: √n까지만 나누면 충분! — "왜 제곱근이면 되지?" 0.5초</p>
-              <p>학생C: 소수의 배수를 지워나가기 — 찾지 말고 지운다! 0.01초</p>
-              <p className="text-blue-600 mt-2">→ 결과는 같은 1229개.</p>
-              <p className="text-blue-600">→ 생각의 차이가 3000배의 속도 차이를 만든다.</p>
+              <p className="text-slate-500 mb-2">[문제] 100만 개의 데이터에서 중복된 값을 모두 찾으세요</p>
+              <p>학생A: 하나씩 전부 비교하기 — 확실하지만 몇 시간...</p>
+              <p>학생B: 정렬하면 같은 값이 옆에! — "줄 세우기" 아이디어, 2초</p>
+              <p>학생C: 본 걸 기억하면 된다 (set) — "기억하기" 아이디어, 0.3초</p>
+              <p className="text-blue-600 mt-2">→ 비교? 정렬? 기억?</p>
+              <p className="text-blue-600">→ 같은 문제, 세 가지 아이디어. 어떤 생각을 떠올리느냐가 실력이다.</p>
             </div>
 
             <p className="font-medium text-slate-700 mt-4">학생이 할 수 있는 것:</p>

@@ -89,13 +89,13 @@ export default function Landing() {
             <h2 className="text-xl font-bold text-slate-900 text-center mb-2">같은 문제, 다른 생각</h2>
             <p className="text-sm text-slate-500 text-center mb-6">정답은 하나가 아닙니다. 다양한 풀이를 비교하며 사고력을 키웁니다.</p>
             <div className="bg-slate-50 rounded-xl p-5 border border-slate-200 font-mono text-sm text-slate-700">
-              <p className="text-slate-400 mb-3 text-xs"># 1부터 10000까지의 소수를 모두 찾으세요</p>
+              <p className="text-slate-400 mb-3 text-xs"># 100만 개의 데이터에서 중복된 값을 모두 찾으세요</p>
               <div className="space-y-2">
-                <p><span className="text-blue-600 font-semibold">학생A</span>: 2부터 하나씩 나눠보기 <span className="text-slate-400 text-xs">— 확실하지만 30초</span></p>
-                <p><span className="text-violet-600 font-semibold">학생B</span>: √n까지만 나누면 충분! <span className="text-slate-400 text-xs">— "왜 제곱근이면 되지?" 0.5초</span></p>
-                <p><span className="text-amber-600 font-semibold">학생C</span>: 소수의 배수를 지워나가기 <span className="text-slate-400 text-xs">— 찾지 말고 지운다! 0.01초</span></p>
+                <p><span className="text-blue-600 font-semibold">학생A</span>: 하나씩 전부 비교하기 <span className="text-slate-400 text-xs">— 확실하지만 몇 시간...</span></p>
+                <p><span className="text-violet-600 font-semibold">학생B</span>: 정렬하면 같은 값이 옆에! <span className="text-slate-400 text-xs">— "줄 세우기" 아이디어, 2초</span></p>
+                <p><span className="text-amber-600 font-semibold">학생C</span>: 본 걸 기억하면 된다 (set) <span className="text-slate-400 text-xs">— "기억하기" 아이디어, 0.3초</span></p>
               </div>
-              <p className="text-emerald-600 mt-3 text-xs font-bold">→ 결과는 같은 1229개. 하지만 생각의 차이가 3000배의 속도 차이를 만든다.</p>
+              <p className="text-emerald-600 mt-3 text-xs font-bold">→ 비교? 정렬? 기억? — 같은 문제, 세 가지 아이디어. 어떤 생각을 떠올리느냐가 실력이다.</p>
             </div>
           </div>
         </div>
