@@ -29,20 +29,24 @@ router.post('/google', asyncHandler(async (req, res) => {
 
   const googleUser = await verifyGoogleToken(credential);
 
-  // 기존 사용자 확인 (기존 사용자는 역할 유지)
+  // 기존 사용자 확인
   let user = queryOne('SELECT * FROM users WHERE google_id = ?', [googleUser.googleId]);
 
+  // 기존 사용자가 화이트리스트에 있는데 student로 등록되어 있으면 자동 승격
+  if (user && user.role === 'student' && isTeacherAllowed(googleUser.email)) {
+    execute('UPDATE users SET role = ? WHERE id = ?', ['teacher', user.id]);
+    user = queryOne('SELECT * FROM users WHERE id = ?', [user.id]);
+  }
+
   if (!user) {
-    // 새 사용자: 교사는 이메일 화이트리스트 확인
+    // 새 사용자: 화이트리스트에 있으면 자동 교사 부여
     let userRole = 'student';
-    if (role === 'teacher') {
-      if (isTeacherAllowed(googleUser.email)) {
-        userRole = 'teacher';
-      } else {
-        return res.status(403).json({
-          message: '아직 승인되지 않은 이메일입니다. 아래 신청서를 먼저 제출해 주세요.',
-        });
-      }
+    if (isTeacherAllowed(googleUser.email)) {
+      userRole = 'teacher';
+    } else if (role === 'teacher') {
+      return res.status(403).json({
+        message: '아직 승인되지 않은 이메일입니다. 아래 신청서를 먼저 제출해 주세요.',
+      });
     }
     const id = generateId();
     execute(
