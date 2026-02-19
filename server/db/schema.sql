@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
   name TEXT NOT NULL,
   avatar_url TEXT,
   role TEXT DEFAULT 'student',
+  anthropic_api_key TEXT,
   created_at TEXT DEFAULT (datetime('now'))
 );
 

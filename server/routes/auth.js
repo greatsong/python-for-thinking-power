@@ -39,9 +39,8 @@ router.post('/google', asyncHandler(async (req, res) => {
       if (isTeacherAllowed(googleUser.email)) {
         userRole = 'teacher';
       } else {
-        const adminEmail = process.env.ADMIN_EMAIL || 'greatsong21@gmail.com';
         return res.status(403).json({
-          message: `교사 계정은 신청서 제출 후 승인이 필요합니다. 신청: ${adminEmail}`,
+          message: '아직 승인되지 않은 이메일입니다. 아래 신청서를 먼저 제출해 주세요.',
         });
       }
     }

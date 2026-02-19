@@ -17,10 +17,13 @@ export default function ClassroomSetup() {
   const [editingNumber, setEditingNumber] = useState('');
 
   // API 키 관련 상태
-  const [apiKeyStatus, setApiKeyStatus] = useState({ configured: false, masked: '' });
+  const [apiKeyStatus, setApiKeyStatus] = useState({ configured: false, masked: '', source: 'none' });
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [showKeyInput, setShowKeyInput] = useState(false);
   const [savingKey, setSavingKey] = useState(false);
+  const [testingKey, setTestingKey] = useState(false);
+  const [testResult, setTestResult] = useState(null);
+  const [deletingKey, setDeletingKey] = useState(false);
 
   const fetchClassrooms = async () => {
     try {
@@ -114,6 +117,38 @@ export default function ClassroomSetup() {
       alert(err.message || 'API 키 저장 실패');
     } finally {
       setSavingKey(false);
+    }
+  };
+
+  // API 키 테스트
+  const handleTestApiKey = async () => {
+    setTestingKey(true);
+    setTestResult(null);
+    try {
+      const result = await apiFetch('/ai/test-key', {
+        method: 'POST',
+        body: JSON.stringify({}),
+      });
+      setTestResult(result);
+    } catch (err) {
+      setTestResult({ valid: false, message: err.message || '테스트 실패' });
+    } finally {
+      setTestingKey(false);
+    }
+  };
+
+  // API 키 삭제
+  const handleDeleteApiKey = async () => {
+    if (!confirm('저장된 API 키를 삭제하시겠습니까?\nAI 코치 기능이 비활성화됩니다.')) return;
+    setDeletingKey(true);
+    try {
+      const result = await apiFetch('/ai/config', { method: 'DELETE' });
+      setApiKeyStatus({ configured: result.configured, masked: result.masked, source: result.configured ? 'env' : 'none' });
+      setTestResult(null);
+    } catch (err) {
+      alert('API 키 삭제 실패: ' + err.message);
+    } finally {
+      setDeletingKey(false);
     }
   };
 
@@ -228,6 +263,31 @@ export default function ClassroomSetup() {
             {showKeyInput ? '닫기' : (apiKeyStatus.configured ? '변경' : '설정하기')}
           </button>
         </div>
+        {apiKeyStatus.configured && (
+          <div className="flex items-center gap-2 mt-2">
+            <button
+              onClick={handleTestApiKey}
+              disabled={testingKey}
+              className="px-3 py-1.5 text-xs bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 disabled:opacity-50 transition-colors"
+            >
+              {testingKey ? '테스트 중...' : '키 테스트'}
+            </button>
+            {apiKeyStatus.source === 'db' && (
+              <button
+                onClick={handleDeleteApiKey}
+                disabled={deletingKey}
+                className="px-3 py-1.5 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 disabled:opacity-50 transition-colors"
+              >
+                {deletingKey ? '삭제 중...' : '키 삭제'}
+              </button>
+            )}
+            {testResult && (
+              <span className={`text-xs ${testResult.valid ? 'text-emerald-600' : 'text-red-600'}`}>
+                {testResult.message}
+              </span>
+            )}
+          </div>
+        )}
         {showKeyInput && (
           <div className="flex gap-3 mt-3">
             <input
@@ -248,8 +308,11 @@ export default function ClassroomSetup() {
           </div>
         )}
         <p className="text-xs text-slate-400 mt-2">
-          Anthropic Claude API 키가 필요합니다.
+          Anthropic Claude API 키가 필요합니다. 키를 설정하지 않으면 AI 코치 기능이 비활성화됩니다.
         </p>
+        {apiKeyStatus.source === 'db' && (
+          <p className="text-xs text-emerald-500 mt-1">내 API 키가 AES-256으로 암호화되어 저장되어 있습니다.</p>
+        )}
       </div>
 
       {/* 새 교실 생성 */}

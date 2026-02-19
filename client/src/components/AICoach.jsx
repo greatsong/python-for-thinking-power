@@ -7,7 +7,7 @@ export default function AICoach({ problemId, classroomId, code }) {
   const [input, setInput] = useState('');
   const isComposingRef = useRef(false);
   const messagesEndRef = useRef(null);
-  const { messages, isStreaming, streamingText, aiDisabled, sendMessage, loadConversation, resetChat } = useChatStore();
+  const { messages, isStreaming, streamingText, aiDisabled, aiNoKey, sendMessage, loadConversation, resetChat } = useChatStore();
 
   useEffect(() => {
     resetChat();
@@ -40,6 +40,16 @@ export default function AICoach({ problemId, classroomId, code }) {
         <MessageCircleOff size={32} />
         <p className="text-sm">이 문제에서는 AI 코치가 비활성화되어 있어요.</p>
         <p className="text-xs text-slate-500">선생님이 스스로 풀어보길 원하고 있어요!</p>
+      </div>
+    );
+  }
+
+  if (aiNoKey) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-slate-400 px-6 text-center gap-3">
+        <MessageCircleOff size={32} />
+        <p className="text-sm">AI 코치를 사용할 수 없어요.</p>
+        <p className="text-xs text-slate-500">선생님이 아직 API 키를 설정하지 않았어요.</p>
       </div>
     );
   }

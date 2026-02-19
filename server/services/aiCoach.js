@@ -59,13 +59,14 @@ ${studentCode}
   return parts.join('\n\n');
 }
 
-export async function streamChat({ systemPrompt, messages, onText, onDone, onError }) {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    onError?.('ANTHROPIC_API_KEY가 설정되지 않았습니다');
+export async function streamChat({ systemPrompt, messages, apiKey, onText, onDone, onError }) {
+  const key = apiKey || process.env.ANTHROPIC_API_KEY;
+  if (!key) {
+    onError?.('API 키가 설정되지 않았습니다. 교사에게 문의하세요.');
     return;
   }
 
-  const client = new Anthropic();
+  const client = new Anthropic({ apiKey: key });
 
   try {
     const stream = await client.messages.stream({

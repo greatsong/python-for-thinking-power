@@ -1,9 +1,10 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-export async function generateConversationSummary(messages, problemTitle) {
-  if (!process.env.ANTHROPIC_API_KEY || messages.length === 0) return null;
+export async function generateConversationSummary(messages, problemTitle, apiKey) {
+  const key = apiKey || process.env.ANTHROPIC_API_KEY;
+  if (!key || messages.length === 0) return null;
 
-  const client = new Anthropic();
+  const client = new Anthropic({ apiKey: key });
   const conversationText = messages
     .map(m => `**${m.role === 'user' ? '학생' : 'AI'}**: ${m.content}`)
     .join('\n\n');

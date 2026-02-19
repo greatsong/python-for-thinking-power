@@ -7,6 +7,7 @@ const useChatStore = create((set, get) => ({
   isStreaming: false,
   streamingText: '',
   aiDisabled: false,
+  aiNoKey: false,  // API 키 미설정
 
   // 대화 초기화 (문제 변경 시)
   resetChat: () => set({
@@ -15,6 +16,7 @@ const useChatStore = create((set, get) => ({
     isStreaming: false,
     streamingText: '',
     aiDisabled: false,
+    aiNoKey: false,
   }),
 
   // 기존 대화 로드
@@ -67,6 +69,10 @@ const useChatStore = create((set, get) => ({
       onError: (errMsg) => {
         if (errMsg?.includes('비활성화')) {
           set({ aiDisabled: true, isStreaming: false });
+          return;
+        }
+        if (errMsg?.includes('API 키를 설정해야') || errMsg?.includes('API 키가 설정되지')) {
+          set({ aiNoKey: true, isStreaming: false });
           return;
         }
         fullText = `오류가 발생했습니다: ${errMsg}`;

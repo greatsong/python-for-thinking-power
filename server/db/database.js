@@ -41,6 +41,7 @@ export async function initDatabase() {
   try { db.run('ALTER TABLE submissions ADD COLUMN reflection TEXT'); } catch {}
   try { db.run('ALTER TABLE problems ADD COLUMN explanation TEXT'); } catch {}
   try { db.run('ALTER TABLE users ADD COLUMN current_level INT DEFAULT 1'); } catch {}
+  try { db.run('ALTER TABLE users ADD COLUMN anthropic_api_key TEXT'); } catch {}
 
   // 성능 최적화
   db.run('PRAGMA foreign_keys=ON');

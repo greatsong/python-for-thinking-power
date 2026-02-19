@@ -4,27 +4,67 @@ import { buildSystemPrompt, streamChat } from '../services/aiCoach.js';
 import { generateConversationSummary } from '../services/conversationSummarizer.js';
 import { queryOne, queryAll, execute, generateId } from '../db/database.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import { encrypt, decrypt } from '../services/crypto.js';
 
 const router = Router();
 
-// API 키 상태 확인
+// API 키 상태 확인 (교사별 DB 저장)
 router.get('/status', requireAuth, requireTeacher, (req, res) => {
-  const key = process.env.ANTHROPIC_API_KEY || '';
+  const teacher = queryOne('SELECT anthropic_api_key FROM users WHERE id = ?', [req.user.id]);
+  const decryptedKey = teacher?.anthropic_api_key ? decrypt(teacher.anthropic_api_key) : null;
+  const key = decryptedKey || process.env.ANTHROPIC_API_KEY || '';
   res.json({
     configured: !!key && key.length > 10,
     masked: key ? key.slice(0, 10) + '...' + key.slice(-4) : '',
+    source: decryptedKey ? 'db' : (process.env.ANTHROPIC_API_KEY ? 'env' : 'none'),
   });
 });
 
-// API 키 설정 (런타임에만 적용)
+// API 키 설정 (교사별 DB 저장)
 router.post('/config', requireAuth, requireTeacher, (req, res) => {
   const { apiKey } = req.body;
   if (!apiKey || !apiKey.startsWith('sk-ant-')) {
     return res.status(400).json({ message: 'sk-ant- 로 시작하는 유효한 API 키를 입력하세요' });
   }
-  process.env.ANTHROPIC_API_KEY = apiKey;
+  execute('UPDATE users SET anthropic_api_key = ? WHERE id = ?', [encrypt(apiKey), req.user.id]);
   res.json({ success: true, masked: apiKey.slice(0, 10) + '...' + apiKey.slice(-4) });
 });
+
+// API 키 삭제
+router.delete('/config', requireAuth, requireTeacher, (req, res) => {
+  execute('UPDATE users SET anthropic_api_key = NULL WHERE id = ?', [req.user.id]);
+  const fallback = process.env.ANTHROPIC_API_KEY || '';
+  res.json({
+    success: true,
+    configured: !!fallback && fallback.length > 10,
+    masked: fallback ? fallback.slice(0, 10) + '...' + fallback.slice(-4) : '',
+  });
+});
+
+// API 키 테스트 (간단한 API 호출로 유효성 확인)
+router.post('/test-key', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
+  const { apiKey } = req.body;
+  const teacher = queryOne('SELECT anthropic_api_key FROM users WHERE id = ?', [req.user.id]);
+  const decryptedTeacherKey = teacher?.anthropic_api_key ? decrypt(teacher.anthropic_api_key) : null;
+  const key = apiKey || decryptedTeacherKey || process.env.ANTHROPIC_API_KEY;
+
+  if (!key) {
+    return res.status(400).json({ valid: false, message: 'API 키가 없습니다' });
+  }
+
+  try {
+    const { default: Anthropic } = await import('@anthropic-ai/sdk');
+    const client = new Anthropic({ apiKey: key });
+    await client.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 10,
+      messages: [{ role: 'user', content: 'Hi' }],
+    });
+    res.json({ valid: true, message: 'API 키가 유효합니다' });
+  } catch (err) {
+    res.json({ valid: false, message: err.message || 'API 키가 유효하지 않습니다' });
+  }
+}));
 
 // AI 코치 대화 (SSE 스트리밍)
 router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
@@ -52,6 +92,22 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
 
   if (aiLevel === 0) {
     return res.status(403).json({ message: '이 문제에서는 AI 코치가 비활성화되어 있습니다' });
+  }
+
+  // 교사별 API 키 조회: classroomId → teacher_id → anthropic_api_key (복호화)
+  let apiKey = process.env.ANTHROPIC_API_KEY;
+  if (classroomId) {
+    const classroom = queryOne('SELECT teacher_id FROM classrooms WHERE id = ?', [classroomId]);
+    if (classroom) {
+      const teacher = queryOne('SELECT anthropic_api_key FROM users WHERE id = ?', [classroom.teacher_id]);
+      if (teacher?.anthropic_api_key) {
+        apiKey = decrypt(teacher.anthropic_api_key);
+      }
+    }
+  }
+
+  if (!apiKey) {
+    return res.status(403).json({ message: 'AI 코치를 사용하려면 교사가 API 키를 설정해야 합니다' });
   }
 
   // 기존 대화 로드 또는 새 대화 생성
@@ -87,6 +143,7 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
   await streamChat({
     systemPrompt,
     messages: messages.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content })),
+    apiKey,
     onText: (text) => {
       fullResponse += text;
       res.write(`data: ${JSON.stringify({ type: 'text', content: text })}\n\n`);
@@ -152,8 +209,10 @@ router.post('/summarize/:conversationId', requireAuth, requireTeacher, asyncHand
   }
 
   const problem = queryOne('SELECT title FROM problems WHERE id = ?', [conv.problem_id]);
+  const teacher = queryOne('SELECT anthropic_api_key FROM users WHERE id = ?', [req.user.id]);
+  const summaryApiKey = (teacher?.anthropic_api_key ? decrypt(teacher.anthropic_api_key) : null) || process.env.ANTHROPIC_API_KEY;
   const messages = JSON.parse(conv.messages_json || '[]');
-  const summary = await generateConversationSummary(messages, problem?.title || '알 수 없음');
+  const summary = await generateConversationSummary(messages, problem?.title || '알 수 없음', summaryApiKey);
 
   if (summary) {
     execute('UPDATE ai_conversations SET summary = ? WHERE id = ?', [summary, conv.id]);

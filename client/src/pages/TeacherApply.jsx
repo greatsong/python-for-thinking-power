@@ -16,10 +16,11 @@ const REGIONS = [
 
 export default function TeacherApply() {
   const navigate = useNavigate();
-  const { loginWithGoogle } = useAuthStore();
+  const { loginWithGoogle, loginDemo, loading } = useAuthStore();
   const googleBtnRef = useRef(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [demoName, setDemoName] = useState('');
 
   const [form, setForm] = useState({
     name: '',
@@ -58,6 +59,20 @@ export default function TeacherApply() {
       navigate('/teacher');
     } catch (err) {
       toast.error(err.message || 'Google 로그인에 실패했습니다');
+    }
+  };
+
+  const handleDemoTeacher = async () => {
+    if (!demoName.trim()) {
+      toast.error('이름을 입력해 주세요');
+      return;
+    }
+    try {
+      const user = await loginDemo(demoName.trim(), 'teacher');
+      toast.success(`[데모] ${user.name} 선생님, 환영합니다!`);
+      navigate('/teacher');
+    } catch (err) {
+      toast.error(err.message || '데모 로그인에 실패했습니다');
     }
   };
 
@@ -123,6 +138,30 @@ export default function TeacherApply() {
 
           <h1 className="text-2xl font-bold text-slate-900 mb-1">교사 계정</h1>
           <p className="text-sm text-slate-500 mb-8">승인된 교사 로그인 또는 새 계정을 신청하세요.</p>
+
+          {/* 교사 데모 체험 */}
+          <div className="bg-white rounded-2xl shadow-sm border border-blue-200 p-6 mb-6">
+            <div className="px-3 py-2 bg-blue-50 rounded-lg text-xs text-blue-700 mb-3">
+              🎓 교사 화면을 먼저 체험해 보세요! 이름만 입력하면 바로 시작됩니다.
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="이름 입력 (예: 김선생)"
+                value={demoName}
+                onChange={(e) => setDemoName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleDemoTeacher()}
+                className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <button
+                onClick={handleDemoTeacher}
+                disabled={loading}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 disabled:opacity-50 transition-colors whitespace-nowrap"
+              >
+                교사 체험
+              </button>
+            </div>
+          </div>
 
           {/* 승인된 교사 로그인 */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
