@@ -1,6 +1,6 @@
 {
   "name": "사고력 문제집 Vol.1",
-  "description": "LeetCode, CSES, Advent of Code에서 영감을 받은 '같은 문제, 다른 생각' 문제 모음",
+  "description": "LeetCode, CSES, Advent of Code에서 영감을 받은 '하나의 문제, 다양한 사고의 경로' 문제 모음",
   "theme": "하나의 문제를 여러 각도에서 풀어보며 알고리즘적 사고력을 기르자!",
   "problems": [
     {

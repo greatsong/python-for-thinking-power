@@ -97,7 +97,7 @@ export default function Landing() {
             코드를 배우는 게 아니라, <span className="font-semibold text-emerald-600">생각하는 힘</span>을 키웁니다.
           </p>
           <p className="text-slate-500 mb-10">
-            같은 문제, 다른 생각 — 다양한 풀이를 비교하며 성장하는 파이썬 수업
+            하나의 문제, 다양한 사고의 경로 — 다양한 풀이를 비교하며 성장하는 파이썬 수업
           </p>
 
           {/* 로그인 카드 */}
@@ -116,7 +116,7 @@ export default function Landing() {
         {/* 핵심 철학 */}
         <div className="mt-16 max-w-3xl w-full">
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-            <h2 className="text-xl font-bold text-slate-900 text-center mb-2">같은 문제, 다른 생각</h2>
+            <h2 className="text-xl font-bold text-slate-900 text-center mb-2">하나의 문제, 다양한 사고의 경로</h2>
             <p className="text-sm text-slate-500 text-center mb-6">정답은 하나가 아닙니다. 다양한 풀이를 비교하며 사고력을 키웁니다.</p>
             <div className="bg-slate-50 rounded-xl p-5 border border-slate-200 font-mono text-sm text-slate-700">
               <p className="text-slate-400 mb-3 text-xs"># 100만 개의 데이터에서 중복된 값을 모두 찾으세요</p>

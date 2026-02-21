@@ -20,7 +20,7 @@ export async function analyzeSolutions(submissions, problemTitle, expectedApproa
       max_tokens: 1024,
       system: `당신은 "사고력을 위한 파이썬" 플랫폼의 풀이 분석 전문가입니다.
 
-[핵심 철학] "같은 문제, 다른 생각" — 학생들의 풀이를 접근법별로 분류하고, 아이디어 수준의 차이를 비교합니다.
+[핵심 철학] "하나의 문제, 다양한 사고의 경로" — 학생들의 풀이를 접근법별로 분류하고, 아이디어 수준의 차이를 비교합니다.
 
 [분석 원칙]
 - 접근법 분류는 문법 차이(for/while, f-string/format)가 아닌 아이디어 차이에 집중합니다
