@@ -12,6 +12,7 @@ import submissionsRouter from './routes/submissions.js';
 import aiRouter from './routes/ai.js';
 import dashboardRouter from './routes/dashboard.js';
 import galleryRouter from './routes/gallery.js';
+import adminRouter from './routes/admin.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -44,6 +45,7 @@ app.use('/api/submissions', submissionsRouter);
 app.use('/api/ai', aiRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/gallery', galleryRouter);
+app.use('/api/admin', adminRouter);
 
 // 프로덕션: 클라이언트 정적 파일 서빙
 const clientDist = path.resolve(__dirname, '..', 'client', 'dist');

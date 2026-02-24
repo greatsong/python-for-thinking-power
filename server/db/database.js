@@ -57,6 +57,11 @@ export async function initDatabase() {
   try { db.run('ALTER TABLE problems ADD COLUMN shared_at TEXT'); } catch {}
   try { db.run('ALTER TABLE problems ADD COLUMN cloned_from TEXT'); } catch {}
 
+  // 교사 신청 관리 관련 마이그레이션
+  try { db.run('ALTER TABLE teacher_applications ADD COLUMN reviewed_by TEXT'); } catch {}
+  try { db.run('ALTER TABLE teacher_applications ADD COLUMN reviewed_at TEXT'); } catch {}
+  try { db.run('ALTER TABLE teacher_applications ADD COLUMN rejection_reason TEXT'); } catch {}
+
   // 교사 피드백/평가 관련 마이그레이션
   try { db.run('ALTER TABLE submissions ADD COLUMN teacher_score INTEGER'); } catch {}
   try { db.run('ALTER TABLE submissions ADD COLUMN teacher_grade TEXT'); } catch {}

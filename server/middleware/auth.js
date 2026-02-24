@@ -33,6 +33,14 @@ export function requireTeacher(req, res, next) {
   next();
 }
 
+export function requireAdmin(req, res, next) {
+  const adminEmail = process.env.ADMIN_EMAIL || 'greatsong21@gmail.com';
+  if (req.user?.email !== adminEmail) {
+    return res.status(403).json({ message: '관리자 권한이 필요합니다' });
+  }
+  next();
+}
+
 // 로그인 선택 (토큰 있으면 req.user 설정, 없어도 통과)
 export function optionalAuth(req, res, next) {
   const authHeader = req.headers.authorization;

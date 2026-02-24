@@ -6,7 +6,7 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 
 const router = Router();
 
-// 교사 이메일 화이트리스트 확인
+// 교사 이메일 화이트리스트 + DB 승인 상태 확인
 function isTeacherAllowed(email) {
   const adminEmail = process.env.ADMIN_EMAIL || 'greatsong21@gmail.com';
   const allowedEmails = (process.env.TEACHER_EMAILS || '')
@@ -16,7 +16,14 @@ function isTeacherAllowed(email) {
   if (adminEmail && !allowedEmails.includes(adminEmail)) {
     allowedEmails.push(adminEmail);
   }
-  return allowedEmails.includes(email);
+  if (allowedEmails.includes(email)) return true;
+
+  // DB에서 승인된 신청서 확인
+  const approved = queryOne(
+    "SELECT id FROM teacher_applications WHERE email = ? AND status = 'approved'",
+    [email]
+  );
+  return !!approved;
 }
 
 // Google 로그인 / 회원가입

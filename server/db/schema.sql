@@ -127,6 +127,9 @@ CREATE TABLE IF NOT EXISTS teacher_applications (
   motivation TEXT NOT NULL,
   privacy_consent INTEGER NOT NULL DEFAULT 0,
   status TEXT DEFAULT 'pending',
+  reviewed_by TEXT,
+  reviewed_at TEXT,
+  rejection_reason TEXT,
   created_at TEXT DEFAULT (datetime('now'))
 );
 

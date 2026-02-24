@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Wrench, ListChecks, MessageSquare, Settings, BookOpen, LogOut, Menu, X, Users } from 'lucide-react';
+import { LayoutDashboard, Wrench, ListChecks, MessageSquare, Settings, BookOpen, LogOut, Menu, X, Users, ShieldCheck } from 'lucide-react';
 import useAuthStore from '../stores/authStore.js';
 
 export default function TeacherLayout() {
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'greatsong21@gmail.com';
+  const isAdmin = user?.email === adminEmail;
 
   const navItems = [
     { to: '/teacher/dashboard', icon: LayoutDashboard, label: '교실 라이브' },
@@ -16,6 +19,7 @@ export default function TeacherLayout() {
     { to: '/teacher/ai-reports', icon: MessageSquare, label: 'AI 리포트' },
     { to: '/teacher/classroom', icon: Settings, label: '교실 설정' },
     { to: '/teacher/guide', icon: BookOpen, label: '사용 안내' },
+    ...(isAdmin ? [{ to: '/teacher/admin', icon: ShieldCheck, label: '신청 관리' }] : []),
   ];
 
   return (

@@ -17,6 +17,7 @@ import AIReports from './pages/teacher/AIReports.jsx';
 import ApproachAnalysis from './pages/teacher/ApproachAnalysis.jsx';
 import AIGuide from './pages/teacher/AIGuide.jsx';
 import ProblemCommunity from './pages/teacher/ProblemCommunity.jsx';
+import AdminDashboard from './pages/teacher/AdminDashboard.jsx';
 import useAuthStore from './stores/authStore.js';
 
 export default function App() {
@@ -55,6 +56,7 @@ export default function App() {
         <Route path="ai-reports" element={<AIReports />} />
         <Route path="analysis/:problemId" element={<ApproachAnalysis />} />
         <Route path="guide" element={<AIGuide />} />
+        <Route path="admin" element={<AdminDashboard />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
