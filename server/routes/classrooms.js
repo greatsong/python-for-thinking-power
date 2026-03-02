@@ -110,7 +110,7 @@ router.post('/join', requireAuth, asyncHandler(async (req, res) => {
   });
 }));
 
-// 교실 정보 조회
+// 교실 정보 조회 — 교실 소속 확인
 router.get('/:id', requireAuth, asyncHandler(async (req, res) => {
   const classroom = queryOne(
     `SELECT c.*, COUNT(cm.user_id) as student_count
@@ -124,6 +124,16 @@ router.get('/:id', requireAuth, asyncHandler(async (req, res) => {
   if (!classroom) {
     return res.status(404).json({ message: '교실을 찾을 수 없습니다' });
   }
+
+  // 교실 소속 확인 (교사이거나 멤버여야 함)
+  const isMember = queryOne(
+    'SELECT 1 FROM classroom_members WHERE classroom_id = ? AND user_id = ?',
+    [req.params.id, req.user.id]
+  );
+  if (classroom.teacher_id !== req.user.id && !isMember) {
+    return res.status(403).json({ message: '이 교실에 접근 권한이 없습니다' });
+  }
+
   res.json(classroom);
 }));
 
@@ -149,8 +159,17 @@ router.delete('/:id', requireAuth, requireTeacher, asyncHandler(async (req, res)
   res.json({ message: '교실이 삭제되었습니다' });
 }));
 
-// 교실 학생 목록 (교사 전용)
+// 교실 학생 목록 (해당 교실 교사 전용)
 router.get('/:id/students', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
+  // 교실 소유권 확인
+  const classroom = queryOne(
+    'SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?',
+    [req.params.id, req.user.id]
+  );
+  if (!classroom) {
+    return res.status(403).json({ message: '이 교실의 담당 교사가 아닙니다' });
+  }
+
   const students = queryAll(
     `SELECT u.id, u.name, u.email, u.avatar_url,
             COALESCE(u.current_level, 1) as current_level,
@@ -239,8 +258,17 @@ router.put('/:id/ai-limit', requireAuth, requireTeacher, asyncHandler(async (req
   res.json({ daily_ai_limit: limit });
 }));
 
-// 학생 내보내기 (교사 전용)
+// 학생 내보내기 (해당 교실 교사 전용)
 router.delete('/:id/members/:userId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
+  // 교실 소유권 확인
+  const classroom = queryOne(
+    'SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?',
+    [req.params.id, req.user.id]
+  );
+  if (!classroom) {
+    return res.status(403).json({ message: '이 교실의 담당 교사가 아닙니다' });
+  }
+
   execute(
     'DELETE FROM classroom_members WHERE classroom_id = ? AND user_id = ?',
     [req.params.id, req.params.userId]

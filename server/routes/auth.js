@@ -100,6 +100,9 @@ router.put('/profile', requireAuth, asyncHandler(async (req, res) => {
   if (!name?.trim()) {
     return res.status(400).json({ message: '이름이 필요합니다' });
   }
+  if (name.trim().length > 100) {
+    return res.status(400).json({ message: '이름은 100자 이내로 입력하세요' });
+  }
   execute('UPDATE users SET name = ? WHERE id = ?', [name.trim(), req.user.id]);
   const user = queryOne('SELECT * FROM users WHERE id = ?', [req.user.id]);
   res.json({
@@ -167,6 +170,13 @@ router.post('/teacher-apply', asyncHandler(async (req, res) => {
   if (!privacyConsent) {
     return res.status(400).json({ message: '개인정보 수집·이용에 동의해 주세요.' });
   }
+  // 입력 길이 제한
+  if (name.length > 100 || email.length > 200 || school.length > 200 || region.length > 100) {
+    return res.status(400).json({ message: '입력이 너무 깁니다.' });
+  }
+  if (motivation.length > 2000) {
+    return res.status(400).json({ message: '지원 동기는 2000자 이내로 작성해 주세요.' });
+  }
 
   const existing = queryOne('SELECT id FROM teacher_applications WHERE email = ? AND status = ?', [email, 'pending']);
   if (existing) {
@@ -183,23 +193,32 @@ router.post('/teacher-apply', asyncHandler(async (req, res) => {
   res.json({ message: '교사 계정 신청이 접수되었습니다. 검토 후 이메일로 안내드리겠습니다.' });
 }));
 
-// 데모 로그인 (체험용)
+// 데모 로그인 (체험용) — 프로덕션에서는 차단, role은 student 고정
 router.post('/demo', asyncHandler(async (req, res) => {
-  const { name, role } = req.body;
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(403).json({ message: '프로덕션에서는 데모 로그인을 사용할 수 없습니다' });
+  }
+
+  const { name } = req.body;
 
   if (!name) {
     return res.status(400).json({ message: '이름이 필요합니다' });
   }
+  if (name.length > 100) {
+    return res.status(400).json({ message: '이름은 100자 이내로 입력하세요' });
+  }
 
-  const demoId = `demo-${name}-${role}`;
-  let user = queryOne('SELECT * FROM users WHERE google_id = ?', [demoId]);
+  const safeName = name.trim().slice(0, 100);
+  const demoRole = 'student'; // 보안: 데모 로그인은 학생만 허용
+  const demoId = `demo-${safeName}-${Date.now()}`;
+  let user = queryOne('SELECT * FROM users WHERE google_id = ?', [`demo-${safeName}-student`]);
 
   if (!user) {
     const id = generateId();
     execute(
       `INSERT INTO users (id, google_id, email, name, role)
        VALUES (?, ?, ?, ?, ?)`,
-      [id, demoId, `${name}@demo.local`, name, role || 'student']
+      [id, `demo-${safeName}-student`, `${safeName}@demo.local`, safeName, demoRole]
     );
     user = queryOne('SELECT * FROM users WHERE id = ?', [id]);
   }

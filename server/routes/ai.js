@@ -76,6 +76,13 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
   if (!classroomId) {
     return res.status(400).json({ message: '교실 ID가 필요합니다' });
   }
+  // 입력 길이 제한
+  if (message.length > 5000) {
+    return res.status(400).json({ message: '메시지는 5000자 이내로 입력하세요' });
+  }
+  if (code && code.length > 10000) {
+    return res.status(400).json({ message: '코드는 10000자 이내로 입력하세요' });
+  }
 
   // 문제 정보 가져오기
   const problem = queryOne('SELECT * FROM problems WHERE id = ?', [problemId]);

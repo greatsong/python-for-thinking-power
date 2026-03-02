@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { config } from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -22,11 +24,42 @@ const app = express();
 const PORT = process.env.PORT || 4001;
 const isProduction = process.env.NODE_ENV === 'production';
 
+// 보안 헤더
+app.use(helmet());
+
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:4000',
   credentials: true,
 }));
 app.use(express.json({ limit: '2mb' }));
+
+// Rate Limiting
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15분
+  max: 300,
+  message: { message: '요청이 너무 많습니다. 잠시 후 다시 시도하세요.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/', globalLimiter);
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  message: { message: '인증 요청이 너무 많습니다. 잠시 후 다시 시도하세요.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/auth/', authLimiter);
+
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1분
+  max: 20,
+  message: { message: 'AI 요청이 너무 많습니다. 잠시 후 다시 시도하세요.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/ai/', aiLimiter);
 
 // Health check
 app.get('/api/health', (req, res) => {

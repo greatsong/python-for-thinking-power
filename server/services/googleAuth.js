@@ -23,7 +23,11 @@ export async function verifyGoogleToken(idToken) {
       avatarUrl: payload.picture,
     };
   } catch (err) {
-    // 개발 환경에서 GOOGLE_CLIENT_ID가 없거나 유효하지 않은 값이면 데모 모드
+    // 프로덕션에서는 데모 모드 차단
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Google 인증 실패');
+    }
+    // 개발 환경에서만 GOOGLE_CLIENT_ID가 없거나 유효하지 않은 값이면 데모 모드
     const clientId = process.env.GOOGLE_CLIENT_ID || '';
     const isDemoMode = !clientId || clientId === 'demo-mode' || !clientId.endsWith('.apps.googleusercontent.com');
     if (isDemoMode) {

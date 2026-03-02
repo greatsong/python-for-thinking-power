@@ -5,12 +5,17 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 
 const router = Router();
 
+const MAX_CODE_LENGTH = 50000; // 50KB
+
 // 풀이 제출
 router.post('/', requireAuth, asyncHandler(async (req, res) => {
   const { problemId, classroomId, code, output, passed, testResults } = req.body;
 
   if (!problemId || !code) {
     return res.status(400).json({ message: '문제 ID와 코드가 필요합니다' });
+  }
+  if (code.length > MAX_CODE_LENGTH) {
+    return res.status(400).json({ message: `코드는 ${MAX_CODE_LENGTH}자 이내로 제출하세요` });
   }
   if (!classroomId) {
     return res.status(400).json({ message: '교실 ID가 필요합니다' });
@@ -113,8 +118,8 @@ router.get('/reflections/:classroomId', requireAuth, requireTeacher, asyncHandle
   res.json(reflections);
 }));
 
-// 문제별 모든 제출 (교사 또는 갤러리용)
-router.get('/problem/:problemId', asyncHandler(async (req, res) => {
+// 문제별 모든 제출 (교사 또는 갤러리용) — 인증 필수
+router.get('/problem/:problemId', requireAuth, asyncHandler(async (req, res) => {
   const { classroomId } = req.query;
   const submissions = queryAll(
     `SELECT s.id, s.user_id, u.name as student_name, s.code, s.output, s.passed,
