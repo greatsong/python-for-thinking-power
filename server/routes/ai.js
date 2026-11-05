@@ -159,7 +159,10 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
   // 기존 대화 로드 또는 새 대화 생성
   let conversation;
   if (conversationId) {
-    conversation = queryOne('SELECT * FROM ai_conversations WHERE id = ? AND user_id = ?', [conversationId, req.user.id]);
+    conversation = queryOne(
+      'SELECT * FROM ai_conversations WHERE id = ? AND user_id = ? AND classroom_id = ? AND problem_id = ?',
+      [conversationId, req.user.id, classroomId, problemId]
+    );
   }
 
   let messages = [];
@@ -198,7 +201,7 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
       // AI 응답 저장
       messages.push({ role: 'assistant', content: fullResponse, timestamp: new Date().toISOString() });
 
-      const convId = conversationId || generateId();
+      const convId = conversation?.id || generateId();
       if (conversation) {
         execute(
           `UPDATE ai_conversations SET messages_json = ?, message_count = ?, updated_at = datetime('now') WHERE id = ?`,

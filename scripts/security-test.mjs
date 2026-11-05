@@ -62,6 +62,8 @@ check('다른 교사는 학번을 못 고친다', (await api('PUT', m, other, { 
 check('본인은 학번을 고친다', (await api('PUT', m, student.token, { studentNumber: '10102' })).status === 200);
 check('담당 교사는 학번을 고친다', (await api('PUT', m, owner, { studentNumber: '10103' })).status === 200);
 
+check('교사가 기본 문제 상태를 바꾸지 못한다', (await api('PATCH', `/problems/${problemId}/status`, other, { status: 'rejected' })).status === 403);
+
 let status = 0;
 for (let i = 0; i < 21; i += 1) status = (await api('POST', '/classrooms/join', outsider.token, { joinCode: 'x' + i })).status;
 check('참여 코드 추측 제한', status === 429);
