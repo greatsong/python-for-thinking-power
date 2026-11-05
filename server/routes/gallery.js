@@ -6,12 +6,18 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 
 const router = Router();
 
-// 갤러리는 같은 교실 안에서만 공유한다. 이름을 빼도 코드 안 주석·문자열에 개인정보가 있을 수 있다
-function canViewClassroom(user, classroomId) {
+// 갤러리는 같은 교실 안에서만 공유한다. 이름을 빼도 코드 안 주석·문자열에 개인정보가 있을 수 있다.
+// 담당 교사는 항상 볼 수 있고, 학생은 교사가 그 문제의 갤러리를 켠 경우에만 본다.
+function canViewGallery(user, classroomId, problemId) {
   if (!classroomId) return false;
   const owned = queryOne('SELECT 1 FROM classrooms WHERE id = ? AND teacher_id = ?', [classroomId, user.id]);
   if (owned) return true;
-  return !!queryOne('SELECT 1 FROM classroom_members WHERE classroom_id = ? AND user_id = ?', [classroomId, user.id]);
+  const member = queryOne('SELECT 1 FROM classroom_members WHERE classroom_id = ? AND user_id = ?', [classroomId, user.id]);
+  if (!member) return false;
+  return !!queryOne(
+    'SELECT 1 FROM classroom_problems WHERE classroom_id = ? AND problem_id = ? AND gallery_enabled = 1',
+    [classroomId, problemId]
+  );
 }
 
 // 문제별 풀이 갤러리 (익명화)
@@ -19,7 +25,7 @@ router.get('/:problemId', requireAuth, asyncHandler(async (req, res) => {
   const { classroomId } = req.query;
   const { problemId } = req.params;
 
-  if (!canViewClassroom(req.user, classroomId)) {
+  if (!canViewGallery(req.user, classroomId, problemId)) {
     return res.status(403).json({ message: '이 교실에 접근 권한이 없습니다' });
   }
 
@@ -40,7 +46,7 @@ router.post('/:problemId/analyze', requireAuth, asyncHandler(async (req, res) =>
   const { classroomId } = req.body;
   const { problemId } = req.params;
 
-  if (!canViewClassroom(req.user, classroomId)) {
+  if (!canViewGallery(req.user, classroomId, problemId)) {
     return res.status(403).json({ message: '이 교실에 접근 권한이 없습니다' });
   }
 

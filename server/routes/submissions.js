@@ -5,6 +5,12 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 
 const router = Router();
 
+// 교실 구성원과 담당 교사만 그 교실에 제출·저장한다. 나간 학생이 갤러리에 코드를 넣는 경로를 막는다
+function inClassroom(user, classroomId) {
+  return !!queryOne('SELECT 1 FROM classrooms WHERE id = ? AND teacher_id = ?', [classroomId, user.id])
+    || !!queryOne('SELECT 1 FROM classroom_members WHERE classroom_id = ? AND user_id = ?', [classroomId, user.id]);
+}
+
 const MAX_CODE_LENGTH = 50000; // 50KB
 
 // 풀이 제출
@@ -19,6 +25,9 @@ router.post('/', requireAuth, asyncHandler(async (req, res) => {
   }
   if (!classroomId) {
     return res.status(400).json({ message: '교실 ID가 필요합니다' });
+  }
+  if (!inClassroom(req.user, classroomId)) {
+    return res.status(403).json({ message: '이 교실에 접근 권한이 없습니다' });
   }
 
   const id = generateId();
@@ -53,6 +62,9 @@ router.post('/snapshot', requireAuth, asyncHandler(async (req, res) => {
   }
   if (!classroomId) {
     return res.status(400).json({ message: '교실 ID가 필요합니다' });
+  }
+  if (!inClassroom(req.user, classroomId)) {
+    return res.status(403).json({ message: '이 교실에 접근 권한이 없습니다' });
   }
 
   const id = generateId();

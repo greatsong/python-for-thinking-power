@@ -84,6 +84,17 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
     return res.status(400).json({ message: '코드는 10000자 이내로 입력하세요' });
   }
 
+  // 교실 구성원과 담당 교사만 사용한다. 없는 교실 id를 보내면 AI 금지와 일일 제한이 풀리고,
+  // 남의 교실 id를 보내면 그 교사의 API 키를 쓰던 경로를 막는다
+  const ownsClassroom = queryOne('SELECT 1 FROM classrooms WHERE id = ? AND teacher_id = ?', [classroomId, req.user.id]);
+  const inClassroom = ownsClassroom || queryOne(
+    'SELECT 1 FROM classroom_members WHERE classroom_id = ? AND user_id = ?',
+    [classroomId, req.user.id]
+  );
+  if (!inClassroom) {
+    return res.status(403).json({ message: '이 교실에 접근 권한이 없습니다' });
+  }
+
   // 문제 정보 가져오기
   const problem = queryOne('SELECT * FROM problems WHERE id = ?', [problemId]);
   if (!problem) {
@@ -148,7 +159,7 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
   // 기존 대화 로드 또는 새 대화 생성
   let conversation;
   if (conversationId) {
-    conversation = queryOne('SELECT * FROM ai_conversations WHERE id = ?', [conversationId]);
+    conversation = queryOne('SELECT * FROM ai_conversations WHERE id = ? AND user_id = ?', [conversationId, req.user.id]);
   }
 
   let messages = [];

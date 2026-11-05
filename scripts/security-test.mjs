@@ -33,6 +33,11 @@ const problemId = problems[0].id;
 const submitted = await api('POST', '/submissions', student.token, { problemId, classroomId: classroom.id, code: 'print("시험")', output: '시험', passed: true, isFinal: true });
 check('제출 저장', submitted.status < 300);
 
+check('교실 밖 학생은 제출하지 못한다', (await api('POST', '/submissions', outsider.token, { problemId, classroomId: classroom.id, code: 'x' })).status === 403);
+check('교실 밖 학생은 스냅샷을 저장하지 못한다', (await api('POST', '/submissions/snapshot', outsider.token, { problemId, classroomId: classroom.id, code: 'x' })).status === 403);
+check('없는 교실로 AI를 쓰지 못한다', (await api('POST', '/ai/chat', outsider.token, { problemId, classroomId: 'nope', message: 'hi' })).status === 403);
+check('남의 교실로 AI를 쓰지 못한다', (await api('POST', '/ai/chat', outsider.token, { problemId, classroomId: classroom.id, message: 'hi' })).status === 403);
+
 const q = `/submissions/problem/${problemId}?classroomId=${classroom.id}`;
 check('외부 학생은 이름·코드 목록을 못 본다', (await api('GET', q, outsider.token)).status === 403);
 check('같은 교실 학생도 이름·코드 목록을 못 본다', (await api('GET', q, student.token)).status === 403);
@@ -46,7 +51,10 @@ check('담당 교사는 소감을 본다', (await api('GET', `/submissions/refle
 const g = `/gallery/${problemId}?classroomId=${classroom.id}`;
 check('외부 학생은 갤러리를 못 본다', (await api('GET', g, outsider.token)).status === 403);
 check('교실 없이 전체 갤러리 불가', (await api('GET', `/gallery/${problemId}`, outsider.token)).status === 403);
-check('같은 교실 학생은 갤러리를 본다', (await api('GET', g, student.token)).status === 200);
+check('갤러리가 꺼져 있으면 학생은 못 본다', (await api('GET', g, student.token)).status === 403);
+const assigned = await api('POST', `/problems/${problemId}/assign`, owner, { classroomId: classroom.id, aiLevel: 2, galleryEnabled: true });
+check('교사가 갤러리를 켠다', assigned.status < 300);
+check('켜면 같은 교실 학생은 갤러리를 본다', (await api('GET', g, student.token)).status === 200);
 check('담당 교사는 갤러리를 본다', (await api('GET', g, owner)).status === 200);
 
 const m = `/classrooms/${classroom.id}/members/${student.user.id}`;

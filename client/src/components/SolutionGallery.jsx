@@ -24,7 +24,8 @@ export default function SolutionGallery({ submissions, analysis, onRequestAnalys
             AI 풀이 분석
           </div>
           <div className="prose prose-sm prose-purple max-w-none text-purple-900">
-            <div dangerouslySetInnerHTML={{ __html: analysis.replace(/\n/g, '<br/>') }} />
+            {/* AI 응답은 학생 코드를 입력으로 받으므로 HTML로 넣지 않는다 */}
+            <div className="whitespace-pre-wrap">{analysis}</div>
           </div>
         </div>
       ) : submissions.length >= 2 && (
