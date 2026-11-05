@@ -401,7 +401,8 @@ router.post('/:id/revise', requireAuth, requireTeacher, asyncHandler(async (req,
   if (!problem) {
     return res.status(404).json({ message: '문제를 찾을 수 없습니다' });
   }
-  if (problem.created_by && problem.created_by !== req.user.id) {
+  // 기본 문제(created_by 없음)는 모든 교실이 함께 쓰므로 교사가 복제본을 만들어 수정한다
+  if (problem.created_by !== req.user.id) {
     return res.status(403).json({ message: '본인이 만든 문제만 수정할 수 있습니다' });
   }
 
@@ -454,7 +455,7 @@ router.patch('/:id/status', requireAuth, requireTeacher, asyncHandler(async (req
   if (!problem) {
     return res.status(404).json({ message: '문제를 찾을 수 없습니다' });
   }
-  if (problem.created_by && problem.created_by !== req.user.id) {
+  if (problem.created_by !== req.user.id) {
     return res.status(403).json({ message: '본인이 만든 문제만 상태를 변경할 수 있습니다' });
   }
 

@@ -84,6 +84,17 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
     return res.status(400).json({ message: '코드는 10000자 이내로 입력하세요' });
   }
 
+  // 교실 구성원과 담당 교사만 사용한다. 없는 교실 id를 보내면 AI 금지와 일일 제한이 풀리고,
+  // 남의 교실 id를 보내면 그 교사의 API 키를 쓰던 경로를 막는다
+  const ownsClassroom = queryOne('SELECT 1 FROM classrooms WHERE id = ? AND teacher_id = ?', [classroomId, req.user.id]);
+  const inClassroom = ownsClassroom || queryOne(
+    'SELECT 1 FROM classroom_members WHERE classroom_id = ? AND user_id = ?',
+    [classroomId, req.user.id]
+  );
+  if (!inClassroom) {
+    return res.status(403).json({ message: '이 교실에 접근 권한이 없습니다' });
+  }
+
   // 문제 정보 가져오기
   const problem = queryOne('SELECT * FROM problems WHERE id = ?', [problemId]);
   if (!problem) {
@@ -148,7 +159,10 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
   // 기존 대화 로드 또는 새 대화 생성
   let conversation;
   if (conversationId) {
-    conversation = queryOne('SELECT * FROM ai_conversations WHERE id = ?', [conversationId]);
+    conversation = queryOne(
+      'SELECT * FROM ai_conversations WHERE id = ? AND user_id = ? AND classroom_id = ? AND problem_id = ?',
+      [conversationId, req.user.id, classroomId, problemId]
+    );
   }
 
   let messages = [];
@@ -187,7 +201,7 @@ router.post('/chat', requireAuth, asyncHandler(async (req, res) => {
       // AI 응답 저장
       messages.push({ role: 'assistant', content: fullResponse, timestamp: new Date().toISOString() });
 
-      const convId = conversationId || generateId();
+      const convId = conversation?.id || generateId();
       if (conversation) {
         execute(
           `UPDATE ai_conversations SET messages_json = ?, message_count = ?, updated_at = datetime('now') WHERE id = ?`,
@@ -279,6 +293,15 @@ router.get('/conversations', requireAuth, asyncHandler(async (req, res) => {
 router.post('/summarize/:conversationId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   const conv = queryOne('SELECT * FROM ai_conversations WHERE id = ?', [req.params.conversationId]);
   if (!conv) {
+    return res.status(404).json({ message: '대화를 찾을 수 없습니다' });
+  }
+
+  // 자기 교실 학생의 대화만 요약할 수 있다. 요약 응답에 대화 내용이 드러난다
+  const ownsClassroom = queryOne(
+    'SELECT 1 FROM classrooms WHERE id = ? AND teacher_id = ?',
+    [conv.classroom_id, req.user.id]
+  );
+  if (!ownsClassroom) {
     return res.status(404).json({ message: '대화를 찾을 수 없습니다' });
   }
 

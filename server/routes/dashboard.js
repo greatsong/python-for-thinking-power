@@ -5,6 +5,13 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 
 const router = Router();
 
+// 학생이 정한 이름·학번이 들어가는 칸. 따옴표·쉼표를 이스케이프하고 수식으로 실행되지 않게 한다
+function csvCell(value) {
+  let text = String(value ?? '');
+  if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
+  return `"${text.replace(/"/g, '""')}"`;
+}
+
 // 교실 전체 현황
 router.get('/overview/:classroomId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   const { classroomId } = req.params;
@@ -443,7 +450,7 @@ router.get('/export/:classroomId', requireAuth, requireTeacher, asyncHandler(asy
 
     const rows = [headers.join(',')];
     for (const st of students) {
-      const cols = [st.student_number || '-', `"${st.name}"`];
+      const cols = [csvCell(st.student_number || '-'), csvCell(st.name)];
       let scoreSum = 0, scoreCount = 0, passCount = 0;
 
       for (const p of problems) {
@@ -495,8 +502,8 @@ router.get('/export/:classroomId', requireAuth, requireTeacher, asyncHandler(asy
     for (const st of students) {
       const passRate = totalProblems > 0 ? `${Math.round(st.solved_count / totalProblems * 100)}%` : '0%';
       rows.push([
-        st.student_number || '-',
-        `"${st.name}"`,
+        csvCell(st.student_number || '-'),
+        csvCell(st.name),
         st.submission_count,
         st.solved_count,
         passRate,
