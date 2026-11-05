@@ -102,6 +102,12 @@ router.post('/:id/reflection', requireAuth, asyncHandler(async (req, res) => {
 
 // 교실별 학생 소감 목록 (교사용)
 router.get('/reflections/:classroomId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
+  // 교실 소유권 확인 — 승인된 교사라도 다른 교사 교실의 학생 소감은 볼 수 없다
+  const classroom = queryOne('SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?', [req.params.classroomId, req.user.id]);
+  if (!classroom) {
+    return res.status(403).json({ message: '해당 교실에 대한 권한이 없습니다' });
+  }
+
   const reflections = queryAll(
     `SELECT s.id, s.reflection, s.submitted_at, s.passed,
             u.name as student_name, u.id as student_id,
@@ -118,18 +124,26 @@ router.get('/reflections/:classroomId', requireAuth, requireTeacher, asyncHandle
   res.json(reflections);
 }));
 
-// 문제별 모든 제출 (교사 또는 갤러리용) — 인증 필수
-router.get('/problem/:problemId', requireAuth, asyncHandler(async (req, res) => {
+// 문제별 모든 제출 (담당 교사 전용) — 학생 이름과 코드가 함께 나가므로 교실을 반드시 지정한다.
+// 예전에는 Google 로그인만 하면 모든 교실의 이름·코드를 받을 수 있었다.
+router.get('/problem/:problemId', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
   const { classroomId } = req.query;
+  const classroom = classroomId
+    ? queryOne('SELECT id FROM classrooms WHERE id = ? AND teacher_id = ?', [classroomId, req.user.id])
+    : null;
+  if (!classroom) {
+    return res.status(403).json({ message: '해당 교실에 대한 권한이 없습니다' });
+  }
+
   const submissions = queryAll(
     `SELECT s.id, s.user_id, u.name as student_name, s.code, s.output, s.passed,
             s.approach_tag, s.is_final, s.submitted_at
      FROM submissions s
      JOIN users u ON u.id = s.user_id
-     WHERE s.problem_id = ? ${classroomId ? 'AND s.classroom_id = ?' : ''}
+     WHERE s.problem_id = ? AND s.classroom_id = ?
        AND s.is_final = 1
      ORDER BY s.submitted_at DESC`,
-    classroomId ? [req.params.problemId, classroomId] : [req.params.problemId]
+    [req.params.problemId, classroomId]
   );
   res.json(submissions);
 }));

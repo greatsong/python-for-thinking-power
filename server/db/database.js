@@ -2,7 +2,7 @@ import initSqlJs from 'sql.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { randomUUID } from 'crypto';
+import { randomInt, randomUUID } from 'crypto';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH = path.resolve(__dirname, '..', 'data', 'pythink.db');
@@ -192,6 +192,6 @@ export function generateId() {
 
 // 5자리 숫자 교실 코드 생성
 export function generateJoinCode() {
-  const code = Math.floor(10000 + Math.random() * 90000).toString();
+  const code = randomInt(10000, 100000).toString();
   return code;
 }

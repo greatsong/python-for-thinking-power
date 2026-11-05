@@ -282,6 +282,15 @@ router.post('/summarize/:conversationId', requireAuth, requireTeacher, asyncHand
     return res.status(404).json({ message: '대화를 찾을 수 없습니다' });
   }
 
+  // 자기 교실 학생의 대화만 요약할 수 있다. 요약 응답에 대화 내용이 드러난다
+  const ownsClassroom = queryOne(
+    'SELECT 1 FROM classrooms WHERE id = ? AND teacher_id = ?',
+    [conv.classroom_id, req.user.id]
+  );
+  if (!ownsClassroom) {
+    return res.status(404).json({ message: '대화를 찾을 수 없습니다' });
+  }
+
   const problem = queryOne('SELECT title FROM problems WHERE id = ?', [conv.problem_id]);
   const teacher = queryOne('SELECT anthropic_api_key FROM users WHERE id = ?', [req.user.id]);
   const summaryApiKey = (teacher?.anthropic_api_key ? decrypt(teacher.anthropic_api_key) : null) || process.env.ANTHROPIC_API_KEY;

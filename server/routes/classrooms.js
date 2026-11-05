@@ -1,9 +1,22 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { requireAuth, requireTeacher } from '../middleware/auth.js';
 import { queryAll, queryOne, execute, generateId, generateJoinCode } from '../db/database.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
 const router = Router();
+
+// 참여 코드는 다섯 자리 숫자라 계정별로 실패 횟수를 제한한다. 정상 입장은 세지 않는다
+const joinLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  keyGenerator: (req) => req.user.id,
+  skipSuccessfulRequests: true,
+  validate: false,
+  message: { message: '참여 코드 입력 실패가 너무 많습니다. 잠시 후 다시 시도하세요.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // 교실 생성 (교사 전용)
 router.post('/', requireAuth, requireTeacher, asyncHandler(async (req, res) => {
@@ -64,7 +77,7 @@ router.get('/my', requireAuth, requireTeacher, asyncHandler(async (req, res) => 
 }));
 
 // 교실 참여 (학생) - 이미 참여했으면 학번 업데이트
-router.post('/join', requireAuth, asyncHandler(async (req, res) => {
+router.post('/join', requireAuth, joinLimiter, asyncHandler(async (req, res) => {
   const { joinCode, studentNumber } = req.body;
 
   if (!joinCode) {
@@ -217,7 +230,12 @@ router.put('/:id/members/:userId/level', requireAuth, requireTeacher, asyncHandl
 router.put('/:id/members/:userId', requireAuth, asyncHandler(async (req, res) => {
   const { studentNumber } = req.body;
 
-  if (req.user.role !== 'teacher' && req.user.id !== req.params.userId) {
+  // 본인이거나 이 교실의 담당 교사만 학번을 고칠 수 있다
+  const ownsClassroom = queryOne(
+    'SELECT 1 FROM classrooms WHERE id = ? AND teacher_id = ?',
+    [req.params.id, req.user.id]
+  );
+  if (!ownsClassroom && req.user.id !== req.params.userId) {
     return res.status(403).json({ message: '권한이 없습니다' });
   }
 

@@ -79,9 +79,9 @@ export async function sendApprovalEmail(application) {
       subject: '[사고력 파이썬] 교사 계정이 승인되었습니다',
       html: approvalTemplate(application),
     });
-    console.log(`[Email] 승인 이메일 발송 완료: ${application.email}`);
+    console.log(`[Email] 승인 이메일 발송 완료: 신청 ${application.id}`);
   } catch (err) {
-    console.error(`[Email] 승인 이메일 발송 실패: ${application.email}`, err.message);
+    console.error(`[Email] 승인 이메일 발송 실패: 신청 ${application.id}`, err.message);
   }
 }
 
@@ -97,8 +97,8 @@ export async function sendRejectionEmail(application) {
       subject: '[사고력 파이썬] 교사 계정 신청 결과 안내',
       html: rejectionTemplate(application),
     });
-    console.log(`[Email] 거절 이메일 발송 완료: ${application.email}`);
+    console.log(`[Email] 거절 이메일 발송 완료: 신청 ${application.id}`);
   } catch (err) {
-    console.error(`[Email] 거절 이메일 발송 실패: ${application.email}`, err.message);
+    console.error(`[Email] 거절 이메일 발송 실패: 신청 ${application.id}`, err.message);
   }
 }
